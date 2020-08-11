@@ -1,0 +1,6 @@
+use Test;
+use Mi6::Helper;
+
+pass "replace me";
+
+done-testing;

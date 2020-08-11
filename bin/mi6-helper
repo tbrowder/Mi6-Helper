@@ -1,0 +1,270 @@
+#!/usr/bin/env raku
+
+use lib <lib ../lib>;
+
+use App::Mi6;
+use File::Find;
+use File::Directory::Tree;
+use Text::Utils;
+use JSON::Fast;
+use Config::INI;
+
+# var defined in BEGIN block at the end
+my $test-yml;
+
+# files required by mi6
+my %fmi6 = [
+    'dist.ini' => 'ini',
+    'Changes'  => 'ini',
+    '.github/workflows/test.yml' => 'yaml|yml',
+];
+
+# files required by tbrowder
+my %ft = set <
+    00-test-meta.t
+    00-basic.t
+>;
+
+# files to remove
+my %frem = set <
+    .travis.yml
+    Makefile
+>;
+
+# files to be replaced
+my %frep = set <
+>;
+
+# files to be modified
+my %fmod = set <
+    dist.ini
+    Changes
+    META6.json
+>;
+
+# files to ignore in reports
+my %fi = set <
+    LICENSE
+    .gitignore
+>;
+
+if !@*ARGS.elems {
+    say qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <git module dir to check>
+    HERE
+    exit;
+}
+
+my $dir = @*ARGS.shift;
+
+=begin pod
+
+What am I trying to accomplish?
+
+- Convert an existing module to use App::Mi6
+
+- Process in order
+
+sub check-git
+  - ensure there is a .git file
+    - throw if not
+
+  - check if needing a commit
+    - throw if not
+
+  # From this point, all changes to existing files should
+  # protected by Git and new files will listed as untracked.
+  # If the user fails to add the files or commit them,
+  # mi6 will cath the errors upon build or release.
+
+sub get-mod-name
+  - determine the base module name
+    - check any dist.ini file
+    - check the META6.json file
+    - throw if not found or there are conflicts
+
+sub get-mod-type
+  - determine whether it's a module or a class (affects the type
+    of load test)
+
+sub check-mi6-files
+  - check for missing files required by mi6
+    - write my version
+  - remove the dummy test created by mi6, if any
+
+sub check-my-std-test-files
+  - check for and create missing standard
+    tests I use
+    - Test::Meta
+    - load or class test
+
+sub find-external-mods-used
+  - determine external modules used by the module being analyzed
+
+sub write-meta6-json
+  - rewrite the META6.json file (create a backup copy)
+    - ensure depends and test depends are correct
+
+sub write-dist-ini
+  - rewrite the dist.ini file (create a backup copy)
+    - IMPORTANT ensure the convert to pod is turned OFF until manually changed
+
+  - check for the Unicode Copyright symbol [Copyright  &#x00A9; 2020 <author>] in the source pod
+    for the README.md file
+    - report results
+
+  - use prompts where need be
+
+=end pod
+
+my @fils = find :$dir, :type<file>, :exclude(/'.precomp'|'.git/'/), :keep-going;
+say "Files in dir '$dir'";
+my %fils;
+for @fils -> $fil {
+    my $f = $fil.basename;
+    # record all files and dups
+    if %fils{$f}:exists {
+        %fils{$f}.append: $fil;
+    }
+    else {
+        %fils{$f} = [];
+        %fils{$f}.append: $fil;
+    }
+
+
+    next if $fil ~~ /'.raku'$/;
+    next if $fil ~~ /'.class'$/;
+
+    next if %fi{$f}:exists;
+
+    if %fmod{$f}:exists {
+        print "== candidate for mods: ";
+    }
+    elsif %frem{$f}:exists {
+        print "== candidate for removal: ";
+    }
+    print "$f => $fil";
+    say "";
+}
+
+# find necessary used modules
+my %used-modules = find-used-modules $dir;
+
+# check out META6.json
+read-meta6-json $dir, :%used-modules;
+
+# check out dist.ini
+read-dist-ini $dir;
+
+
+#### SUBROUTINES ####
+sub read-dist-ini($dir) {
+    my $inifil = find :$dir, :name<dist.ini>;
+    my %dist   = Config::INI::parse(slurp $inifil);
+    return %dist;
+}
+
+sub write-basic-tests($dir, $mod-name) {
+    my $t1 = '000-meta-test.t';
+    my $t2 = '001-load-tests.t';
+    # check for existing files
+    my @fils = find :$dir, :name(/'.' [t|rakutest] $/);
+    .say for @fils;
+}
+
+sub find-used-modules($dir, :$debug) {
+    my %used-mods;
+    my @fils = find :$dir, :name(/'.' [rakumod|pm6|pm] $/);
+    for @fils {
+    }
+
+    return %used-mods;
+}
+
+sub read-meta6-json($dir, :%used-modules, :$debug) {
+    my $mfil = find :$dir, :name<META6.json>;
+    say("DEBUG: found meta file: $mfil") if 1 or $debug;
+    my %meta = from-json(slurp $mfil);
+    if 1 or $debug {
+        #say "DEBUG: meta6.json:";
+        for %meta.keys.sort -> $k {
+            say $k;
+            my $v = %meta{$k};
+            # may be hash or list or string or num
+            #say "DEBUG: value type: {$v.^name}";
+            if $v ~~ Str|Num {
+                say(" $v");
+            }
+            elsif $v ~~ List {
+                say(" $_") for $v;
+            }
+            elsif $v ~~ Hash {
+                say(" $_ = '{$v{$_}}'") for $v.keys.sort;
+            }
+        }
+    }
+}
+
+sub mod-dist-ini($dir, :$debug) {
+    my $dfil = find :$dir, :name<dist.ini>;
+    say("DEBUG: found dist.ini file: $dfil") if 1 or $debug;
+    my %dist = Config::INI::parse(slurp $dfil);
+    if 1 or $debug {
+        #say "DEBUG: dist.ini:";
+        for %dist.keys.sort -> $k {
+            next if $k eq '_';
+
+            say "[$k]";
+            my $v = %dist{$k};
+            # may be hash or list
+            #say "DEBUG: value type: {$v.^name}";
+            if $v ~~ List {
+                say(" $_") for $v;
+            }
+            elsif $v ~~ Hash {
+                say(" $_ = '{$v{$_}}'") for $v.keys.sort;
+            }
+        }
+    }
+}
+
+
+BEGIN {
+# my file sources
+$test-yml = q:to/HERE/;
+# @tbrowder's version
+# modded from mi6's version
+name: test
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+  pull_request:
+jobs:
+  raku:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          #- macOS-latest
+          #- windows-latest
+        raku-version:
+          - "2020.07"
+          - "2019.11"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Raku/setup-raku@v1
+      - run: raku -V
+      - name: Install dependencies
+        run: |
+          # install and test if need be (includes [test-depends])
+          zef install .
+          #zef install --/test --deps-only .
+          zef install --/test App::Prove6
+      - name: Run tests
+        run: prove6 -l t
+HERE
+}

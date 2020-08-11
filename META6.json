@@ -1,0 +1,20 @@
+{
+  "auth" : "cpan:TBROWDER",
+  "authors" : [
+    "Tom Browder"
+  ],
+  "build-depends" : [ ],
+  "depends" : [ ],
+  "description" : "An aid for converting Raku modules to use App::Mi6",
+  "license" : "Artistic-2.0",
+  "name" : "Mi6::Helper",
+  "perl" : "6.d",
+  "provides" : {
+    "Mi6::Helper" : "lib/Mi6/Helper.rakumod"
+  },
+  "resources" : [ ],
+  "source-url" : "",
+  "tags" : [ ],
+  "test-depends" : [ ],
+  "version" : "0.0.1"
+}
