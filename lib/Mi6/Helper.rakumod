@@ -90,6 +90,15 @@ sub write-dist-ini
 
 Tom Browder <tom.browder@gmail.com>
 
+=head1 CREDITS
+
+The very useful Raku modules used herein:
+
+=item C<App::Mi6>     by B<github:skaji>
+=item C<File::Find>   by B<github:tadzik>
+=item C<JSON::Fast>   by B<github:timo>
+=item C<Config::INI>  by B<gitbub:tadzik>
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright &#x00A9; 2020 Tom Browder

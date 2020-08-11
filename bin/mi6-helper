@@ -4,10 +4,9 @@ use lib <lib ../lib>;
 
 use App::Mi6;
 use File::Find;
-use File::Directory::Tree;
-use Text::Utils;
 use JSON::Fast;
 use Config::INI;
+use Text::Utils;
 
 # var defined in BEGIN block at the end
 my $test-yml;
