@@ -3,9 +3,9 @@
 use lib <lib ../lib>;
 
 use App::Mi6;
+use Config::INI;
 use File::Find;
 use JSON::Fast;
-use Config::INI;
 use Text::Utils;
 
 # var defined in BEGIN block at the end
