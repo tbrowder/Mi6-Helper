@@ -3,15 +3,14 @@
   "authors" : [
     "Tom Browder"
   ],
-  "build-depends" : [
+  "build-depends" : [ ],
+  "depends" : [
+    "App::Mi6",
+    "Config::INI",
+    "File::Find",
+    "JSON::Fast",
+    "Text::Utils"
   ],
-    "depends" : [
-        "App::Mi6",
-        "Config::INI",
-        "File::Find",
-        "JSON::Fast",
-        "Text::Utils"
-    ],
   "description" : "An aid for converting Raku modules to use App::Mi6",
   "license" : "Artistic-2.0",
   "name" : "Mi6::Helper",
@@ -23,7 +22,7 @@
   "source-url" : "https://github.com/tbrowder/Mi6-Helper.git",
   "tags" : [ ],
   "test-depends" : [
-     "Test::META"
-    ],
+    "Test::META"
+  ],
   "version" : "0.0.1"
 }
