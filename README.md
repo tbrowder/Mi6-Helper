@@ -85,6 +85,19 @@ AUTHOR
 
 Tom Browder <tom.browder@gmail.com>
 
+CREDITS
+=======
+
+The very useful Raku modules used herein:
+
+  * `App::Mi6` by **github:skaji**
+
+  * `File::Find` by **github:tadzik**
+
+  * `JSON::Fast` by **github:timo**
+
+  * `Config::INI` by **gitbub:tadzik**
+
 COPYRIGHT AND LICENSE
 =====================
 
