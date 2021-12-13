@@ -1,12 +1,140 @@
 #!/usr/bin/env raku
 
-use lib <lib ../lib>;
-
 use App::Mi6;
+
+use LibGit2;
+use JSON::Fast;
 use Config::INI;
+
+=begin comment
 use File::Find;
 use JSON::Fast;
 use Text::Utils;
+=end comment
+
+my $dir = @*ARGS.shift;
+die "FATAL: Path '$dir' is not a directory."
+    unless $dir.IO.d;
+say "Using directory '$dir' as the target module directory.";
+
+try my $repo = Git::Repository.open: $dir;
+if not $repo {
+    say qq:to/HERE/;
+    FATAL: Directory '$dir' is not a Git repository.
+           Retry with a directory which is.
+    HERE
+    exit;
+}
+
+# get status
+my %new;
+my %indexed;
+my %unknown;
+for $repo.status-each {
+    my $n = .path;
+    my $s = .status;
+    if $s ~~ /WT_NEW/ {
+        %new{$n} = 1;
+    }
+    elsif $s ~~ /INDEX/ {
+        %indexed{$n} = 1;
+    }
+    else {
+        %unknown{$n} = $s;
+    }
+}
+
+# all is ok iif no elements in the three hashes
+my $err = 0;
+say "On branch ?";
+if %indexed.elems {
+    ++$err;
+    say "Changes to be committed:";
+    say '  (use "git reset HEAD <file>..." to unstage)';
+    say();
+    say "\tnew file:   $_" for %indexed.keys.sort;
+    say();
+}
+if %new.elems {
+    ++$err;
+    say "Untracked files:";
+    say '  (use "git add <file>..." to include in what will be committed)';
+    say();
+    say "\t$_" for %new.keys.sort;
+    say();
+}
+if %unknown.elems {
+    ++$err;
+    say "Files with unhandled status:";
+    say();
+    for %unknown.keys.sort {
+        my $v = %unknown{$_};
+        say "  $_ => $v";
+    }
+    say();
+}
+if $err {
+    say q:to/HERE/;
+    No changes will be made until you have committed 
+      or '.gitignor'ed all listed files.
+    HERE
+    say();
+    #say "Exiting now...";
+    #exit;
+}
+
+# check for fez
+say();
+say "Checking for a fez account...";;
+my $fezfil = "%*ENV<HOME>/.fez-config.json";
+my $feznam;
+if $fezfil.IO.r {
+    $feznam = %(from-json(slurp $fezfil))<un>;
+    say "Found fez user name '$feznam'";
+    # check for an installed fez
+    my $module = 'Fez::CLI';
+    try require ::($module);
+    if ::($module) ~~ Failure {
+        say 'You must install fez: "$ zef install fez"';
+    }
+}
+else {
+    ++$err;
+    say q:to/HERE/
+    No fez config file found. This program cannot 
+      completely function without a fez account.
+      You must install fez first. Then execute 
+      '$ fez register' and follow the instructions.
+    HERE
+}
+
+# check for META6.json and critical data
+my $metafil = "$dir/META6.json";
+my %meta;
+if $metafil.IO.r {
+    %meta = %((slurp $metafil).from-json);
+}
+else {
+    ++$err;
+    say "No 'META6.json' file found. One will be created.";
+}
+
+# check for module name
+my $modnam = %meta<name>:exists ?? %meta<name> !! '';
+if not $modnam {
+    # Can we use an App::Mi6 instance?
+    # Not easily.
+    $modnam = find-module-name $dir;
+}
+
+# check for all dependencies
+# find all files with extensions:
+#    <raku rakumod rakutest> # preferred extensions
+#    <p6 pl pm pm6 t>        # deprecated extensions
+
+=finish
+
+exit;
 
 # var defined in BEGIN block at the end
 my $test-yml;
@@ -18,13 +146,7 @@ my %fmi6 = [
     '.github/workflows/test.yml' => 'yaml|yml',
 ];
 
-# files required by tbrowder
-my %ft = set <
-    00-test-meta.t
-    00-basic.t
->;
-
-# files to remove
+# files suggested to remove
 my %frem = set <
     .travis.yml
     Makefile
@@ -41,20 +163,12 @@ my %fmod = set <
     META6.json
 >;
 
-# files to ignore in reports
-my %fi = set <
-    LICENSE
-    .gitignore
->;
-
 if !@*ARGS.elems {
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <git module dir to check>
     HERE
     exit;
 }
-
-my $dir = @*ARGS.shift;
 
 =begin pod
 
@@ -74,7 +188,7 @@ sub check-git
   # From this point, all changes to existing files should
   # protected by Git and new files will listed as untracked.
   # If the user fails to add the files or commit them,
-  # mi6 will cath the errors upon build or release.
+  # mi6 will catch the errors upon build or release.
 
 sub get-mod-name
   - determine the base module name

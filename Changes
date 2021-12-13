@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Publish to the Zef repository
+    - Make it functional
 
 0.0.1  2020-08-11T14:14:28-05:00
     - Initial version
