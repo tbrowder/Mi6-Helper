@@ -2,6 +2,7 @@
 
 use lib <lib ../lib>;
 
+use LibGit2;
 use App::Mi6;
 use Config::INI;
 use File::Find;
@@ -20,8 +21,8 @@ my %fmi6 = [
 
 # files required by tbrowder
 my %ft = set <
-    00-test-meta.t
-    00-basic.t
+    000-test-meta.t
+    001-basic.t
 >;
 
 # files to remove
@@ -47,14 +48,22 @@ my %fi = set <
     .gitignore
 >;
 
+# tmp until ready
+my $dir = find :dir(".."), :name<AVL-Tree>;
 if !@*ARGS.elems {
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <git module dir to check>
+
+    NOTE: using dir '$dir' during development.
+
     HERE
     exit;
 }
 
-my $dir = @*ARGS.shift;
+my $debug = 0;
+
+#my $dir = @*ARGS.shift;
+$dir .= IO.absolute;
 
 =begin pod
 
@@ -67,7 +76,6 @@ What am I trying to accomplish?
 sub check-git
   - ensure there is a .git file
     - throw if not
-
   - check if needing a commit
     - throw if not
 
@@ -116,6 +124,8 @@ sub write-dist-ini
 
 =end pod
 
+check-git $dir;
+
 my @fils = find :$dir, :type<file>, :exclude(/'.precomp'|'.git/'/), :keep-going;
 say "Files in dir '$dir'";
 my %fils;
@@ -143,23 +153,41 @@ for @fils -> $fil {
         print "== candidate for removal: ";
     }
     print "$f => $fil";
-    say "";
+    say();;
 }
 
 # find necessary used modules
-my %used-modules = find-used-modules $dir;
+my %modules = find-modules $dir, :$debug;
 
 # check out META6.json
-read-meta6-json $dir, :%used-modules;
+my %meta6 = read-meta6-json $dir, :$debug;
 
 # check out dist.ini
-read-dist-ini $dir;
+my %distini = read-dist-ini $dir, :$debug;
 
 
 #### SUBROUTINES ####
-sub read-dist-ini($dir) {
-    my $inifil = find :$dir, :name<dist.ini>;
-    my %dist   = Config::INI::parse(slurp $inifil);
+#| sub check-git
+#|   - ensure there is a .git file
+#|     - throw if not
+#|   - check if needing a commit
+#|     - throw if not
+sub check-git($dir, :$debug) {
+    # use LibGit2
+    try my $repo = Git::Repository.open: $dir;
+    if not $repo {
+        say "FATAL: No .git subdir in dir: $dir";
+        exit;
+    }
+    # check for uncommited or untracked files
+}
+
+sub read-dist-ini($dir, :$debug) {
+    my %dist;
+    my $inifil = find :dir($dir), :name<dist.ini>;
+    return %dist if not $inifil;
+
+    %dist   = Config::INI::parse(slurp $inifil);
     return %dist;
 }
 
@@ -171,24 +199,30 @@ sub write-basic-tests($dir, $mod-name) {
     .say for @fils;
 }
 
-sub find-used-modules($dir, :$debug) {
-    my %used-mods;
+sub find-modules($dir, :$debug) {
+    # collect local as well as externally used modules
     my @fils = find :$dir, :name(/'.' [rakumod|pm6|pm] $/);
-    for @fils {
+
+    my %modules; # key: <loc|ext>
+    #                       {module-colon-name} = <file-name> = # relative to the primary module's repo dir
+    #                                           = 0 # for external modules
+ 
+    for @fils -> $mfil is copy {
+        say "  Found local module: $mfil" if $debug;
     }
 
-    return %used-mods;
+    return %modules;
 }
 
-sub read-meta6-json($dir, :%used-modules, :$debug) {
+sub read-meta6-json($dir, :$debug) {
     my $mfil = find :$dir, :name<META6.json>;
     say("DEBUG: found meta file: $mfil") if 1 or $debug;
-    my %meta = from-json(slurp $mfil);
+    my %meta6 = from-json(slurp $mfil);
     if 1 or $debug {
         #say "DEBUG: meta6.json:";
-        for %meta.keys.sort -> $k {
+        for %meta6.keys.sort -> $k {
             say $k;
-            my $v = %meta{$k};
+            my $v = %meta6{$k};
             # may be hash or list or string or num
             #say "DEBUG: value type: {$v.^name}";
             if $v ~~ Str|Num {
@@ -202,19 +236,17 @@ sub read-meta6-json($dir, :%used-modules, :$debug) {
             }
         }
     }
+    return %meta6;
 }
 
-sub mod-dist-ini($dir, :$debug) {
-    my $dfil = find :$dir, :name<dist.ini>;
-    say("DEBUG: found dist.ini file: $dfil") if 1 or $debug;
-    my %dist = Config::INI::parse(slurp $dfil);
+sub mod-dist-ini(%distini, :$debug) {
     if 1 or $debug {
         #say "DEBUG: dist.ini:";
-        for %dist.keys.sort -> $k {
+        for %distini.keys.sort -> $k {
             next if $k eq '_';
 
             say "[$k]";
-            my $v = %dist{$k};
+            my $v = %distini{$k};
             # may be hash or list
             #say "DEBUG: value type: {$v.^name}";
             if $v ~~ List {
@@ -226,7 +258,6 @@ sub mod-dist-ini($dir, :$debug) {
         }
     }
 }
-
 
 BEGIN {
 # my file sources

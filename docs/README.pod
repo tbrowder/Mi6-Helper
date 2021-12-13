@@ -1,26 +1,38 @@
-unit class Mi6::Helper:ver<0.0.1>:auth<cpan:TBROWDER>;
-
-
 =begin pod
 
 =head1 NAME
 
 Mi6::Helper - An aid for converting Raku modules to use B<App::Mi6>
+and the Raku Zef module repository
 
 =head1 SYNOPSIS
 
+=begin code
+use Mi6::Helper
+=end code
+
 This module installs a Raku executable named C<mi6-helper> which
 is designed to inspect an existing Git repository of a Raku
-module to help convert it to one that uses the C<App::Mi6> module.
+module for two main purposes:
+
+1. Convert an mi6-created module from using the CPAN module repository to
+      using the Raku Zef module repository
+
+2. Convert an unmanaged module to one that uses the C<App::Mi6> module.
+      for management with the Raku Zef module repository
+
+In the process of conversion, and until mi6 is able, search for C<use>d modules missing
+      from the META6.json file and add them to the C<depends> array
+
 
 =begin code :lang<raku>
 $ mi6-helper <raku-module-repo-name>
 =end code
 
 The C<<raku-module-repo-name>> may be a C<.> if you are working in
-the repository directory. In that case the Raku module in './lib'
-with the ':auth<>' and ':ver<>' adverbs will be used as the
-source of the module's name.
+the repository directory. In either case, the name will be taken
+from either (1) an existing META6.json file's C<"name"> key's value
+or (2) the first module found in the 'lib' directory.
 
 =head1 DESCRIPTION
 
@@ -42,7 +54,7 @@ sub check-git
     - throw if not
 
   - check if needing a commit
-    - throw if not
+    - throw if so
 
   # From this point, all changes to existing files should
   # protected by Git and new files will listed as untracked.
