@@ -1,28 +1,33 @@
 {
-  "auth" : "cpan:TBROWDER",
-  "authors" : [
-    "Tom Browder"
+  "auth": "zef:tbrowder",
+  "authors": [
+    "Tom Browder <tbrowder@acm.org>"
   ],
-  "build-depends" : [ ],
-  "depends" : [
+  "build-depends": [
+  ],
+  "depends": [
+    "LibGit2",
     "App::Mi6",
     "Config::INI",
     "File::Find",
     "JSON::Fast",
     "Text::Utils"
   ],
-  "description" : "An aid for converting Raku modules to use App::Mi6",
-  "license" : "Artistic-2.0",
-  "name" : "Mi6::Helper",
-  "perl" : "6.d",
-  "provides" : {
-    "Mi6::Helper" : "lib/Mi6/Helper.rakumod"
+  "description": "An aid for converting Raku modules to use App::Mi6",
+  "license": "Artistic-2.0",
+  "name": "Mi6::Helper",
+  "perl": "6.d",
+  "provides": {
+    "Mi6::Helper": "lib/Mi6/Helper.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "https://github.com/tbrowder/Mi6-Helper.git",
-  "tags" : [ ],
-  "test-depends" : [
+  "resources": [
+  ],
+  "source-url": "https://github.com/tbrowder/Mi6-Helper.git",
+  "tags": [
+    "mi6 fez zef repo"
+  ],
+  "test-depends": [
     "Test::META"
   ],
-  "version" : "0.0.1"
+  "version": "0.0.1"
 }

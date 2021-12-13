@@ -8,13 +8,17 @@ Mi6::Helper - An aid for converting Raku modules to use App::Mi6
 SYNOPSIS
 ========
 
-This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module.
+This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository.
+
+In the process of conversion, it also checks for all dependencies which `App::Mi6` may have missed.
+
+A future capability will be to convert a non-managed module to using `App::Mi6` with the Zef repository.
 
 ```raku
-$ mi6-helper <raku-module-repo-name>
+$ mi6-helper <raku-module-repo-dir name>
 ```
 
-The `raku-module-repo-name` may be a `.` if you are working in the repository directory.
+The `raku-module-repo-name` may be a `.` if you are working in the top level of the repository directory.
 
 DESCRIPTION
 ===========
@@ -83,7 +87,7 @@ What am I trying to accomplish?
 AUTHOR
 ======
 
-Tom Browder <tom.browder@gmail.com>
+Tom Browder <tbrowder@acm.org>
 
 CREDITS
 =======
@@ -101,7 +105,7 @@ The very useful Raku modules used herein:
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2020 Tom Browder
+Copyright &#x00A9; 2020-2021 Tom Browder
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
