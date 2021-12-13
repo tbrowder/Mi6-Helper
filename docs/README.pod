@@ -2,39 +2,6 @@
 
 =head1 NAME
 
-<<<<<<< HEAD
-Mi6::Helper - An aid for converting Raku modules to use B<App::Mi6>
-and the Raku Zef module repository
-
-=head1 SYNOPSIS
-
-=begin code
-use Mi6::Helper
-=end code
-
-This module installs a Raku executable named C<mi6-helper> which
-is designed to inspect an existing Git repository of a Raku
-module for two main purposes:
-
-1. Convert an mi6-created module from using the CPAN module repository to
-      using the Raku Zef module repository
-
-2. Convert an unmanaged module to one that uses the C<App::Mi6> module.
-      for management with the Raku Zef module repository
-
-In the process of conversion, and until mi6 is able, search for C<use>d modules missing
-      from the META6.json file and add them to the C<depends> array
-
-
-=begin code :lang<raku>
-$ mi6-helper <raku-module-repo-name>
-=end code
-
-The C<<raku-module-repo-name>> may be a C<.> if you are working in
-the repository directory. In either case, the name will be taken
-from either (1) an existing META6.json file's C<"name"> key's value
-or (2) the first module found in the 'lib' directory.
-=======
 Mi6::Helper - An aid for converting Raku modules to use App::Mi6
 
 =head1 SYNOPSIS
@@ -58,7 +25,6 @@ $ mi6-helper <raku-module-repo-dir name>
 
 The C<<raku-module-repo-name>> may be a C<.> if you are working in
 the top level of the repository directory.
->>>>>>> de4e875b7b3166a398039dbc6e21d3c63cc65fd0
 
 =head1 DESCRIPTION
 
@@ -80,11 +46,7 @@ sub check-git
     - throw if not
 
   - check if needing a commit
-<<<<<<< HEAD
-    - throw if so
-=======
     - throw if not
->>>>>>> de4e875b7b3166a398039dbc6e21d3c63cc65fd0
 
   # From this point, all changes to existing files should
   # protected by Git and new files will listed as untracked.
@@ -95,10 +57,6 @@ sub get-mod-name
   - determine the base module name
     - check any dist.ini file
     - check the META6.json file
-<<<<<<< HEAD
-    - check existing Raku modules in 'lib'
-=======
->>>>>>> de4e875b7b3166a398039dbc6e21d3c63cc65fd0
     - throw if not found or there are conflicts
 
 sub get-mod-type
@@ -120,11 +78,7 @@ sub find-external-mods-used
   - determine external modules used by the module being analyzed
 
 sub write-meta6-json
-<<<<<<< HEAD
-  - rewrite any existing META6.json file (create a backup copy)
-=======
   - rewrite the META6.json file (create a backup copy)
->>>>>>> de4e875b7b3166a398039dbc6e21d3c63cc65fd0
     - ensure depends and test depends are correct
 
 sub write-dist-ini
@@ -140,11 +94,7 @@ sub write-dist-ini
 
 =head1 AUTHOR
 
-<<<<<<< HEAD
-Tom Browder <tom.browder@gmail.com>
-=======
 Tom Browder <tbrowder@acm.org>
->>>>>>> de4e875b7b3166a398039dbc6e21d3c63cc65fd0
 
 =head1 CREDITS
 
