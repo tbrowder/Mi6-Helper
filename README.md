@@ -3,86 +3,33 @@
 NAME
 ====
 
-Mi6::Helper - An aid for converting Raku modules to use App::Mi6
+**Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6**
 
 SYNOPSIS
 ========
 
-This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository.
+Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
 
-In the process of conversion, it also checks for all dependencies which `App::Mi6` may have missed.
+This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add a `dist.ini` file and a `Changes` file to the base directory. If a `Changes` file happens to exist, it will be copied to a `` file and the original will be overwritten with one in the correct format.
 
-A future capability will be to convert a non-managed module to using `App::Mi6` with the Zef repository.
+The default actions are those the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper` file.
 
-```raku
-$ mi6-helper <raku-module-repo-dir name>
-```
+The contents of the two files are shown below.
 
-The `raku-module-repo-name` may be a `.` if you are working in the top level of the repository directory.
+**Changes** file
+----------------
+
+**dist.ini** file
+-----------------
 
 DESCRIPTION
 ===========
-
-The executable program exists but has no useful operation yet other than a quick inspection and limited reporting. See the following section for the design features planned.
-
-GOAL
-----
-
-What am I trying to accomplish?
-
-    - Convert an existing module to use App::Mi6
-
-    - Process in order
-
-    sub check-git
-      - ensure there is a .git file
-        - throw if not
-
-      - check if needing a commit
-        - throw if not
-
-      # From this point, all changes to existing files should
-      # protected by Git and new files will listed as untracked.
-      # If the user fails to add the files or commit them,
-      # mi6 will cath the errors upon build or release.
 
     sub get-mod-name
       - determine the base module name
         - check any dist.ini file
         - check the META6.json file
         - throw if not found or there are conflicts
-
-    sub get-mod-type
-      - determine whether it's a module or a class (affects the type
-        of load test)
-
-    sub check-mi6-files
-      - check for missing files required by mi6
-        - write my version
-      - remove the dummy test created by mi6, if any
-
-    sub check-my-std-test-files
-      - check for and create missing standard
-        tests I use
-        - Test::Meta
-        - load or class test
-
-    sub find-external-mods-used
-      - determine external modules used by the module being analyzed
-
-    sub write-meta6-json
-      - rewrite the META6.json file (create a backup copy)
-        - ensure depends and test depends are correct
-
-    sub write-dist-ini
-      - rewrite the dist.ini file (create a backup copy)
-        - IMPORTANT ensure the convert to pod is turned OFF until manually changed
-
-      - check for the Unicode Copyright symbol [Copyright  &#x00A9; 2020 <author>] in the source pod
-        for the README.md file
-        - report results
-
-      - use prompts where need be
 
 AUTHOR
 ======
@@ -105,7 +52,7 @@ The very useful Raku modules used herein:
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2020-2021 Tom Browder
+Copyright &#x00A9; 2020-2022 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

@@ -1,0 +1,61 @@
+=begin pod
+
+=head1 NAME
+
+B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
+
+=head1 SYNOPSIS
+
+Note this is API 2 and its approach has changed significantly
+since the author has had much more experience using B<App::Mi6>.
+For example, accidentally using C<mi6 test> in a non-mi6 module's
+base directory will corrupt an existing README.md file.
+
+This module installs a Raku executable named C<mi6-helper> which
+is designed to inspect an existing Git repository of a Raku
+module to help convert it to one that uses the C<App::Mi6> module
+with the Zef repository. Essentially all it does is add a C<dist.ini>
+file and a C<Changes> file to the base directory. If a C<Changes>
+file happens to exist, it will be copied to a C<> file and
+the original will be overwritten with one in the correct format.
+
+The default actions are those the author likes, but a future
+update will allow the user to customize those actions in his
+or her own C<$HOME/.mi6helper> file.
+
+The contents of the two files are shown below.
+
+=head2 B<Changes> file
+
+=head2 B<dist.ini> file
+
+=head1 DESCRIPTION
+
+=begin code
+sub get-mod-name
+  - determine the base module name
+    - check any dist.ini file
+    - check the META6.json file
+    - throw if not found or there are conflicts
+=end code
+
+=head1 AUTHOR
+
+Tom Browder <tbrowder@acm.org>
+
+=head1 CREDITS
+
+The very useful Raku modules used herein:
+
+=item C<App::Mi6>     by B<github:skaji>
+=item C<File::Find>   by B<github:tadzik>
+=item C<JSON::Fast>   by B<github:timo>
+=item C<Config::INI>  by B<gitbub:tadzik>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright &#x00A9; 2020-2022 Tom Browder
+
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+
+=end pod

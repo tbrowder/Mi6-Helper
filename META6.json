@@ -1,4 +1,5 @@
 {
+  "api": 2,
   "auth": "zef:tbrowder",
   "authors": [
     "Tom Browder <tbrowder@acm.org>"
@@ -6,11 +7,9 @@
   "build-depends": [
   ],
   "depends": [
-    "LibGit2",
-    "App::Mi6",
+    "JSON::Fast",
     "Config::INI",
     "File::Find",
-    "JSON::Fast",
     "Text::Utils"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
