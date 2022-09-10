@@ -8,11 +8,14 @@ use Ask;
 
 if not @*ARGS.elems {
     print qq:to/HERE/;
-    Usage: {} <mode> [options...]
+    Usage: {$*PROGRAM.basename} <mode> [options...]
     
     Modes:
-        go    - Creates safe defaults for an 'App::Mi6'-managed module
-                in an existing Git module repository
+        old   - Creates safe defaults for an 'mi6'-managed module
+                in an existing Git Raku module repository. Reports findings
+                and recommendations. See details in the README and 'help'.
+        new   - Overwrites some files in a new module just created
+                by 'mi6'. See details in the README and 'help'.
         help  - Extended help
 
     Options:
@@ -26,7 +29,8 @@ if not @*ARGS.elems {
 }
 
 # modes
-my $go    = 0;
+my $old   = 0; # was 'go'
+my $new   = 0;
 my $help  = 0;
 # options
 my $force = 0;
@@ -34,8 +38,13 @@ my $debug = 0;
 my $docs  = 0;
 # assume we are in a base directory
 my $dir   = '.';
+
+# other args
+my $err = 0; # track number of possible errors
+
 for @*ARGS {
-    when /:i ^g/ { ++$go    }
+    when /:i ^o/ { ++$old   }
+    when /:i ^n/ { ++$new   }
     when /:i ^h/ { ++$help  }
     when /:i ^f/ { ++$force }
     when /^'dir=' (\S+)/ {
@@ -78,9 +87,6 @@ if "$*USER" eq 'tbrowde' {
     ++$docs;
 }
 
-say "temp finish"
-=finish
-
 unless ".git".IO.d {
     say qq:to/HERE/;
     WARNING: Directory '$dir' is not a Git repository.
@@ -104,8 +110,9 @@ if $fezfil.IO.r {
 else {
     ++$err;
     say q:to/HERE/
-    No fez config file found. This program cannot 
-      completely function without a fez account.
+    No fez config file found. This program assumes
+      the user has a fez account and will be publishing
+      this module to the zef archives.
       You must install fez first. Then execute 
       '$ fez register' and follow the instructions.
     HERE
@@ -115,28 +122,27 @@ else {
 my $metafil = "$dir/META6.json";
 my %meta;
 if $metafil.IO.r {
-    %meta = %((slurp $metafil).from-json);
+    %meta = from-json $metafil.IO.slurp;
+    say "META6.json' file found and read.";
 }
 else {
     ++$err;
     say "No 'META6.json' file found.";
 }
 
-say "temp finish";
-=finish
-
 # check for module name
 my $modnam = %meta<name>:exists ?? %meta<name> !! '';
 if not $modnam {
     # Can we use an App::Mi6 instance?
     # Not easily.
-    $modnam = find-module-name $dir;
+    ++$err;
+    say "No module 'name' found in the 'META6.json' file..";
 }
 
 # check for all dependencies
 # find all files with extensions:
-#    <raku rakumod rakutest> # preferred extensions
-#    <p6 pl pm pm6 t>        # deprecated extensions
+#    <raku rakumod rakutest rakudoc> # preferred extensions
+#    <p6 pl pm pm6 t>                # deprecated extensions
 
 =finish
 
@@ -145,7 +151,7 @@ exit;
 # var defined in BEGIN block at the end
 my $test-yml;
 
-# files required by mi6
+# files required, created, or used by mi6
 my %fmi6 = [
     'dist.ini' => 'ini',
     'Changes'  => 'ini',
@@ -311,6 +317,10 @@ sub write-basic-tests($dir, $mod-name) {
     # check for existing files
     my @fils = find :$dir, :name(/'.' [t|rakutest] $/);
     .say for @fils;
+}
+
+sub find-module-name($dir, :$debug) {
+    my @fils = find :$dir, :name(/'.' [rakumod|pm6|pm] $/);
 }
 
 sub find-modules($dir, :$debug) {

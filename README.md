@@ -10,7 +10,25 @@ SYNOPSIS
 
 Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
 
-This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add a `dist.ini` file and a `Changes` file to the base directory. If a `Changes` file happens to exist, it will be copied to a `` file and the original will be overwritten with one in the correct format.
+This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or mofify the following files:
+
+  * **dist.ini** (in the base directory)
+
+    This file, if found existing, will cause an abort. No changes can be made to an existing file. You may use the `force` option at your own risk.
+
+    The default file does **NOT** create any Markdown files from any source unless you are the user **tbrowder** or you use the `docs` option. In those cases a **docs/README.rakudoc** file is created and this file is modified appropriately.
+
+  * **README.md** (in the base directory)
+
+    This file, if it exists, is copied to a file with name **README.md.original** for safety. The original file is not modified by this program.
+
+  * **Changes** (in the base directory)
+
+    If a **Changes** file happens to exist, it will be copied to a **Changes.original** file and the original will be overwritten with one in the correct format.
+
+  * **docs/README.rakudoc** (in the base/docs directory)
+
+    If such a file exists, it will be left unchanged.
 
 The default actions are those the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper` file.
 

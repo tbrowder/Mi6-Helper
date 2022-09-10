@@ -3,7 +3,7 @@ Revision history for Mi6-Helper
 {{$NEXT}}
     - Publish to the Zef repository
     - Make it functional
-    - Reorient the purpose of this module to a minimal set of non-interfring changes
+    - Reorient the purpose of this module to a minimal set of non-interfering changes
       with the possibility for personalization with an INI file
 
 0.0.1  2020-08-11T14:14:28-05:00

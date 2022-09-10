@@ -13,12 +13,14 @@ my %erepos =
     'My-App'  => 'My::App',
     'New-App' => 'New::App',
     ;
-
-create-repos $tdir;
+lives-ok {
+    create-repos $tdir;
+}
 
 sub create-repos($tdir) {
     mkdir "$tdir/$_" for %erepos.keys;
 }
 
 
+done-testing;
 
