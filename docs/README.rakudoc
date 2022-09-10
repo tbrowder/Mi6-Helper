@@ -14,10 +14,45 @@ base directory will corrupt an existing README.md file.
 This module installs a Raku executable named C<mi6-helper> which
 is designed to inspect an existing Git repository of a Raku
 module to help convert it to one that uses the C<App::Mi6> module
-with the Zef repository. Essentially all it does is add a C<dist.ini>
-file and a C<Changes> file to the base directory. If a C<Changes>
-file happens to exist, it will be copied to a C<> file and
+with the Zef repository. Essentially all it does is add or mofify
+the following files:
+
+=begin item 
+B<dist.ini> (in the base directory)
+
+This file, if found existing, will cause an abort. No
+changes can be made to an existing file. You may use
+the C<force> option at your own risk.
+
+The default file does B<NOT> create any Markdown files
+from any source unless you are the user B<tbrowder>
+or you use the C<docs> option. In those cases
+a B<docs/README.rakudoc> file is created and this file
+is modified appropriately.
+=end item
+
+=begin item 
+B<README.md> (in the base directory)
+
+This file, if it exists, is copied to a file
+with name B<README.md.original> for safety. The original file is 
+not modified by this program.
+=end item
+
+=begin item 
+B<Changes> (in the base directory)
+
+If a B<Changes>
+file happens to exist, it will be copied to a B<Changes.original> file and
 the original will be overwritten with one in the correct format.
+=end item
+
+=begin item 
+B<docs/README.rakudoc> (in the base/docs directory)
+
+If such a file exists, it will be left unchanged.
+
+=end item
 
 The default actions are those the author likes, but a future
 update will allow the user to customize those actions in his

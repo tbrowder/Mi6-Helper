@@ -1,90 +1,93 @@
 #!/usr/bin/env raku
 
-use App::Mi6;
-
-use LibGit2;
 use JSON::Fast;
 use Config::INI;
-
-=begin comment
-use File::Find;
-use JSON::Fast;
 use Text::Utils;
-=end comment
+use File::Find;
+use Ask;
 
-my $dir = @*ARGS.shift;
-die "FATAL: Path '$dir' is not a directory."
-    unless $dir.IO.d;
-say "Using directory '$dir' as the target module directory.";
+if not @*ARGS.elems {
+    print qq:to/HERE/;
+    Usage: {} <mode> [options...]
+    
+    Modes:
+        go    - Creates safe defaults for an 'App::Mi6'-managed module
+                in an existing Git module repository
+        help  - Extended help
 
-try my $repo = Git::Repository.open: $dir;
-if not $repo {
-    say qq:to/HERE/;
-    FATAL: Directory '$dir' is not a Git repository.
-           Retry with a directory which is.
+    Options:
+        dir=X - Selects directory X for the operations, default is '.'
+        force - Allow overwriting 'dist.ini'
+        docs  - Uses file 'docs/README.rakudoc' to produce 'README.md'
+        Debug - For developer use
+
     HERE
     exit;
 }
 
-# get status
-my %new;
-my %indexed;
-my %unknown;
-for $repo.status-each {
-    my $n = .path;
-    my $s = .status;
-    if $s ~~ /WT_NEW/ {
-        %new{$n} = 1;
+# modes
+my $go    = 0;
+my $help  = 0;
+# options
+my $force = 0;
+my $debug = 0;
+my $docs  = 0;
+# assume we are in a base directory
+my $dir   = '.';
+for @*ARGS {
+    when /:i ^g/ { ++$go    }
+    when /:i ^h/ { ++$help  }
+    when /:i ^f/ { ++$force }
+    when /^'dir=' (\S+)/ {
+        $dir = ~$0;
     }
-    elsif $s ~~ /INDEX/ {
-        %indexed{$n} = 1;
+    when / ^d  / { ++$docs  }
+    when / ^D  / { ++$debug }
+    default {
+        die "FATAL: Unknown arg '$_'.";
+    }
+}
+
+die "FATAL: Path '$dir' is not a directory."
+    unless $dir.IO.d;
+say "Using directory '$dir' as the target module directory.";
+
+# safety checks
+my $dist-ini = 'dist.ini';
+if $dist-ini.IO.f {
+    say "Danger, file '$dist-ini' exists.";
+    say "Checking for the 'force' option...";
+    if $force {
+        my $ans = ask "Are you sure you want to continue (y/N): ";
+        if $ans ~~ /:i ^y/ {
+            say "Continuing with mods...":
+        }
+        else {
+            say "Continuing safely without the 'force' option...";
+            $force = 0;
+        }
     }
     else {
-        %unknown{$n} = $s;
+        say "Continuing safely without the 'force' option...";
     }
 }
 
-# all is ok iif no elements in the three hashes
-my $err = 0;
-say "On branch ?";
-if %indexed.elems {
-    ++$err;
-    say "Changes to be committed:";
-    say '  (use "git reset HEAD <file>..." to unstage)';
-    say();
-    say "\tnew file:   $_" for %indexed.keys.sort;
-    say();
+say "User is '$*USER'" if $debug;
+if "$*USER" eq 'tbrowde' {
+    say "User is 'tbrowde', using 'docs' option..." if $debug;
+    ++$docs;
 }
-if %new.elems {
-    ++$err;
-    say "Untracked files:";
-    say '  (use "git add <file>..." to include in what will be committed)';
-    say();
-    say "\t$_" for %new.keys.sort;
-    say();
-}
-if %unknown.elems {
-    ++$err;
-    say "Files with unhandled status:";
-    say();
-    for %unknown.keys.sort {
-        my $v = %unknown{$_};
-        say "  $_ => $v";
-    }
-    say();
-}
-if $err {
-    say q:to/HERE/;
-    No changes will be made until you have committed 
-      or '.gitignor'ed all listed files.
+
+say "temp finish"
+=finish
+
+unless ".git".IO.d {
+    say qq:to/HERE/;
+    WARNING: Directory '$dir' is not a Git repository.
+             No '.git' subdirectory found.
     HERE
-    say();
-    #say "Exiting now...";
-    #exit;
 }
 
-# check for fez
-say();
 say "Checking for a fez account...";;
 my $fezfil = "%*ENV<HOME>/.fez-config.json";
 my $feznam;
@@ -116,8 +119,11 @@ if $metafil.IO.r {
 }
 else {
     ++$err;
-    say "No 'META6.json' file found. One will be created.";
+    say "No 'META6.json' file found.";
 }
+
+say "temp finish";
+=finish
 
 # check for module name
 my $modnam = %meta<name>:exists ?? %meta<name> !! '';

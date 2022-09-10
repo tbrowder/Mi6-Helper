@@ -7,6 +7,7 @@
   "build-depends": [
   ],
   "depends": [
+    "Ask",
     "JSON::Fast",
     "Config::INI",
     "File::Find",
