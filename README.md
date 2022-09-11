@@ -10,7 +10,26 @@ SYNOPSIS
 
 Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
 
-This module installs a Raku executable named `mi6-helper` which is designed to inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or mofify the following files:
+This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operaion: 
+
+  * old
+
+    Inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or mofify the following files:
+
+      * Changes
+
+      * dist.ini
+
+      * README.md
+
+    See more details below.
+
+  * new
+
+    Create a new module using **mi6** and the change some of the contents to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description.
+
+Modified files
+--------------
 
   * **dist.ini** (in the base directory)
 

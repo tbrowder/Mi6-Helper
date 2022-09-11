@@ -12,10 +12,32 @@ For example, accidentally using C<mi6 test> in a non-mi6 module's
 base directory will corrupt an existing README.md file.
 
 This module installs a Raku executable named C<mi6-helper> which
-is designed to inspect an existing Git repository of a Raku
+is designed for two major modes of operaion: 
+
+=begin item 
+old
+
+Inspect an existing Git repository of a Raku
 module to help convert it to one that uses the C<App::Mi6> module
 with the Zef repository. Essentially all it does is add or mofify
 the following files:
+
+    =item Changes
+    =item dist.ini
+    =item README.md
+
+See more details below.
+=end item
+
+=begin item 
+new
+
+Create a new module using B<mi6> and the change some of the
+contents to satisfy the 'docs' option and, optionally, substitute
+'blah...' with the user's short description.
+=end item
+
+=head2 Modified files
 
 =begin item 
 B<dist.ini> (in the base directory)

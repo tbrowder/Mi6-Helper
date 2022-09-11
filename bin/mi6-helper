@@ -14,15 +14,18 @@ if not @*ARGS.elems {
         old   - Creates safe defaults for an 'mi6'-managed module
                 in an existing Git Raku module repository. Reports findings
                 and recommendations. See details in the README and 'help'.
-        new   - Overwrites some files in a new module just created
-                by 'mi6'. See details in the README and 'help'.
+        new   - Creates a new module directory by driving 'mi6', then changing
+                certain files in the new repo to conform to the 'docs' option.
+                It also uses the 'provides' option.
+                description.
         help  - Extended help
 
     Options:
-        dir=X - Selects directory X for the operations, default is '.'
-        force - Allow overwriting 'dist.ini'
-        docs  - Uses file 'docs/README.rakudoc' to produce 'README.md'
-        Debug - For developer use
+        dir=X       - Selects directory X for the operations, default is '.'
+        force       - Allow overwriting 'dist.ini'
+        docs        - Uses file 'docs/README.rakudoc' to produce 'README.md'
+        provides<X> - Text X to be used in place of 'blah blah blah'
+        Debug       - For developer use
 
     HERE
     exit;
@@ -36,7 +39,9 @@ my $help  = 0;
 my $force = 0;
 my $debug = 0;
 my $docs  = 0;
-# assume we are in a base directory
+my $provides;
+
+# assume we are in the current working directory
 my $dir   = '.';
 
 # other args
@@ -52,6 +57,9 @@ for @*ARGS {
     }
     when / ^d  / { ++$docs  }
     when / ^D  / { ++$debug }
+    when /^'provides<' (\N+) '>' / {
+        $provides = ~$0;
+    }
     default {
         die "FATAL: Unknown arg '$_'.";
     }
@@ -59,7 +67,7 @@ for @*ARGS {
 
 die "FATAL: Path '$dir' is not a directory."
     unless $dir.IO.d;
-say "Using directory '$dir' as the target module directory.";
+say "Using directory '$dir' as the working directory.";
 
 # safety checks
 my $dist-ini = 'dist.ini';

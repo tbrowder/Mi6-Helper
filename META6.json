@@ -27,6 +27,7 @@
     "mi6 fez zef repo"
   ],
   "test-depends": [
+    "Temp::Path",
     "Test::META"
   ],
   "version": "0.0.1"
