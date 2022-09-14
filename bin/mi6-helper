@@ -10,6 +10,9 @@ if not @*ARGS.elems {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
     
+    CAUTION: Ensure all user code is committed before using the 'docs' option
+             with the 'old' mode.
+
     Modes:
         old   - Creates safe defaults for an 'mi6'-managed module
                 in an existing Git Raku module repository. Reports findings
@@ -23,7 +26,9 @@ if not @*ARGS.elems {
     Options:
         dir=X       - Selects directory X for the operations, default is '.'
         force       - Allow overwriting 'dist.ini'
-        docs        - Uses file 'docs/README.rakudoc' to produce 'README.md'
+        docs        - Used with the 'old' mode: uses file 'docs/README.rakudoc' 
+                      to produce 'README.md'. Note extra preparation is REQUIRED
+                      by the user before using it.
         provides<X> - Text X to be used in place of 'blah blah blah'
         Debug       - For developer use
 

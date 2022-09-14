@@ -7,13 +7,25 @@ use Temp::Path;
 # 1. An Mi6 dir with three types of files in addition to a 
 #    standard start in order to test detecting unversioned or uncommited files.
 # 2. Unmanaged modules with varying required files missing:
-#
-my $tdir = make-temp-dir;
+
+my $debug = 1;
+my $tdir;
+if not $debug.defined {
+    $tdir = make-temp-dir;
+}
+else {
+    $tdir = "ini-fils";
+    mkdir $tdir if not $tdir.IO.d ;
+}
 
 my %erepos = [ 
     'Old-App' => {
         nam => 'Old::App',
         opt => '',
+    },
+    'Old-Docs-App' => {
+        nam => 'Old::App',
+        opt => 'docs',
     },
     'New-App' => {
         nam => 'New::App',

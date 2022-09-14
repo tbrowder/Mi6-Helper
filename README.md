@@ -10,7 +10,9 @@ SYNOPSIS
 
 Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
 
-This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operaion: 
+**CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
+
+This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation: 
 
   * old
 
@@ -26,7 +28,7 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
   * new
 
-    Create a new module using **mi6** and the change some of the contents to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description.
+    Create a new module using **mi6** and then change some of the contents to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description.
 
 Modified files
 --------------
@@ -39,7 +41,7 @@ Modified files
 
   * **README.md** (in the base directory)
 
-    This file, if it exists, is copied to a file with name **README.md.original** for safety. The original file is not modified by this program.
+    This file, if it exists, is copied to a file named **README.md.original** for safety. The original file is not modified by this program.
 
   * **Changes** (in the base directory)
 
@@ -49,15 +51,18 @@ Modified files
 
     If such a file exists, it will be left unchanged.
 
-The default actions are those the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper` file.
+The default changes to the `dist.ini` file those the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper-ini` file.
 
 The contents of the two files are shown below.
 
 **Changes** file
 ----------------
 
-**dist.ini** file
------------------
+**dist.ini** file (benign version for non-mi6 repositories)
+-----------------------------------------------------------
+
+**dist.ini** file (version for newly created mi6 repositories)
+--------------------------------------------------------------
 
 DESCRIPTION
 ===========

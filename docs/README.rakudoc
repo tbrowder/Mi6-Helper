@@ -11,8 +11,12 @@ since the author has had much more experience using B<App::Mi6>.
 For example, accidentally using C<mi6 test> in a non-mi6 module's
 base directory will corrupt an existing README.md file.
 
+B<CAUTION>: Before using this tool on a real module repository,
+the user should ensure all contents have been comitted with Git
+to enable recovery from any unwanted changes.
+
 This module installs a Raku executable named C<mi6-helper> which
-is designed for two major modes of operaion: 
+is designed for two major modes of operation: 
 
 =begin item 
 old
@@ -32,7 +36,7 @@ See more details below.
 =begin item 
 new
 
-Create a new module using B<mi6> and the change some of the
+Create a new module using B<mi6> and then change some of the
 contents to satisfy the 'docs' option and, optionally, substitute
 'blah...' with the user's short description.
 =end item
@@ -57,7 +61,7 @@ is modified appropriately.
 B<README.md> (in the base directory)
 
 This file, if it exists, is copied to a file
-with name B<README.md.original> for safety. The original file is 
+named B<README.md.original> for safety. The original file is 
 not modified by this program.
 =end item
 
@@ -73,18 +77,25 @@ the original will be overwritten with one in the correct format.
 B<docs/README.rakudoc> (in the base/docs directory)
 
 If such a file exists, it will be left unchanged.
-
 =end item
 
-The default actions are those the author likes, but a future
+The default changes to the C<dist.ini> file those the author likes, but a future
 update will allow the user to customize those actions in his
-or her own C<$HOME/.mi6helper> file.
+or her own C<$HOME/.mi6helper-ini> file.
 
 The contents of the two files are shown below.
 
 =head2 B<Changes> file
 
-=head2 B<dist.ini> file
+=head2 B<dist.ini> file (benign version for non-mi6 repositories)
+
+=begin code
+=end code
+
+=head2 B<dist.ini> file (version for newly created mi6 repositories)
+
+=begin code
+=end code
 
 =head1 DESCRIPTION
 
