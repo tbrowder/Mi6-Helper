@@ -1,0 +1,515 @@
+#!/usr/bin/env raku
+
+use lib "../lib";
+use Mi6::Helper;
+
+use JSON::Fast;
+use Config::INI;
+use Text::Utils :normalize-string;
+use File::Find;
+use Ask;
+
+if not @*ARGS.elems {
+    print qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <mode> [options...]
+    
+    CAUTION: Ensure all user code is committed before using the 'docs' option
+             with the 'old' mode.
+
+    Modes:
+        old   - Creates safe defaults for an 'mi6'-managed module
+                in an existing Git Raku module repository. Reports findings
+                and recommendations. See details in the README and 'help'.
+        new=X - Creates a new module (named X) directory by driving 'mi6', then changing
+                certain files in the new repo to conform to the 'docs' option.
+                It also uses the 'provides' option.
+                description.
+        help  - Extended help
+
+    Options:
+        dir=X       - Selects directory X for the operations, default is '.'
+        force       - Allow overwriting 'dist.ini'
+        docs        - Used with the 'old' mode: uses file 'docs/README.rakudoc' 
+                      to produce 'README.md'. Note extra preparation is REQUIRED
+                      by the user before using it.
+        provides<X> - Text X to be used in place of 'blah blah blah'
+        Debug       - For developer use
+
+    HERE
+    exit;
+}
+
+# modes
+my $old   = 0; # was 'go'
+my $new   = 0;
+my $help  = 0;
+# options
+my $force = 0;
+my $debug = 0;
+my $docs  = 0;
+my $provides;
+
+# assume we are in the current working directory
+my $dir   = '.';
+
+# other args
+my $err = 0; # track number of possible errors
+
+my $new-module;
+my $old-module;
+
+for @*ARGS {
+    when /:i ^o/ { ++$old   }
+    when /:i ^'new=' (\S+) / { 
+        $new-module = ~$0; 
+        ++$new;
+    }
+    when /:i ^h/ { ++$help  }
+    when /:i ^f/ { ++$force }
+    when /^'dir=' (\S+)/ {
+        $dir = ~$0;
+    }
+    when / ^d  / { ++$docs  }
+    when / ^D  / { ++$debug }
+    when /^'provides<' (\N+) '>' / {
+        $provides = ~$0;
+    }
+    default {
+        die "FATAL: Unknown arg '$_'.";
+    }
+}
+
+die "FATAL: Path '$dir' is not a directory."
+    unless $dir.IO.d;
+say "Using directory '$dir' as the working directory.";
+
+if $new {
+
+    my $debug = 1;
+    
+    # test module is "Foo::Bar"
+    # method mi6-cmd(:$parent-dir, :$new-module) {
+    my $o = Mi6::Helper.new;
+    $o.mi6-cmd(:parent-dir($dir), :$new-module, :$debug) if not $debug;
+
+    # get the name of the module file to change and move content
+    my $modpdir = $new-module;
+    my $modpath = $new-module;
+    $modpdir ~~ s:g/'::'/-/;
+    $modpath ~~ s:g/'::'/\//;
+    my $mpath = "$modpdir/lib/$modpath";
+    say "DEBUG: Foo::Bar path: '$mpath'" if not $debug;
+
+    $mpath ~= '.rakumod';
+
+    # the file to strip pod from
+    my $modfil = slurp $mpath;
+    
+    # the new 'docs'directory
+    mkdir "$modpdir/docs";
+    # the new README.rakudoc file:
+    my $docfil = "$modpdir/docs/README.rakudoc";
+    my $fh = open $docfil, :w;
+
+    my @imodfil = $modfil.lines;
+    my @omodfil;
+    my @odocfil;
+   
+    my $line = @imodfil.shift;
+    while @imodfil.elems {
+        if $line !~~ /^ \h* '=' begin \h+ pod/ {
+            @omodfil.push: $line;
+            $line = @imodfil.shift;
+
+            next;
+        }
+        # put all content from here on in the README.rakudoc file
+        @odocfil.push: $line;
+        last;
+    }
+
+    # treat the README file
+    for @imodfil -> $line is copy {
+        @odocfil.push: $line;
+    }
+
+    $fh.say($_) for @odocfil;
+    $fh.close;
+
+    # rewrite the module file
+    $fh = open $mpath, :w;
+    $fh.say($_) for @omodfil;
+    $fh.close;
+
+
+
+    say "DEBUG exit";exit;
+
+
+    # works okay for Foo::Bar (creates dir Foo-Bar)
+    say "Exiting after mi6 create"; exit
+}
+
+say "Exit after test run"; exit;
+
+# safety checks
+my $dist-ini = 'dist.ini';
+if $dist-ini.IO.f {
+    say "Danger, file '$dist-ini' exists.";
+    say "Checking for the 'force' option...";
+    if $force {
+        my $ans = ask "Are you sure you want to continue (y/N): ";
+        if $ans ~~ /:i ^y/ {
+            say "Continuing with mods...":
+        }
+        else {
+            say "Continuing safely without the 'force' option...";
+            $force = 0;
+        }
+    }
+    else {
+        say "Continuing safely without the 'force' option...";
+    }
+}
+
+say "User is '$*USER'" if $debug;
+if "$*USER" eq 'tbrowde' {
+    say "User is 'tbrowde', using 'docs' option..." if $debug;
+    ++$docs;
+}
+
+unless ".git".IO.d {
+    say qq:to/HERE/;
+    WARNING: Directory '$dir' is not a Git repository.
+             No '.git' subdirectory found.
+    HERE
+}
+
+say "Checking for a fez account...";;
+my $fezfil = "%*ENV<HOME>/.fez-config.json";
+my $feznam;
+if $fezfil.IO.r {
+    $feznam = %(from-json(slurp $fezfil))<un>;
+    say "Found fez user name '$feznam'";
+    # check for an installed fez
+    my $module = 'Fez::CLI';
+    try require ::($module);
+    if ::($module) ~~ Failure {
+        say 'You must install fez: "$ zef install fez"';
+    }
+}
+else {
+    ++$err;
+    say q:to/HERE/
+    No fez config file found. This program assumes
+      the user has a fez account and will be publishing
+      this module to the zef archives.
+      You must install fez first. Then execute 
+      '$ fez register' and follow the instructions.
+    HERE
+}
+
+# check for META6.json and critical data
+my $metafil = "$dir/META6.json";
+my %meta;
+if $metafil.IO.r {
+    %meta = from-json $metafil.IO.slurp;
+    say "META6.json' file found and read.";
+}
+else {
+    ++$err;
+    say "No 'META6.json' file found.";
+}
+
+# check for module name
+my $modnam = %meta<name>:exists ?? %meta<name> !! '';
+if not $modnam {
+    # Can we use an App::Mi6 instance?
+    # Not easily.
+    ++$err;
+    say "No module 'name' found in the 'META6.json' file..";
+}
+
+# check for all dependencies
+# find all files with extensions:
+#    <raku rakumod rakutest rakudoc> # preferred extensions
+#    <p6 pl pm pm6 t>                # deprecated extensions
+
+=finish
+
+exit;
+
+# var defined in BEGIN block at the end
+my $test-yml;
+
+# files required, created, or used by mi6
+my %fmi6 = [
+    'dist.ini' => 'ini',
+    'Changes'  => 'ini',
+    '.github/workflows/test.yml' => 'yaml|yml',
+];
+
+# files suggested to remove
+my %frem = set <
+    .travis.yml
+    Makefile
+>;
+
+# files to be replaced
+my %frep = set <
+>;
+
+# files to be modified
+my %fmod = set <
+    dist.ini
+    Changes
+    META6.json
+>;
+
+if !@*ARGS.elems {
+    say qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <git module dir to check>
+
+    NOTE: using dir '$dir' during development.
+
+    HERE
+    exit;
+}
+
+=begin pod
+
+What am I trying to accomplish?
+
+- Convert an existing module to use App::Mi6
+
+- Process in order
+
+sub check-git
+  - ensure there is a .git file
+    - throw if not
+  - check if needing a commit
+    - throw if not
+
+  # From this point, all changes to existing files should
+  # protected by Git and new files will listed as untracked.
+  # If the user fails to add the files or commit them,
+  # mi6 will catch the errors upon build or release.
+
+sub get-mod-name
+  - determine the base module name
+    - check any dist.ini file
+    - check the META6.json file
+    - throw if not found or there are conflicts
+
+sub get-mod-type
+  - determine whether it's a module or a class (affects the type
+    of load test)
+
+sub check-mi6-files
+  - check for missing files required by mi6
+    - write my version
+  - remove the dummy test created by mi6, if any
+
+sub check-my-std-test-files
+  - check for and create missing standard
+    tests I use
+    - Test::Meta
+    - load or class test
+
+sub find-external-mods-used
+  - determine external modules used by the module being analyzed
+
+sub write-meta6-json
+  - rewrite the META6.json file (create a backup copy)
+    - ensure depends and test depends are correct
+
+sub write-dist-ini
+  - rewrite the dist.ini file (create a backup copy)
+    - IMPORTANT ensure the convert to pod is turned OFF until manually changed
+
+  - check for the Unicode Copyright symbol [Copyright  &#x00A9; 2020 <author>] in the source pod
+    for the README.md file
+    - report results
+
+  - use prompts where need be
+
+=end pod
+
+check-git $dir;
+
+my @fils = find :$dir, :type<file>, :exclude(/'.precomp'|'.git/'/), :keep-going;
+say "Files in dir '$dir'";
+my %fils;
+for @fils -> $fil {
+    my $f = $fil.basename;
+    # record all files and dups
+    if %fils{$f}:exists {
+        %fils{$f}.append: $fil;
+    }
+    else {
+        %fils{$f} = [];
+        %fils{$f}.append: $fil;
+    }
+
+
+    next if $fil ~~ /'.raku'$/;
+    next if $fil ~~ /'.class'$/;
+
+    next if %fi{$f}:exists;
+
+    if %fmod{$f}:exists {
+        print "== candidate for mods: ";
+    }
+    elsif %frem{$f}:exists {
+        print "== candidate for removal: ";
+    }
+    print "$f => $fil";
+    say();;
+}
+
+# find necessary used modules
+my %modules = find-modules $dir, :$debug;
+
+# check out META6.json
+my %meta6 = read-meta6-json $dir, :$debug;
+
+# check out dist.ini
+my %distini = read-dist-ini $dir, :$debug;
+
+
+#### SUBROUTINES ####
+#| sub check-git
+#|   - ensure there is a .git file
+#|     - throw if not
+#|   - check if needing a commit
+#|     - throw if not
+sub check-git($dir, :$debug) {
+    # use LibGit2
+    try my $repo = Git::Repository.open: $dir;
+    if not $repo {
+        say "FATAL: No .git subdir in dir: $dir";
+        exit;
+    }
+    # check for uncommited or untracked files
+}
+
+sub read-dist-ini($dir, :$debug) {
+    my %dist;
+    my $inifil = find :dir($dir), :name<dist.ini>;
+    return %dist if not $inifil;
+
+    %dist   = Config::INI::parse(slurp $inifil);
+    return %dist;
+}
+
+sub write-basic-tests($dir, $mod-name) {
+    my $t1 = '000-meta-test.t';
+    my $t2 = '001-load-tests.t';
+    # check for existing files
+    my @fils = find :$dir, :name(/'.' [t|rakutest] $/);
+    .say for @fils;
+}
+
+sub find-module-name($dir, :$debug) {
+    my @fils = find :$dir, :name(/'.' [rakumod|pm6|pm] $/);
+}
+
+sub find-modules($dir, :$debug) {
+    # collect local as well as externally used modules
+    my @fils = find :$dir, :name(/'.' [rakumod|pm6|pm] $/);
+
+    my %modules; # key: <loc|ext>
+    #                       {module-colon-name} = <file-name> = # relative to the primary module's repo dir
+    #                                           = 0 # for external modules
+ 
+    for @fils -> $mfil is copy {
+        say "  Found local module: $mfil" if $debug;
+    }
+
+    return %modules;
+}
+
+sub read-meta6-json($dir, :$debug) {
+    my $mfil = find :$dir, :name<META6.json>;
+    say("DEBUG: found meta file: $mfil") if 1 or $debug;
+    my %meta6 = from-json(slurp $mfil);
+    if 1 or $debug {
+        #say "DEBUG: meta6.json:";
+        for %meta6.keys.sort -> $k {
+            say $k;
+            my $v = %meta6{$k};
+            # may be hash or list or string or num
+            #say "DEBUG: value type: {$v.^name}";
+            if $v ~~ Str|Num {
+                say(" $v");
+            }
+            elsif $v ~~ List {
+                say(" $_") for $v;
+            }
+            elsif $v ~~ Hash {
+                say(" $_ = '{$v{$_}}'") for $v.keys.sort;
+            }
+        }
+    }
+    return %meta6;
+}
+
+sub mod-dist-ini(%distini, :$debug) {
+    if 1 or $debug {
+        #say "DEBUG: dist.ini:";
+        for %distini.keys.sort -> $k {
+            next if $k eq '_';
+
+            say "[$k]";
+            my $v = %distini{$k};
+            # may be hash or list
+            #say "DEBUG: value type: {$v.^name}";
+            if $v ~~ List {
+                say(" $_") for $v;
+            }
+            elsif $v ~~ Hash {
+                say(" $_ = '{$v{$_}}'") for $v.keys.sort;
+            }
+        }
+    }
+}
+
+BEGIN {
+# my file sources
+$test-yml = q:to/HERE/;
+# @tbrowder's version
+# modded from mi6's version
+name: test
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+  pull_request:
+jobs:
+  raku:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          #- macOS-latest
+          #- windows-latest
+        raku-version:
+          - "2020.07"
+          - "2019.11"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Raku/setup-raku@v1
+      - run: raku -V
+      - name: Install dependencies
+        run: |
+          # install and test if need be (includes [test-depends])
+          zef install .
+          #zef install --/test --deps-only .
+          zef install --/test App::Prove6
+      - name: Run tests
+        run: prove6 -l t
+HERE
+}
