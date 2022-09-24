@@ -8,7 +8,7 @@ NAME
 SYNOPSIS
 ========
 
-Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
+iiNote this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file.
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
@@ -51,7 +51,7 @@ Modified files
 
     If such a file exists, it will be left unchanged.
 
-The default changes to the `dist.ini` file those the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper-ini` file.
+The default changes to the `dist.ini` file arsnthose the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper-ini` file.
 
 The contents of the two files are shown below.
 
