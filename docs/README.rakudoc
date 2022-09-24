@@ -6,7 +6,7 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
 =head1 SYNOPSIS
 
-Note this is API 2 and its approach has changed significantly
+iiNote this is API 2 and its approach has changed significantly
 since the author has had much more experience using B<App::Mi6>.
 For example, accidentally using C<mi6 test> in a non-mi6 module's
 base directory will corrupt an existing README.md file.
@@ -79,7 +79,7 @@ B<docs/README.rakudoc> (in the base/docs directory)
 If such a file exists, it will be left unchanged.
 =end item
 
-The default changes to the C<dist.ini> file those the author likes, but a future
+The default changes to the C<dist.ini> file arsnthose the author likes, but a future
 update will allow the user to customize those actions in his
 or her own C<$HOME/.mi6helper-ini> file.
 

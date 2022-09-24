@@ -1,8 +1,11 @@
 #!/usr/bin/env raku
 
+use lib "../lib";
+use Mi6::Helper;
+
 use JSON::Fast;
 use Config::INI;
-use Text::Utils;
+use Text::Utils :normalize-string;
 use File::Find;
 use Ask;
 
@@ -17,7 +20,7 @@ if not @*ARGS.elems {
         old   - Creates safe defaults for an 'mi6'-managed module
                 in an existing Git Raku module repository. Reports findings
                 and recommendations. See details in the README and 'help'.
-        new   - Creates a new module directory by driving 'mi6', then changing
+        new=X - Creates a new module (named X) directory by driving 'mi6', then changing
                 certain files in the new repo to conform to the 'docs' option.
                 It also uses the 'provides' option.
                 description.
@@ -52,9 +55,15 @@ my $dir   = '.';
 # other args
 my $err = 0; # track number of possible errors
 
+my $new-module;
+my $old-module;
+
 for @*ARGS {
     when /:i ^o/ { ++$old   }
-    when /:i ^n/ { ++$new   }
+    when /:i ^'new=' (\S+) / { 
+        $new-module = ~$0; 
+        ++$new;
+    }
     when /:i ^h/ { ++$help  }
     when /:i ^f/ { ++$force }
     when /^'dir=' (\S+)/ {
@@ -73,6 +82,75 @@ for @*ARGS {
 die "FATAL: Path '$dir' is not a directory."
     unless $dir.IO.d;
 say "Using directory '$dir' as the working directory.";
+
+if $new {
+
+    my $debug = 1;
+    
+    # test module is "Foo::Bar"
+    # method mi6-cmd(:$parent-dir, :$new-module) {
+    my $o = Mi6::Helper.new;
+    $o.mi6-cmd(:parent-dir($dir), :$new-module, :$debug) if not $debug;
+
+    # get the name of the module file to change and move content
+    my $modpdir = $new-module;
+    my $modpath = $new-module;
+    $modpdir ~~ s:g/'::'/-/;
+    $modpath ~~ s:g/'::'/\//;
+    my $mpath = "$modpdir/lib/$modpath";
+    say "DEBUG: Foo::Bar path: '$mpath'" if not $debug;
+
+    $mpath ~= '.rakumod';
+
+    # the file to strip pod from
+    my $modfil = slurp $mpath;
+    
+    # the new 'docs'directory
+    mkdir "$modpdir/docs";
+    # the new README.rakudoc file:
+    my $docfil = "$modpdir/docs/README.rakudoc";
+    my $fh = open $docfil, :w;
+
+    my @imodfil = $modfil.lines;
+    my @omodfil;
+    my @odocfil;
+   
+    my $line = @imodfil.shift;
+    while @imodfil.elems {
+        if $line !~~ /^ \h* '=' begin \h+ pod/ {
+            @omodfil.push: $line;
+            $line = @imodfil.shift;
+
+            next;
+        }
+        # put all content from here on in the README.rakudoc file
+        @odocfil.push: $line;
+        last;
+    }
+
+    # treat the README file
+    for @imodfil -> $line is copy {
+        @odocfil.push: $line;
+    }
+
+    $fh.say($_) for @odocfil;
+    $fh.close;
+
+    # rewrite the module file
+    $fh = open $mpath, :w;
+    $fh.say($_) for @omodfil;
+    $fh.close;
+
+
+
+    say "DEBUG exit";exit;
+
+
+    # works okay for Foo::Bar (creates dir Foo-Bar)
+    say "Exiting after mi6 create"; exit
+}
+
+say "Exit after test run"; exit;
 
 # safety checks
 my $dist-ini = 'dist.ini';
