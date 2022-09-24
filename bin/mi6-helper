@@ -17,14 +17,14 @@ if not @*ARGS.elems {
              with the 'old' mode.
 
     Modes:
-        old   - Creates safe defaults for an 'mi6'-managed module
-                in an existing Git Raku module repository. Reports findings
-                and recommendations. See details in the README and 'help'.
-        new=X - Creates a new module (named X) directory by driving 'mi6', then changing
-                certain files in the new repo to conform to the 'docs' option.
-                It also uses the 'provides' option.
-                description.
-        help  - Extended help
+        new=X - Creates a new module (named X) directory by driving 'mi6', then 
+                changing certain files in the new repo to conform to the 'docs' 
+                option.  It also uses the 'provides' option.  description.
+
+        old   - NOT YET IMPLEMENTED
+                Creates safe defaults for an 'mi6'-managed module in an existing 
+                Git Raku module repository. Reports findings and recommendations. 
+                See details in the README.
 
     Options:
         dir=X       - Selects directory X for the operations, default is '.'
@@ -32,7 +32,9 @@ if not @*ARGS.elems {
         docs        - Used with the 'old' mode: uses file 'docs/README.rakudoc' 
                       to produce 'README.md'. Note extra preparation is REQUIRED
                       by the user before using it.
-        provides<X> - Text X to be used in place of 'blah blah blah'
+        provides=X  - Either a file X or text X to be used in place of 'blah blah 
+                      blah'. No spaces are allowed in a text entry: use periods 
+                      ('.') between words.
         Debug       - For developer use
 
     HERE
@@ -42,7 +44,6 @@ if not @*ARGS.elems {
 # modes
 my $old   = 0; # was 'go'
 my $new   = 0;
-my $help  = 0;
 # options
 my $force = 0;
 my $debug = 0;
@@ -64,15 +65,25 @@ for @*ARGS {
         $new-module = ~$0; 
         ++$new;
     }
-    when /:i ^h/ { ++$help  }
     when /:i ^f/ { ++$force }
     when /^'dir=' (\S+)/ {
         $dir = ~$0;
     }
     when / ^d  / { ++$docs  }
     when / ^D  / { ++$debug }
-    when /^'provides<' (\N+) '>' / {
+    when /^'provides=' (\S+)/ {
         $provides = ~$0;
+        if $provides.IO.r {
+            my $s = slurp $provides;
+            $provides = '';
+            for $s.lines {
+                $provides ~= " $_";
+            }
+            $provides = normalize-string $provides;
+        }
+        else {
+            $provides ~~ s:g/'.'/ /;
+        }
     }
     default {
         die "FATAL: Unknown arg '$_'.";
@@ -90,7 +101,7 @@ if $new {
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$new-module) {
     my $o = Mi6::Helper.new;
-    $o.mi6-cmd(:parent-dir($dir), :$new-module, :$debug) if not $debug;
+    $o.mi6-cmd(:parent-dir($dir), :$new-module, :$debug); 
 
     # get the name of the module file to change and move content
     my $modpdir = $new-module;
@@ -103,36 +114,51 @@ if $new {
     $mpath ~= '.rakumod';
 
     # the file to strip pod from
-    my $modfil = slurp $mpath;
+    my $modstr = slurp $mpath;
+    my @imodfil = $modstr.lines;
+    my @omodfil;
+
+    my @idocfil;
+    my @odocfil;
+   
+    MODLINE: while @imodfil.elems {
+        my $line = @imodfil.shift;
+        if $line ~~ /^ \h* '=' begin \h+ pod/ {
+            @idocfil.push: $line;
+            last MODLINE;
+        }
+        @omodfil.push: $line;
+    }
+    # put ramaining content in the README.rakudoc file
+    @idocfil.push($_) for @imodfil;
+
+    # treat the README file
+    for @idocfil -> $line is copy {
+        if $provides and $line.contains('blah') {
+            # bold module name and add new text
+            $line = "B<$new-module> - $provides"
+        }
+        elsif $line.contains("$new-module is") {
+            # bold module name
+            $line ~~ s/$new-module/B<$new-module>/;
+        }
+        elsif $line ~~ /^ \h* Copyright/ {
+            # use copyright symbol
+            #  Copyright © 2021 Tom Browder
+            #  Copyright E<0x00a9> 2021 Tom Browder
+            $line ~~ s/Copyright/©/;
+        }
+        elsif $line ~~ /^ \h* This \h+ library/ {
+            $line = "This library is free software; you may redistribute it or modify it under the Artistic License 2.0.";
+        }
+        @odocfil.push: $line;
+    }
     
     # the new 'docs'directory
     mkdir "$modpdir/docs";
     # the new README.rakudoc file:
     my $docfil = "$modpdir/docs/README.rakudoc";
     my $fh = open $docfil, :w;
-
-    my @imodfil = $modfil.lines;
-    my @omodfil;
-    my @odocfil;
-   
-    my $line = @imodfil.shift;
-    while @imodfil.elems {
-        if $line !~~ /^ \h* '=' begin \h+ pod/ {
-            @omodfil.push: $line;
-            $line = @imodfil.shift;
-
-            next;
-        }
-        # put all content from here on in the README.rakudoc file
-        @odocfil.push: $line;
-        last;
-    }
-
-    # treat the README file
-    for @imodfil -> $line is copy {
-        @odocfil.push: $line;
-    }
-
     $fh.say($_) for @odocfil;
     $fh.close;
 
@@ -142,12 +168,16 @@ if $new {
     $fh.close;
 
 
-
-    say "DEBUG exit";exit;
+    say "DEBUG early exit";exit;
 
 
     # works okay for Foo::Bar (creates dir Foo-Bar)
     say "Exiting after mi6 create"; exit
+}
+
+if $old {
+    say "NOTE: Mode 'old' is not yet implemented.";
+    exit;
 }
 
 say "Exit after test run"; exit;
