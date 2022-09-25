@@ -41,6 +41,21 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
 
     $*HOME.add('.fez-config.json').spurt: $zstr;
 
+    # add pause data
+    $*HOME.add('.pause').spurt: q:to/HERE/;
+    user SOMEBODY
+    password some-password
+    HERE
+
+    # add .gitconfig email data
+    $*HOME.add('.gitconfig').spurt: q:to/HERE/;
+    [user]
+        name = SOMEBODY
+        email = SOMEBODY@example.com
+    [init]
+        defaultBranch = master
+    HERE
+
     chdir $tempdir;
 
     my $new-mod = "Foo::Bar";
