@@ -4,18 +4,22 @@ use Mi6::Helper;
 use File::Temp;
 use Git::Status;
 use JSON::Fast;
+use File::Directory::Tree;
+
+my $DEBUG = 1;
+# provide a unique testing directory by test file name
+my $debug-base = "debug-test";
+my $debug-dir  = $debug-base ~ '/' ~ $?FILE.IO.basename;
+rmtree $debug-dir if $debug-dir.IO.d;
 
 my ($tempdir, $res, $gs, $proc);
 
-if 0 {
+if not $DEBUG {
     # normal testing
     $tempdir = tempdir;
 }
 else {
     # development testing: preserves the output in dir '$tempdir'
-    use File::Directory::Tree;
-    my $debug-dir = "debug-test";
-    rmtree $debug-dir if $debug-dir.IO.d;
     $tempdir = mkdir $debug-dir;
 }
 
@@ -64,7 +68,8 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
     my $new-mod = "Foo::Bar";
     my $moddir = "Foo::Bar";
     $moddir ~~ s/'::'/-/;
-    run "mi6", "new", "--zef", $new-mod;
+
+    run "./bin/mi6-helper", "new", $new-mod;
     ok $moddir.IO.d;
 
     # check the meta file for known values
