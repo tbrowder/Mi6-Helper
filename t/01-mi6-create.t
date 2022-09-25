@@ -6,7 +6,7 @@ use Git::Status;
 use JSON::Fast;
 use File::Directory::Tree;
 
-my $DEBUG = 1;
+my $DEBUG = 0;
 
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
