@@ -7,9 +7,12 @@ use JSON::Fast;
 use File::Directory::Tree;
 
 my $DEBUG = 1;
+
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
 my $debug-dir  = $debug-base ~ '/' ~ $?FILE.IO.basename;
+# remove the trailing '.t*'
+$debug-dir ~~ s/'.t'$//;
 rmtree $debug-dir if $debug-dir.IO.d;
 
 my ($tempdir, $res, $gs, $proc);
@@ -66,8 +69,8 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
     chdir $tempdir;
 
     my $new-mod = "Foo::Bar";
-    my $moddir = "Foo::Bar";
-    $moddir ~~ s/'::'/-/;
+    my $moddir = $new-mod;
+    $moddir ~~ s:g/'::'/-/;
     run "mi6", "new", "--zef", $new-mod;
     ok $moddir.IO.d;
 

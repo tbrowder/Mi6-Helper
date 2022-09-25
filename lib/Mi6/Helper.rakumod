@@ -1,19 +1,42 @@
-#use App::Mi6;
+unit class Mi6::Helper;
 
-unit module Mi6::Helper;
+has $.parent-dir = '.';
+has $.module-name is required; #= e.g., 'Foo::Bar'
+has $.provides;                #= text to replace 'blah blah blah'
 
+has $.module-base;             #= e.g., 'Foo-Bar'
 
-sub mi6-helper-new(:$parent-dir, :$new-module, :$provides, :$debug) is export {
+submethod TWEAK {
+    $!module-base = $!module-name;
+    $!module-base ~~ s:g/'::'/-/;
+}
+
+=begin comment
+method mi6-cmd(:$parent-dir, :$module-name, :$debug) {
+    run "mi6", 'new', '--zef', $new-module;
+}
+=end comment
+
+method mod-changes() {
+}
+
+method mod-readme() {
+}
+
+method mod-dist-ini() {
+}
+
+sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
 
     # test module is "Foo::Bar"
-    # method mi6-cmd(:$parent-dir, :$new-module) {
+    # method mi6-cmd(:$parent-dir, :$module-name) {
     my $o = Mi6::Helper.new;
-    $o.mi6-cmd(:parent-dir($dir), :$new-module, :$debug);
+    $o.mi6-cmd(:$parent-dir, :$module-name, :$debug);
 
     # get the name of the module file to change and move content
-    my $modpdir = $new-module;
-    my $modpath = $new-module;
+    my $modpdir = $module-name;
+    my $modpath = $module-name;
     $modpdir ~~ s:g/'::'/-/;
     $modpath ~~ s:g/'::'/\//;
     my $mpath = "$modpdir/lib/$modpath";
@@ -44,11 +67,11 @@ sub mi6-helper-new(:$parent-dir, :$new-module, :$provides, :$debug) is export {
     for @idocfil -> $line is copy {
         if $provides and $line.contains('blah') {
             # bold module name and add new text
-            $line = "B<$new-module> - $provides"
+            $line = "B<$module-name> - $provides"
         }
-        elsif $line.contains("$new-module is") {
+        elsif $line.contains("$module-name is") {
             # bold module name
-            $line ~~ s/$new-module/B<$new-module>/;
+            $line ~~ s/$module-name/B<$module-name>/;
         }
         elsif $line ~~ /^ \h* Copyright/ {
             # use copyright symbol
@@ -112,22 +135,3 @@ sub mi6-helper-new(:$parent-dir, :$new-module, :$provides, :$debug) is export {
 } # sub mi6-helper-new
 
 
-
-=bein comment
-# class info if we go back to a class module
-has $.dir;
-has $.provides;
-
-method mi6-cmd(:$parent-dir, :$new-module, :$debug) {
-    run "mi6", 'new', '--zef', $new-module;
-}
-
-method mod-changes() {
-}
-
-method mod-readme() {
-}
-
-method mod-dist-ini() {
-}
-=end comment
