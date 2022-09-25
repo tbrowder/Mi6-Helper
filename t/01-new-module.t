@@ -8,12 +8,15 @@ use JSON::Fast;
 my ($tempdir, $res, $gs, $proc);
 
 if 0 {
+    # normal testing
     $tempdir = tempdir;
 }
 else {
-    my $dir = "mytest";
-    rmdir $dir if $dir.IO.d;
-    $tempdir = mkdir "mytest";
+    # development testing: preserves the output in dir '$tempdir'
+    use File::Directory::Tree;
+    my $debug-dir = "debug-test";
+    rmtree $debug-dir if $debug-dir.IO.d;
+    $tempdir = mkdir $debug-dir;
 }
 
 ok $tempdir.IO.d;
