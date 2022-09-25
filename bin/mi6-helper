@@ -1,7 +1,5 @@
 #!/usr/bin/env raku
 
-use lib "../lib";
-
 use Mi6::Helper;
 
 use JSON::Fast;
@@ -99,9 +97,11 @@ say "Using directory '$dir' as the working directory.";
 if $new {
 
 my $debug = 1;
-mi6-helper-new :$debug;
 
-sub mi6-helper-new(:$debug) is export {
+#./mi6-helper new=Foo::Bar  provides=pvides
+mi6-helper-new :$parent-dir, :$new-module, :$provides, :$debug;
+
+sub mi6-helper-new(:$parent-dir, :$new-module, :$provides, :$debug) is export {
 
     
     # test module is "Foo::Bar"
