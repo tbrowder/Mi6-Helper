@@ -7,7 +7,7 @@ use JSON::Fast;
 
 my ($tempdir, $res, $gs, $proc);
 
-if 1 {
+if 0 {
     $tempdir = tempdir;
 }
 else {
@@ -67,6 +67,7 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
     # check the meta file for known values
     my %meta = from-json(slurp "$moddir/META6.json");
     is %meta<auth>, "zef:SOMEBODY";
+    is (%meta<authors>.shift), "SOMEBODY";
 }
 
 done-testing;
