@@ -3,6 +3,9 @@
 use JSON::Fast;
 use App::Mi6;
 
+# keys in desired order
+my @keys = <un key groups>;
+
 say "=== JSON::Fast ===";
 # the hidden fez config file
 my $jfil = "$*HOME/.fez-config.json";
@@ -10,16 +13,26 @@ my $jfil = "$*HOME/.fez-config.json";
 # the visible fez file
 my $ffil = "fez-config.json";
 my %fez = from-json(slurp $jfil);
-for %fez.kv -> $k, $v {
-    say "$k => '$v'";
+for @keys -> $k {
+    my $v = %fez{$k};
+    if $v eq 'groups' {
+    }
+    else {
+        say "    $k => '$v'";
+    }
 }
 say "Changing 'un' and 'key' in file '$ffil'";
+%fez<un>  = "SOMEBODY";
+%fez<key> = "SOME SECRET";
+my $fstr = App::Mi6::JSON.encode(%fez);
 
 
 say "=== App::Mi6::JSON ===";
 my %zef = App::Mi6::JSON.decode(slurp $jfil);
-for %zef.kv -> $k, $v {
-    say "$k => '$v'";
+for @keys -> $k {
+    my $v = %zef{$k};
+
+    say "    $k => '$v'";
 }
 %zef<un>  = "SOMEBODY";
 %zef<key> = "SOME SECRET";

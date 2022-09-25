@@ -1,5 +1,4 @@
 use Test;
-use App::Mi6;
 
 use Mi6::Helper;
 

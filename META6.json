@@ -11,6 +11,8 @@
     "JSON::Fast",
     "Config::INI",
     "File::Find",
+    "Git::Status",
+    "App::Mi6",
     "Text::Utils"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
@@ -27,7 +29,7 @@
     "mi6 fez zef repo"
   ],
   "test-depends": [
-    "Temp::Path",
+    "File::Temp",
     "Test::META"
   ],
   "version": "0.0.1"

@@ -19,7 +19,8 @@ if not @*ARGS.elems {
     Modes:
         new=X - Creates a new module (named X) directory by driving 'mi6', then 
                 changing certain files in the new repo to conform to the 'docs' 
-                option.  It also uses the 'provides' option.  description.
+                option.  It also uses the 'provides' option for a short
+                description of its main purpose.
 
         old   - NOT YET IMPLEMENTED
                 Creates safe defaults for an 'mi6'-managed module in an existing 
@@ -166,6 +167,34 @@ if $new {
     $fh = open $mpath, :w;
     $fh.say($_) for @omodfil;
     $fh.close;
+
+    # mod the dist.ini file
+    my $distfil = "$modpdir/dist.ini";
+    my @idistfil = $distfil.IO.lines;
+    my @odistfil;
+    for @idistfil -> $line is copy {
+        # change the README line
+        #   filename = lib/Foo/Bar.rakumod
+        if $line ~~ /filename \h+ '=' / {
+            $line = "filename = docs/README.rakudoc";
+        }
+        @odistfil.push: $line;
+    }
+    $fh = open $distfil, :w;
+    $fh.say($_) for @odistfil;
+    $fh.close;
+   
+    # mod the META6.json file
+    if $provides {
+        my $jfil = "$modpdir/META6.json";
+        my %j = from-json(slurp $jfil);
+        #note %j.raku;
+        my $desc = %j<description>;
+        note "DEBUG description: '$desc'";
+        %j<description> = $provides;
+        my $jstr = to-json %j;
+        spurt $jfil, $jstr;
+    }
 
 
     say "DEBUG early exit";exit;
