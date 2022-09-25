@@ -1,60 +1,57 @@
 use Test;
 
 use Mi6::Helper;
-#use Temp::Path;
 use File::Temp;
 use Git::Status;
+use JSON::Fast;
 
 my ($tempdir, $res, $gs, $proc);
 
-$tempdir = tempdir;
+if 1 {
+    $tempdir = tempdir;
+}
+else {
+    my $dir = "mytest";
+    rmdir $dir if $dir.IO.d;
+    $tempdir = mkdir "mytest";
+}
+
 ok $tempdir.IO.d;
 
 lives-ok { $gs = Git::Status.new: :directory($tempdir); }
-$res = $gs.gist;
-is $res, "";
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
-    # {
-    #    key : somekey
-    #
-    temp $*CWD = $tempdir.IO;
-    temp %*ENV<HOME> = $tempdir;
-    $*HOME.add().spurt: q:to/HERE/;
-    user SOMEBODY
-    password this-is-secret
-    HERE
+    #   "un" : "SOMEBODY",
+    #   "key" : "some-hash-key",
+
+    if 1 {
+        temp $*CWD = $tempdir.IO;
+        temp %*ENV<HOME> = $tempdir;
+    }
+    else {
+        $*CWD = $tempdir.IO;
+        %*ENV<HOME> = $tempdir;
+    }
+
+    my %fez;
+    %fez<un>  = 'SOMEBODY';
+    %fez<key> = 'some-hash-key';
+    my $zstr  = to-json %fez;
+
+    $*HOME.add('.fez-config.json').spurt: $zstr;
+
+    chdir $tempdir;
 
     my $new-mod = "Foo::Bar";
     my $moddir = "Foo::Bar";
     $moddir ~~ s/'::'/-/;
-    lives-ok { $proc := run "mi6", "new", "--zef", $new-mod, :out; }
+    run "mi6", "new", "--zef", $new-mod;
     ok $moddir.IO.d;
+
+    # check the meta file for known values
+    my %meta = from-json(slurp "$moddir/META6.json");
+    is %meta<auth>, "zef:SOMEBODY";
 }
 
-
-done-testing;
-
-=finish
-
-chdir $dir;
-ok $
-my $provides = 'Some text';
-my $o = Mi6::Helper.new: :dir('.'), :$provides;
-isa-ok $o, Mi6::Helper;
-
-is $o.provides, $provides;
-
-{
-    chdir $dir;
-    
-    # create Foo::Bar 
-    run <mi6 new --zef Foo::Bar>;
-
-    # modify it
-    # test for changes
-}
-
--
 done-testing;
