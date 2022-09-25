@@ -7,9 +7,12 @@ use JSON::Fast;
 use File::Directory::Tree;
 
 my $DEBUG = 1;
+
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
 my $debug-dir  = $debug-base ~ '/' ~ $?FILE.IO.basename;
+# remove the trailing '.t*'
+$debug-dir ~~ s/'.t'$//;
 rmtree $debug-dir if $debug-dir.IO.d;
 
 my ($tempdir, $res, $gs, $proc);
