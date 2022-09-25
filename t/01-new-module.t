@@ -20,7 +20,7 @@ is $res, "";
     #    key : somekey
     #
     temp $*CWD = $tempdir.IO;
-    temp $*ENV<HOME> = $tempdir;
+    temp %*ENV<HOME> = $tempdir;
     $*HOME.add().spurt: q:to/HERE/;
     user SOMEBODY
     password this-is-secret
