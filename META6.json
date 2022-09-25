@@ -29,6 +29,7 @@
     "mi6 fez zef repo"
   ],
   "test-depends": [
+    "fez",
     "File::Directory::Tree",
     "File::Temp",
     "Test::META"
