@@ -51,7 +51,7 @@ my $docs  = 0;
 my $provides;
 
 # assume we are in the current working directory
-my $dir   = '.';
+my $parent-dir   = '.';
 
 # other args
 my $err = 0; # track number of possible errors
@@ -67,7 +67,7 @@ for @*ARGS {
     }
     when /:i ^f/ { ++$force }
     when /^'dir=' (\S+)/ {
-        $dir = ~$0;
+        $parent-dir = ~$0;
     }
     when / ^d  / { ++$docs  }
     when / ^D  / { ++$debug }
@@ -90,9 +90,9 @@ for @*ARGS {
     }
 }
 
-die "FATAL: Path '$dir' is not a directory."
-    unless $dir.IO.d;
-say "Using directory '$dir' as the working directory.";
+die "FATAL: Path '$parent-dir' is not a directory."
+    unless $parent-dir.IO.d;
+say "Using directory '$parent-dir' as the working directory.";
 
 if $new {
 
