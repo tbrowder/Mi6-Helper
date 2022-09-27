@@ -1,0 +1,73 @@
+2022-09-27
+
+This is a new Mi6-mananged module create with the following data:
+
+==========================
+App::Mi6 version:
+
+$ zef list --installed | grep App::Mi6
+App::Mi6:ver<2.0.7>:auth<cpan:SKAJI>
+
+$ say (run("git config --global user.name", :out).out.spurt.chomp)
+"Tom Browder"
+
+$ say (run("git config --global user.email", :out).out.spurt.chomp)
+"tbrowder@acm.org"
+==========================
+
+That resulted in the following data to be replaced by ("Mi6::Helper")/bin/mi6-helper:
+
+Foo-Bar/
+  # files with replaced, modified, or added lines:
+  dist.ini:
+    # The line that reads:
+    filename = lib/Foo/Bar.rakumod
+    # is changed to:
+    filename = docs/README.rakudoc
+    
+  META6.json:
+    # The line that begins:
+    "description": "blah blah blah",
+    # is changed to:
+    "description": "[text entered per the 'provides=X' option]
+
+  lib/Foo/Bar.rakumod:
+    # Move all lines following the first non-blank line
+    # thus leaving:
+    unit class Foo::Bar;
+
+  # new directory
+  docs/
+    # new file:
+    README.rakudoc
+    # This new file first gets all the lines removed from
+    # 'lib/Foo/Bar.rakumod' resulting in a complete pod
+    # documement:
+    =begin pod
+       ...
+    =end pod
+    # Then, four lines are changed:
+
+    # 1. The line that begins:
+    Foo::Bar - blah blah blah
+    # is changed to either:
+    B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
+    # or:
+    B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
+
+    # 2. The line that begins:
+    Foo::Bar is ...
+    # is changed to:
+    B<Foo::Bar> is ...
+
+    # 3. The line that begins:
+    Copyright {current year} ...
+    # is changed to:
+    <copyright symbol> {current year} ...
+
+    # 4. The line that reads:
+    This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+    # is changed to better English::
+    This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+
+    
