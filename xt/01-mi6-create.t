@@ -2,12 +2,11 @@ use Test;
 
 use Mi6::Helper;
 use File::Temp;
-use Git::Status;
 use JSON::Fast;
 use File::Directory::Tree;
 
 # check the system for known values used for fez and mi6
-my $oo          = Mi6::Helper.new: :module-name("null");
+my $oo          = Mi6::Helper.new;
 my %fez         = from-json(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;
@@ -45,7 +44,7 @@ else {
 
 ok $tempdir.IO.d, "check tempdir";
 
-lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
+#lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
@@ -59,10 +58,10 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
 
     chdir $tempdir;
 
-    my $new-mod = "Foo::Bar";
-    my $moddir = $new-mod;
+    my $module-name = "Foo::Bar";
+    my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;
-    run("mi6", 'new', '--zef', $new-mod);
+    run("mi6", 'new', '--zef', $module-name);
     ok $moddir.IO.d;
 
     # check the meta file for known values

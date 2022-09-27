@@ -1,12 +1,15 @@
 unit class Mi6::Helper;
 
+use JSON::Fast;
+
 has $.parent-dir = '.';
-has $.module-name is required; #= e.g., 'Foo::Bar'
+has $.module-name;             #= e.g., 'Foo::Bar'
 has $.provides;                #= text to replace 'blah blah blah'
 has $.mode;                    #= "old" or "new"
 has $.module-base;             #= e.g., 'Foo-Bar'
 
 submethod TWEAK {
+    return if not $!module-name.defined;
     $!module-base = $!module-name;
     $!module-base ~~ s:g/'::'/-/;
 }
@@ -22,6 +25,20 @@ method git-user-email {
 
 method git-user-name {
     run("git", "config", "--get", "user.name", :out).out.slurp.chomp
+}
+
+multi method is-git-repo($dir) {
+    "$dir/.git".IO.d;
+}
+multi method is-git-dir($dir) {
+    "$dir/.git".IO.d;
+}
+
+multi method is-mi6-repo($dir) {
+    "$dir/dist.ini".IO.f;
+}
+multi method is-mi6-repo($dir) {
+    "$dir/dist.ini".IO.f;
 }
 
 method mod-changes() {
@@ -88,12 +105,12 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         elsif $line ~~ /^ \h* This \h+ library/ {
             $line = q:to/HERE/.lines.words.join(" ");
 
-            This library is free software; you may 
-            redistribute it or modify it under the 
+            This library is free software; you may
+            redistribute it or modify it under the
             Artistic License 2.0.
 
             HERE
-            
+
         }
         @odocfil.push: $line;
     }
@@ -133,7 +150,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         my %j = from-json(slurp $jfil);
         #note %j.raku;
         my $desc = %j<description>;
-        note "DEBUG description: '$desc'";
+        note "DEBUG description: '$desc'" if $debug;
         %j<description> = $provides;
         my $jstr = to-json %j;
         spurt $jfil, $jstr;
@@ -146,10 +163,8 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
     if $debug {
         # works okay for Foo::Bar (creates dir Foo-Bar)
-        note "Exiting after mi6 create"; 
+        note "Exiting after mi6 create";
         exit
     }
 
 } # sub mi6-helper-new
-
-

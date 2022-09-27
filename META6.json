@@ -9,9 +9,7 @@
   "depends": [
     "Ask",
     "JSON::Fast",
-    "Config::INI",
     "File::Find",
-    "Git::Status",
     "App::Mi6",
     "Text::Utils"
   ],

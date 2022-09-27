@@ -2,7 +2,6 @@ use Test;
 
 use Mi6::Helper;
 use File::Temp;
-use Git::Status;
 use JSON::Fast;
 use File::Directory::Tree;
 
@@ -36,7 +35,7 @@ else {
 
 ok $tempdir.IO.d;
 
-lives-ok { $gs = Git::Status.new: :directory($tempdir); }
+#lives-ok { $gs = Git::Status.new: :directory($tempdir); }
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
@@ -60,8 +59,8 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
 
     # check the meta file for known values
     my %meta = from-json(slurp "$moddir/META6.json");
-    is %meta<auth>, "zef:SOMEBODY";
-    is (%meta<authors>.shift), "SOMEBODY";
+    is %meta<auth>, $auth;
+    is @(%meta<authors>)[0], $author;
 }
 
 done-testing;
