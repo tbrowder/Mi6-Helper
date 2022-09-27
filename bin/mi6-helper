@@ -56,13 +56,15 @@ my $parent-dir   = '.';
 # other args
 my $err = 0; # track number of possible errors
 
-my $new-module;
-my $old-module;
+my $module-name;
 
 for @*ARGS {
-    when /:i ^o/ { ++$old   }
+    when /:i ^'old=' (\S+) / {
+        $module-name = ~$0;
+        ++$old   
+    }
     when /:i ^'new=' (\S+) / {
-        $new-module = ~$0;
+        $module-name = ~$0;
         ++$new;
     }
     when /:i ^f/ { ++$force }
@@ -99,7 +101,7 @@ if $new {
 my $debug = 1;
 
 #./mi6-helper new=Foo::Bar  provides=pvides
-mi6-helper-new :$parent-dir, :$new-module, :$provides, :$debug;
+mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
 
 }
 

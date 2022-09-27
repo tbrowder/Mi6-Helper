@@ -70,9 +70,9 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
 
     my $new-mod = "Foo::Bar";
     my $moddir = "Foo::Bar";
-    $moddir ~~ s/'::'/-/;
+    $moddir ~~ s:g/'::'/-/;
 
-    run "./bin/mi6-helper", "new", $new-mod;
+    run "./bin/mi6-helper", "new=$new-mod";
     ok $moddir.IO.d;
 
     # check the meta file for known values

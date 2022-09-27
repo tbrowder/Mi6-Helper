@@ -3,7 +3,7 @@ unit class Mi6::Helper;
 has $.parent-dir = '.';
 has $.module-name is required; #= e.g., 'Foo::Bar'
 has $.provides;                #= text to replace 'blah blah blah'
-
+has $.mode;                    #= "old" or "new"
 has $.module-base;             #= e.g., 'Foo-Bar'
 
 submethod TWEAK {
@@ -11,11 +11,18 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-=begin comment
-method mi6-cmd(:$parent-dir, :$module-name, :$debug) {
-    run "mi6", 'new', '--zef', $new-module;
+method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
+    chdir $parent-dir;
+    run "mi6", 'new', '--zef', $module-name;
 }
-=end comment
+
+method git-user-email {
+    run("git", "config", "--get", "user.email", :out).out.slurp.chomp
+}
+
+method git-user-name {
+    run("git", "config", "--get", "user.name", :out).out.slurp.chomp
+}
 
 method mod-changes() {
 }
@@ -28,11 +35,10 @@ method mod-dist-ini() {
 
 sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
-
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {
-    my $o = Mi6::Helper.new;
-    $o.mi6-cmd(:$parent-dir, :$module-name, :$debug);
+    my $o = Mi6::Helper.new: :$module-name;
+    $o.mi6-new-cmd(:$parent-dir, :$module-name, :$debug);
 
     # get the name of the module file to change and move content
     my $modpdir = $module-name;
@@ -40,7 +46,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $modpdir ~~ s:g/'::'/-/;
     $modpath ~~ s:g/'::'/\//;
     my $mpath = "$modpdir/lib/$modpath";
-    say "DEBUG: Foo::Bar path: '$mpath'" if not $debug;
+    say "DEBUG: Foo::Bar path: '$mpath'" if $debug;
 
     $mpath ~= '.rakumod';
 
@@ -126,11 +132,16 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         spurt $jfil, $jstr;
     }
 
-    say "DEBUG early exit";exit;
+    if $debug {
+        note "DEBUG early exit";
+        exit;
+    }
 
-
-    # works okay for Foo::Bar (creates dir Foo-Bar)
-    say "Exiting after mi6 create"; exit
+    if $debug {
+        # works okay for Foo::Bar (creates dir Foo-Bar)
+        note "Exiting after mi6 create"; 
+        exit
+    }
 
 } # sub mi6-helper-new
 

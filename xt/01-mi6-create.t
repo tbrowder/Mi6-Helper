@@ -1,12 +1,30 @@
 use Test;
 
+use App::Mi6;
 use Mi6::Helper;
 use File::Temp;
 use Git::Status;
 use JSON::Fast;
 use File::Directory::Tree;
 
-my $DEBUG = 1;
+# check the system for known values used for fez and mi6
+my $oo          = Mi6::Helper.new: :module-name("null");
+my %fez         = from-json(slurp "$*HOME/.fez-config.json");
+my $auth        = "zef:{%fez<un>}";
+my $email       = $oo.git-user-email;
+my $author      = $oo.git-user-name;
+my $meta-author = "$author <$email>";
+
+my $DEBUG = 0;
+if 0 and $DEBUG {
+    note qq:to/HERE/;
+    DEBUG:
+    author: $author
+    email:  $email
+    auth:   zef:$auth
+    HERE
+    note "DEBUG early exit";exit;
+}
 
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
@@ -26,58 +44,39 @@ else {
     $tempdir = mkdir $debug-dir;
 }
 
-ok $tempdir.IO.d;
+ok $tempdir.IO.d, "check tempdir";
 
-lives-ok { $gs = Git::Status.new: :directory($tempdir); }
+lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
     #   "un" : "SOMEBODY",
     #   "key" : "some-hash-key",
 
-    if 1 {
-        temp $*CWD = $tempdir.IO;
-        temp %*ENV<HOME> = $tempdir;
-    }
-    else {
-        $*CWD = $tempdir.IO;
-        %*ENV<HOME> = $tempdir;
-    }
+    temp $*CWD = $tempdir.IO;
+    #temp %*ENV<HOME> = $tempdir;
 
-    my %fez;
-    %fez<un>  = 'SOMEBODY';
-    %fez<key> = 'some-hash-key';
-    my $zstr  = to-json %fez;
-
-    $*HOME.add('.fez-config.json').spurt: $zstr;
-
-    # add pause data
-    $*HOME.add('.pause').spurt: q:to/HERE/;
-    user SOMEBODY
-    password some-password
-    HERE
-
-    # add .gitconfig email data
-    $*HOME.add('.gitconfig').spurt: q:to/HERE/;
-    [user]
-        name = SOMEBODY
-        email = SOMEBODY@example.com
-    [init]
-        defaultBranch = master
-    HERE
+    # DANGER DO NOT MODIFY THE USER'S ENVIRONMENT
 
     chdir $tempdir;
 
     my $new-mod = "Foo::Bar";
     my $moddir = $new-mod;
     $moddir ~~ s:g/'::'/-/;
-    run "mi6", "new", "--zef", $new-mod;
+    run("$*HOME/.raku/bin/mi6", 'new', '--zef', $new-mod);
+    #run("$*HOME/.raku/bin/mi6", 'new', $new-mod);
     ok $moddir.IO.d;
 
     # check the meta file for known values
     my %meta = from-json(slurp "$moddir/META6.json");
-    is %meta<auth>, "zef:SOMEBODY";
-    is (%meta<authors>.shift), "SOMEBODY";
+    if 1 {
+        note "DEBUG:";
+        for %meta.kv -> $k, $v {
+            note "    key: '$k' => '$v'";
+        }
+    }
+    is %meta<auth>, $auth;
+    is @(%meta<authors>)[0], $author;
 }
 
 done-testing;
