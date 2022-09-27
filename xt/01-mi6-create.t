@@ -1,6 +1,5 @@
 use Test;
 
-use App::Mi6;
 use Mi6::Helper;
 use File::Temp;
 use Git::Status;
@@ -15,8 +14,8 @@ my $email       = $oo.git-user-email;
 my $author      = $oo.git-user-name;
 my $meta-author = "$author <$email>";
 
-my $DEBUG = 0;
-if 0 and $DEBUG {
+my $debug = 0;
+if 0 and $debug {
     note qq:to/HERE/;
     DEBUG:
     author: $author
@@ -35,7 +34,7 @@ rmtree $debug-dir if $debug-dir.IO.d;
 
 my ($tempdir, $res, $gs, $proc);
 
-if not $DEBUG {
+if not $debug {
     # normal testing
     $tempdir = tempdir;
 }
@@ -63,13 +62,12 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
     my $new-mod = "Foo::Bar";
     my $moddir = $new-mod;
     $moddir ~~ s:g/'::'/-/;
-    run("$*HOME/.raku/bin/mi6", 'new', '--zef', $new-mod);
-    #run("$*HOME/.raku/bin/mi6", 'new', $new-mod);
+    run("mi6", 'new', '--zef', $new-mod);
     ok $moddir.IO.d;
 
     # check the meta file for known values
     my %meta = from-json(slurp "$moddir/META6.json");
-    if 1 {
+    if $debug {
         note "DEBUG:";
         for %meta.kv -> $k, $v {
             note "    key: '$k' => '$v'";
@@ -77,6 +75,8 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }, "Git::Status";
     }
     is %meta<auth>, $auth;
     is @(%meta<authors>)[0], $author;
+    # check some other things to be changed by helper
+    #my $doc = slurp "$moddir/lib";
 }
 
 done-testing;

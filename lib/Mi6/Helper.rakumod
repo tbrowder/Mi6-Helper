@@ -86,7 +86,14 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
             $line ~~ s/Copyright/©/;
         }
         elsif $line ~~ /^ \h* This \h+ library/ {
-            $line = "This library is free software; you may redistribute it or modify it under the Artistic License 2.0.";
+            $line = q:to/HERE/.lines.words.join(" ");
+
+            This library is free software; you may 
+            redistribute it or modify it under the 
+            Artistic License 2.0.
+
+            HERE
+            
         }
         @odocfil.push: $line;
     }

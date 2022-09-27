@@ -6,7 +6,15 @@ use Git::Status;
 use JSON::Fast;
 use File::Directory::Tree;
 
-my $DEBUG = 1;
+# check the system for known values used for fez and mi6
+my $oo          = Mi6::Helper.new: :module-name("null");
+my %fez         = from-json(slurp "$*HOME/.fez-config.json");
+my $auth        = "zef:{%fez<un>}";
+my $email       = $oo.git-user-email;
+my $author      = $oo.git-user-name;
+my $meta-author = "$author <$email>";
+
+my $debug = 0;
 
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
@@ -17,7 +25,7 @@ rmtree $debug-dir if $debug-dir.IO.d;
 
 my ($tempdir, $res, $gs, $proc);
 
-if not $DEBUG {
+if not $debug {
     # normal testing
     $tempdir = tempdir;
 }
@@ -35,44 +43,19 @@ lives-ok { $gs = Git::Status.new: :directory($tempdir); }
     #   "un" : "SOMEBODY",
     #   "key" : "some-hash-key",
 
-    if 1 {
-        temp $*CWD = $tempdir.IO;
-        temp %*ENV<HOME> = $tempdir;
-    }
-    else {
-        $*CWD = $tempdir.IO;
-        %*ENV<HOME> = $tempdir;
-    }
+    temp $*CWD = $tempdir.IO;
+    #temp %*ENV<HOME> = $tempdir;
 
-    my %fez;
-    %fez<un>  = 'SOMEBODY';
-    %fez<key> = 'some-hash-key';
-    my $zstr  = to-json %fez;
-
-    $*HOME.add('.fez-config.json').spurt: $zstr;
-
-    # add pause data
-    $*HOME.add('.pause').spurt: q:to/HERE/;
-    user SOMEBODY
-    password some-password
-    HERE
-
-    # add .gitconfig email data
-    $*HOME.add('.gitconfig').spurt: q:to/HERE/;
-    [user]
-        name = SOMEBODY
-        email = SOMEBODY@example.com
-    [init]
-        defaultBranch = master
-    HERE
+    # DANGER DO NOT MODIFY THE USER'S ENVIRONMENT
 
     chdir $tempdir;
 
-    my $new-mod = "Foo::Bar";
-    my $moddir = "Foo::Bar";
+    my $module-name = "Foo::Bar";
+    my $parent-dir  = $tempdir;
+    my $provides = "Provides a framistan";
+    mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
+    my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;
-
-    run "./bin/mi6-helper", "new=$new-mod";
     ok $moddir.IO.d;
 
     # check the meta file for known values
