@@ -2,7 +2,7 @@ use Test;
 
 use Mi6::Helper;
 use File::Temp;
-use App:Mi6;
+use App::Mi6;
 use File::Directory::Tree;
 
 # check the system for known values used for fez and mi6
