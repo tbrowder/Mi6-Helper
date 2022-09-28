@@ -2,7 +2,7 @@
 
 use Mi6::Helper;
 
-use JSON::Fast;
+use App::Mi6;
 use Config::INI;
 use Text::Utils :normalize-string;
 use File::Find;
@@ -104,7 +104,7 @@ if $new {
     mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
     say qq:to/HERE/;
     Exit after 'new' mode run. See new module repo '$module-name' 
-    in parent dir '$parent-dir'.
+      in parent dir '$parent-dir'.
     HERE
     exit;
 }
@@ -154,7 +154,7 @@ say "Checking for a fez account...";;
 my $fezfil = "%*ENV<HOME>/.fez-config.json";
 my $feznam;
 if $fezfil.IO.r {
-    $feznam = %(from-json(slurp $fezfil))<un>;
+    $feznam = %(App::Mi6::JSON.decode(slurp $fezfil))<un>;
     say "Found fez user name '$feznam'";
     # check for an installed fez
     my $module = 'Fez::CLI';
@@ -178,7 +178,8 @@ else {
 my $metafil = "$dir/META6.json";
 my %meta;
 if $metafil.IO.r {
-    %meta = from-json $metafil.IO.slurp;
+    #%meta = from-json $metafil.IO.slurp;
+    %meta = App::Mi6::JSON::decode(slurp $metafil);
     say "META6.json' file found and read.";
 }
 else {

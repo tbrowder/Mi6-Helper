@@ -8,7 +8,6 @@
   ],
   "depends": [
     "Ask",
-    "JSON::Fast",
     "File::Find",
     "App::Mi6",
     "Text::Utils"

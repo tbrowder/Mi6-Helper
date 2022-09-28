@@ -1,6 +1,6 @@
 unit class Mi6::Helper;
 
-use JSON::Fast;
+use App::Mi6;
 
 has $.parent-dir = '.';
 has $.module-name;             #= e.g., 'Foo::Bar'
@@ -153,12 +153,11 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     # mod the META6.json file
     if $provides {
         my $jfil = "$modpdir/META6.json";
-        my %j = from-json(slurp $jfil);
-        #note %j.raku;
+        my %j = App::Mi6::JSON.decode(slurp $jfil);
         my $desc = %j<description>;
         note "DEBUG description: '$desc'" if $debug;
         %j<description> = $provides;
-        my $jstr = to-json %j;
+        my $jstr = App::Mi6::JSON.encode(%j);
         spurt $jfil, $jstr;
     }
 
