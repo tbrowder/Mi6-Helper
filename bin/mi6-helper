@@ -102,7 +102,7 @@ for @*ARGS {
 
 # Take care of 'provides'
 # PRO
-unless $provides.defined and $provides {
+if $provides-hidden and not $provides.defined {
     # info is expected to be in the hidden file
     my $hidden = ".$module-name";
     $hidden ~~ s:g/'::'/-/;
@@ -113,6 +113,7 @@ unless $provides.defined and $provides {
             $provides ~= " $_";
         }
         $provides = normalize-string $provides;
+        say "Getting description text from hidden file '$hidden'";
     }
     else {
         die "FATAL: Unable to find the hidden file '$hidden'.";

@@ -72,8 +72,7 @@ ok $tempdir.IO.d, "check tempdir";
     }
     is %meta<auth>, $auth;
     is @(%meta<authors>)[0], $author;
-    # check some other things to be changed by helper
-    #my $doc = slurp "$moddir/lib";
+    my $doc = slurp "$moddir/lib";
 }
 
 done-testing;

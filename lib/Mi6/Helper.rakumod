@@ -50,6 +50,12 @@ method mod-readme() {
 method mod-dist-ini() {
 }
 
+sub get-hidden-name(:$module-name) is export {
+    my $s = $module-name;
+    $s ~~ s:g/'::'/-/;
+    $s ~ '.' ~ $s;
+}
+
 sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
     # test module is "Foo::Bar"
