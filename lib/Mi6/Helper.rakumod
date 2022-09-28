@@ -88,9 +88,15 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
     # treat the README file
     for @idocfil -> $line is copy {
-        if $provides and $line.contains('blah') {
-            # bold module name and add new text
-            $line = "B<$module-name> - $provides"
+        if $line.contains('blah') {
+            if $provides {
+                # bold module name and add new text
+                $line = "B<$module-name> - $provides"
+            }
+            else {
+                # bold module name only
+                $line ~~ s/\h*$module-name/B<$module-name>/;
+            }
         }
         elsif $line.contains("$module-name is") {
             # bold module name
@@ -161,7 +167,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         exit;
     }
 
-    if $debug {
+    if 0 and $debug {
         # works okay for Foo::Bar (creates dir Foo-Bar)
         note "Exiting after mi6 create";
         exit

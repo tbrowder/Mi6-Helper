@@ -98,11 +98,15 @@ say "Using directory '$parent-dir' as the working directory.";
 
 if $new {
 
-my $debug = 1;
+    #my $debug = 1;
 
-#./mi6-helper new=Foo::Bar  provides=pvides
-mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
-
+    #./mi6-helper new=Foo::Bar  provides=pvides
+    mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
+    say qq:to/HERE/;
+    Exit after 'new' mode run. See new module repo '$module-name' 
+    in parent dir '$parent-dir'.
+    HERE
+    exit;
 }
 
 if $old {
@@ -110,7 +114,6 @@ if $old {
     exit;
 }
 
-say "Exit after test run"; exit;
 
 =finish
 
