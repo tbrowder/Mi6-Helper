@@ -20,11 +20,11 @@ method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
 }
 
 method git-user-email {
-    run("git", "config", "--get", "user.email", :out).out.slurp.chomp
+    run("git", "config", "--get", "--global", "user.email", :out).out.slurp.chomp
 }
 
 method git-user-name {
-    run("git", "config", "--get", "user.name", :out).out.slurp.chomp
+    run("git", "config", "--get", "--global", "user.name", :out).out.slurp.chomp
 }
 
 multi method is-git-repo($dir) {

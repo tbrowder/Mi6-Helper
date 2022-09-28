@@ -12,14 +12,14 @@ if not @*ARGS.elems {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
-    CAUTION: Ensure all user code is committed before using the 'docs' option
-             with the 'old' mode.
+    CAUTION: With mode 'old=X', ensure all user code is committed before using 
+             the 'docs' option.
 
     Modes:
         new=X - Creates a new module (named X) directory by driving 'mi6', then
                 changing certain files in the new repo to conform to the 'docs'
                 option.  It also uses the 'provides' option for a short
-                description of its main purpose.
+                description of its main purpose. See details in the README.
 
         old   - NOT YET IMPLEMENTED
                 Creates safe defaults for an 'mi6'-managed module in an existing
@@ -27,7 +27,7 @@ if not @*ARGS.elems {
                 See details in the README.
 
     Options:
-        dir=X       - Selects directory X for the operations, default is '.'
+        dir=X       - Selects parent directory X for the operations, default is '.'
         force       - Allow overwriting 'dist.ini'
         docs        - Used with the 'old' mode: uses file 'docs/README.rakudoc'
                       to produce 'README.md'. Note extra preparation is REQUIRED
