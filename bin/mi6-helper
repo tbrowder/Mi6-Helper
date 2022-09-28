@@ -16,26 +16,30 @@ if not @*ARGS.elems {
              the 'docs' option.
 
     Modes:
-        new=X - Creates a new module (named X) directory by driving 'mi6', then
-                changing certain files in the new repo to conform to the 'docs'
-                option.  It also uses the 'provides' option for a short
-                description of its main purpose. See details in the README.
+      new=X - Creates a new module (named X) directory by driving 'mi6', then
+              changing certain files in the new repo to conform to the 'docs'
+              option.  It also uses the 'provides' option for a short
+              description of its main purpose. See details in the README.
 
-        old   - NOT YET IMPLEMENTED
-                Creates safe defaults for an 'mi6'-managed module in an existing
-                Git Raku module repository. Reports findings and recommendations.
-                See details in the README.
+      old   - *****NOT YET IMPLEMENTED*****
+              Creates safe defaults for an 'mi6'-managed module in an existing
+              Git Raku module repository. Reports findings and recommendations.
+              See details in the README.
 
     Options:
-        dir=X       - Selects parent directory X for the operations, default is '.'
-        force       - Allow overwriting 'dist.ini'
-        docs        - Used with the 'old' mode: uses file 'docs/README.rakudoc'
-                      to produce 'README.md'. Note extra preparation is REQUIRED
-                      by the user before using it.
-        provides=X  - Either a file X or text X to be used in place of 'blah blah
-                      blah'. No spaces are allowed in a text entry: use periods
-                      ('.') between words.
-        Debug       - For developer use
+      dir=X      - Selects parent directory 'X' for the operations, default is '.'
+      provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
+                   in place of 'blah blah blah'. (Note No spaces are allowed in 
+                   a text entry: use periods ['.'] between words.)
+      provides   - Without '=X', the program expects a hidden text file named
+                   the same as the module name but with hyphens in place of 
+                   colon pairs. For example, the file for module 'Foo::Bar' is 
+                   expected to be '.Foo-Bar'.
+      force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
+      docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
+                   to produce 'README.md'. Note extra preparation is REQUIRED
+                   by the user before using it.
+      Debug      - For developer use
 
     HERE
     exit;
@@ -49,6 +53,7 @@ my $force = 0;
 my $debug = 0;
 my $docs  = 0;
 my $provides;
+my $provides-hidden = 0;
 
 # assume we are in the current working directory
 my $parent-dir   = '.';
@@ -73,6 +78,9 @@ for @*ARGS {
     }
     when / ^d  / { ++$docs  }
     when / ^D  / { ++$debug }
+    when /^ \h* provides \h* $/ {
+        ++$provides-hidden;
+    }
     when /^'provides=' (\S+)/ {
         $provides = ~$0;
         if $provides.IO.r {
@@ -92,15 +100,36 @@ for @*ARGS {
     }
 }
 
+# Take care of 'provides'
+# PRO
+unless $provides.defined and $provides {
+    # info is expected to be in the hidden file
+    my $hidden = ".$module-name";
+    $hidden ~~ s:g/'::'/-/;
+    if $hidden.IO.r {
+        my $s = slurp $hidden;
+        $provides = '';
+        for $s.lines {
+            $provides ~= " $_";
+        }
+        $provides = normalize-string $provides;
+    }
+    else {
+        die "FATAL: Unable to find the hidden file '$hidden'.";
+    }
+}
+
+
+if not ($new or $old) {
+    die "FATAL: Neither 'new' nor 'old' is selected.";
+}
+
 die "FATAL: Path '$parent-dir' is not a directory."
     unless $parent-dir.IO.d;
 say "Using directory '$parent-dir' as the working directory.";
 
 if $new {
 
-    #my $debug = 1;
-
-    #./mi6-helper new=Foo::Bar  provides=pvides
     mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
     say qq:to/HERE/;
     Exit after 'new' mode run. See new module repo '$module-name' 

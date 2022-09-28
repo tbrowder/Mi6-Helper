@@ -7,3 +7,4 @@ dev/Foo-Bar/
 dev/*.json
 debug-test/
 Foo-Bar/
+.Foo-Bar

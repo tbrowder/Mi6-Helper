@@ -6,10 +6,10 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
 =head1 SYNOPSIS
 
-iiNote this is API 2 and its approach has changed significantly
+Note this is API 2 and its approach has changed significantly
 since the author has had much more experience using B<App::Mi6>.
 For example, accidentally using C<mi6 test> in a non-mi6 module's
-base directory will corrupt an existing README.md file.
+base directory will corrupt an existing README.md file!
 
 B<CAUTION>: Before using this tool on a real module repository,
 the user should ensure all contents have been comitted with Git
