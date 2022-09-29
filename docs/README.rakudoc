@@ -35,7 +35,7 @@ option and, optionally, substitute 'blah...' with the user's short
 description (if it is provided).
 
 CAUTION: If file C<dist.ini> already exists in the parent directory, the program
-will abort B<unless> the C<force> opton is used. Use the C<force> option at your
+will abort B<unless> the C<force> option is used. Use the C<force> option at your
 own risk!
 =end item
 
