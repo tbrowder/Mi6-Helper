@@ -25,7 +25,7 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
     Creates a new module 'X' in parent directory 'Y' (default '.') using **mi6** and then changes some of the files and directories to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description (if it is provided).
 
-    CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` opton is used. Use the `force` option at your own risk!
+    CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` option is used. Use the `force` option at your own risk!
 
   * old ***NOT YET IMPLEMENTED***
 
@@ -37,14 +37,11 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
       * README.md
 
-    See more details below.
-
 Modified files for mode **new**
 -------------------------------
 
 ### Files with replaced, modified, or added lines:
 
-      # Files with replaced, modified, or added lines:
       dist.ini:
         # The line that reads:
         filename = lib/Foo/Bar.rakumod
@@ -112,14 +109,10 @@ The very useful Raku modules used herein:
 
   * `File::Find` by **github:tadzik**
 
-  * `JSON::Fast` by **github:timo**
-
-  * `Config::INI` by **gitbub:tadzik**
-
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2020-2022 Tom Browder
+&#x00A9; 2020-2022 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
