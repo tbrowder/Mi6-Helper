@@ -8,15 +8,28 @@ NAME
 SYNOPSIS
 ========
 
+    use Mi6::Helper
+
+    $ mi6-helper new=Foo::Bar provides=Bar-description.txt
+
+DESCRIPTION
+===========
+
 Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
-This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation: 
+This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation:
 
-  * old
+  * new=X dir=Y
 
-    Inspect an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or mofify the following files:
+    Creates a new module 'X' in parent directory 'Y' (default '.') using **mi6** and then changes some of the files and directories to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description (if it is provided).
+
+    CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` opton is used. Use the `force` option at your own risk!
+
+  * old ***NOT YET IMPLEMENTED***
+
+    Inspects an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or mofify the following files:
 
       * Changes
 
@@ -26,52 +39,64 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
     See more details below.
 
-  * new
+Modified files for mode **new**
+-------------------------------
 
-    Create a new module using **mi6** and then change some of the contents to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description.
+### Files with replaced, modified, or added lines:
 
-Modified files
---------------
+      # Files with replaced, modified, or added lines:
+      dist.ini:
+        # The line that reads:
+        filename = lib/Foo/Bar.rakumod
+        # is changed to:
+        filename = docs/README.rakudoc
 
-  * **dist.ini** (in the base directory)
+      META6.json:
+        # The line that begins:
+        "description": "blah blah blah",
+        # is changed to:
+        "description": "[text entered per the 'provides=X' option]
 
-    This file, if found existing, will cause an abort. No changes can be made to an existing file. You may use the `force` option at your own risk.
+      lib/Foo/Bar.rakumod:
+        # Move all lines following the first non-blank line
+        # thus leaving:
+        unit class Foo::Bar;
 
-    The default file does **NOT** create any Markdown files from any source unless you are the user **tbrowder** or you use the `docs` option. In those cases a **docs/README.rakudoc** file is created and this file is modified appropriately.
+### New directory and file:
 
-  * **README.md** (in the base directory)
+      # new directory
+      docs/
+        # new file:
+        README.rakudoc
+        # This new file first gets all the lines removed from
+        # 'lib/Foo/Bar.rakumod' resulting in a complete pod
+        # documement:
+        =begin pod
+           ...
+        =end pod
+        # Then, four lines are changed:
 
-    This file, if it exists, is copied to a file named **README.md.original** for safety. The original file is not modified by this program.
+        # 1. The line that begins:
+        Foo::Bar - blah blah blah
+        # is changed to either:
+        B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
+        # or:
+        B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
 
-  * **Changes** (in the base directory)
+        # 2. The line that begins:
+        Foo::Bar is ...
+        # is changed to:
+        B<Foo::Bar> is ...
 
-    If a **Changes** file happens to exist, it will be copied to a **Changes.original** file and the original will be overwritten with one in the correct format.
+        # 3. The line that begins:
+        Copyright {current year} ...
+        # is changed to:
+        <copyright symbol> {current year} ...
 
-  * **docs/README.rakudoc** (in the base/docs directory)
-
-    If such a file exists, it will be left unchanged.
-
-The default changes to the `dist.ini` file arsnthose the author likes, but a future update will allow the user to customize those actions in his or her own `$HOME/.mi6helper-ini` file.
-
-The contents of the two files are shown below.
-
-**Changes** file
-----------------
-
-**dist.ini** file (benign version for non-mi6 repositories)
------------------------------------------------------------
-
-**dist.ini** file (version for newly created mi6 repositories)
---------------------------------------------------------------
-
-DESCRIPTION
-===========
-
-    sub get-mod-name
-      - determine the base module name
-        - check any dist.ini file
-        - check the META6.json file
-        - throw if not found or there are conflicts
+        # 4. The line that reads:
+        This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+        # is changed to better English::
+        This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
 AUTHOR
 ======
