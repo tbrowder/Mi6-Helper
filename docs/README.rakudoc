@@ -61,7 +61,6 @@ Z<===================================================================>
 
 =begin code
 
-  # Files with replaced, modified, or added lines:
   dist.ini:
     # The line that reads:
     filename = lib/Foo/Bar.rakumod
