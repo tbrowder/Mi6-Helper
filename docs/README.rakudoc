@@ -50,8 +50,7 @@ files:
     =item Changes
     =item dist.ini
     =item README.md
-
-See more details below.
+    
 =end item
 
 =head2 Modified files for mode B<new>
