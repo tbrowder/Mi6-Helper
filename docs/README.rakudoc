@@ -6,25 +6,46 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
 =head1 SYNOPSIS
 
-Note this is API 2 and its approach has changed significantly
-since the author has had much more experience using B<App::Mi6>.
-For example, accidentally using C<mi6 test> in a non-mi6 module's
-base directory will corrupt an existing README.md file!
+=begin code
+use Mi6::Helper
 
-B<CAUTION>: Before using this tool on a real module repository,
-the user should ensure all contents have been comitted with Git
-to enable recovery from any unwanted changes.
+$ mi6-helper new=Foo::Bar provides=Bar-description.txt
+=end code
 
-This module installs a Raku executable named C<mi6-helper> which
-is designed for two major modes of operation: 
+=head1 DESCRIPTION
 
-=begin item 
-old
+Note this is API 2 and its approach has changed significantly since
+the author has had much more experience using B<App::Mi6>.  For
+example, accidentally using C<mi6 test> in a non-mi6 module's base
+directory will corrupt an existing README.md file!
 
-Inspect an existing Git repository of a Raku
-module to help convert it to one that uses the C<App::Mi6> module
-with the Zef repository. Essentially all it does is add or mofify
-the following files:
+B<CAUTION>: Before using this tool on a real module repository, the
+user should ensure all contents have been comitted with Git to enable
+recovery from any unwanted changes.
+
+This module installs a Raku executable named C<mi6-helper> which is
+designed for two major modes of operation:
+
+=begin item
+new=X dir=Y
+
+Creates a new module 'X' in parent directory 'Y' (default '.') using
+B<mi6> and then changes some of the files and directories to satisfy the 'docs'
+option and, optionally, substitute 'blah...' with the user's short
+description (if it is provided).
+
+CAUTION: If file C<dist.ini> already exists in the parent directory, the program
+will abort B<unless> the C<force> opton is used. Use the C<force> option at your
+own risk!
+=end item
+
+=begin item
+old  ***NOT YET IMPLEMENTED***
+
+Inspects an existing Git repository of a Raku module to help convert
+it to one that uses the C<App::Mi6> module with the Zef
+repository. Essentially all it does is add or mofify the following
+files:
 
     =item Changes
     =item dist.ini
@@ -33,78 +54,73 @@ the following files:
 See more details below.
 =end item
 
-=begin item 
-new
+=head2 Modified files for mode B<new>
 
-Create a new module using B<mi6> and then change some of the
-contents to satisfy the 'docs' option and, optionally, substitute
-'blah...' with the user's short description.
-=end item
-
-=head2 Modified files
-
-=begin item 
-B<dist.ini> (in the base directory)
-
-This file, if found existing, will cause an abort. No
-changes can be made to an existing file. You may use
-the C<force> option at your own risk.
-
-The default file does B<NOT> create any Markdown files
-from any source unless you are the user B<tbrowder>
-or you use the C<docs> option. In those cases
-a B<docs/README.rakudoc> file is created and this file
-is modified appropriately.
-=end item
-
-=begin item 
-B<README.md> (in the base directory)
-
-This file, if it exists, is copied to a file
-named B<README.md.original> for safety. The original file is 
-not modified by this program.
-=end item
-
-=begin item 
-B<Changes> (in the base directory)
-
-If a B<Changes>
-file happens to exist, it will be copied to a B<Changes.original> file and
-the original will be overwritten with one in the correct format.
-=end item
-
-=begin item 
-B<docs/README.rakudoc> (in the base/docs directory)
-
-If such a file exists, it will be left unchanged.
-=end item
-
-The default changes to the C<dist.ini> file arsnthose the author likes, but a future
-update will allow the user to customize those actions in his
-or her own C<$HOME/.mi6helper-ini> file.
-
-The contents of the two files are shown below.
-
-=head2 B<Changes> file
-
-=head2 B<dist.ini> file (benign version for non-mi6 repositories)
+Z<===================================================================>
+=head3 Files with replaced, modified, or added lines:
 
 =begin code
+
+  # Files with replaced, modified, or added lines:
+  dist.ini:
+    # The line that reads:
+    filename = lib/Foo/Bar.rakumod
+    # is changed to:
+    filename = docs/README.rakudoc
+
+  META6.json:
+    # The line that begins:
+    "description": "blah blah blah",
+    # is changed to:
+    "description": "[text entered per the 'provides=X' option]
+
+  lib/Foo/Bar.rakumod:
+    # Move all lines following the first non-blank line
+    # thus leaving:
+    unit class Foo::Bar;
+
+
 =end code
 
-=head2 B<dist.ini> file (version for newly created mi6 repositories)
+Z<===================================================================>
+=head3 New directory and file:
 
 =begin code
-=end code
 
-=head1 DESCRIPTION
+  # new directory
+  docs/
+    # new file:
+    README.rakudoc
+    # This new file first gets all the lines removed from
+    # 'lib/Foo/Bar.rakumod' resulting in a complete pod
+    # documement:
+    =begin pod
+       ...
+    =end pod
+    # Then, four lines are changed:
 
-=begin code
-sub get-mod-name
-  - determine the base module name
-    - check any dist.ini file
-    - check the META6.json file
-    - throw if not found or there are conflicts
+    # 1. The line that begins:
+    Foo::Bar - blah blah blah
+    # is changed to either:
+    B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
+    # or:
+    B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
+
+    # 2. The line that begins:
+    Foo::Bar is ...
+    # is changed to:
+    B<Foo::Bar> is ...
+
+    # 3. The line that begins:
+    Copyright {current year} ...
+    # is changed to:
+    <copyright symbol> {current year} ...
+
+    # 4. The line that reads:
+    This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+    # is changed to better English::
+    This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+
 =end code
 
 =head1 AUTHOR

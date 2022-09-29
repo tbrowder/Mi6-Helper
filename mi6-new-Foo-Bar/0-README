@@ -18,13 +18,13 @@ $ say (run("git config --global user.email", :out).out.spurt.chomp)
 That resulted in the following data to be replaced by ("Mi6::Helper")/bin/mi6-helper:
 
 Foo-Bar/
-  # files with replaced, modified, or added lines:
+  # Files with replaced, modified, or added lines:
   dist.ini:
     # The line that reads:
     filename = lib/Foo/Bar.rakumod
     # is changed to:
     filename = docs/README.rakudoc
-    
+
   META6.json:
     # The line that begins:
     "description": "blah blah blah",
@@ -69,5 +69,3 @@ Foo-Bar/
     This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
     # is changed to better English::
     This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
-
-    
