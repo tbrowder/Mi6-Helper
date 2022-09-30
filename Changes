@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - The 'new' mode is now functional
 
 0.5.0  2022-09-29T19:45:27-05:00
     - Publish to the Zef repository

@@ -12,6 +12,14 @@ SYNOPSIS
 
     $ mi6-helper new=Foo::Bar provides=Bar-description.txt
 
+**Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
+
+  * Published in the **zef** Raku module ecosystem
+
+  * User choice of the 'provides' text
+
+  * `README.md` file source removed from the base module and placed in a new `docs/README.rakudoc file`
+
 DESCRIPTION
 ===========
 

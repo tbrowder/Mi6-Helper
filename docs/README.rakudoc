@@ -12,6 +12,14 @@ use Mi6::Helper
 $ mi6-helper new=Foo::Bar provides=Bar-description.txt
 =end code
 
+B<Easily> create the template for a new Raku module repository for
+management by C<App::Mi6> with modifications including:
+
+=item Published in the B<zef> Raku module ecosystem
+=item User choice of the 'provides' text
+=item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc
+      file>
+
 =head1 DESCRIPTION
 
 Note this is API 2 and its approach has changed significantly since
