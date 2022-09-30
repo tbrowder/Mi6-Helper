@@ -129,10 +129,9 @@ Tom Browder <tbrowder@acm.org>
 
 The very useful Raku modules used herein:
 
-=item C<App::Mi6>     by B<github:skaji>
-=item C<File::Find>   by B<github:tadzik>
-    "File::Directory::Tree",
-    "File::Temp",
+=item C<App::Mi6>              by B<github:skaji>
+=item C<File::Directory::Tree> by B<github:labster>
+=item C<File::Temp>            by B<zef:rbt>
 
 =head1 COPYRIGHT AND LICENSE
 
