@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.5.0  2022-09-29T19:45:27-05:00
     - Publish to the Zef repository
     - Make it functional
     - Reorient the purpose of this module to a minimal set of non-interfering changes
