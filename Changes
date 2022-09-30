@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.5.1  2022-09-30T08:55:09-05:00
     - The 'new' mode is now functional
     - Add some advertising 
 
