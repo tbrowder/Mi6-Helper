@@ -8,7 +8,6 @@
   ],
   "depends": [
     "Ask",
-    "File::Find",
     "App::Mi6",
     "Text::Utils"
   ],
@@ -27,8 +26,7 @@
   ],
   "test-depends": [
     "File::Directory::Tree",
-    "File::Temp",
-    "Test::META"
+    "File::Temp"
   ],
   "version": "0.0.1"
 }

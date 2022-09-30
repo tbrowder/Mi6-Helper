@@ -131,6 +131,8 @@ The very useful Raku modules used herein:
 
 =item C<App::Mi6>     by B<github:skaji>
 =item C<File::Find>   by B<github:tadzik>
+    "File::Directory::Tree",
+    "File::Temp",
 
 =head1 COPYRIGHT AND LICENSE
 

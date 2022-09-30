@@ -107,7 +107,7 @@ The very useful Raku modules used herein:
 
   * `App::Mi6` by **github:skaji**
 
-  * `File::Find` by **github:tadzik**
+  * `File::Find` by **github:tadzik** "File::Directory::Tree", "File::Temp",
 
 COPYRIGHT AND LICENSE
 =====================

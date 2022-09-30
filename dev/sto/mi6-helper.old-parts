@@ -3,10 +3,7 @@
 use lib "../lib";
 use Mi6::Helper;
 
-use JSON::Fast;
-use Config::INI;
 use Text::Utils :normalize-string;
-use File::Find;
 use Ask;
 
 if not @*ARGS.elems {
