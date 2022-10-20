@@ -395,7 +395,7 @@ sub read-dist-ini($dir, :$debug) {
     my $inifil = find :dir($dir), :name<dist.ini>;
     return %dist if not $inifil;
 
-    %dist   = Config::INI::parse(slurp $inifil);
+    %dist   = App::Mi6::INI::parse(slurp $inifil);
     return %dist;
 }
 

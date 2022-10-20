@@ -5,7 +5,6 @@ use lib "../lib";
 use Mi6::Helper;
 
 use JSON::Fast;
-use Config::INI;
 use Text::Utils :normalize-string;
 use File::Find;
 use Ask;
@@ -460,7 +459,7 @@ sub read-dist-ini($dir, :$debug) {
     my $inifil = find :dir($dir), :name<dist.ini>;
     return %dist if not $inifil;
 
-    %dist   = Config::INI::parse(slurp $inifil);
+    %dist   = App::Mi6::INI::parse(slurp $inifil);
     return %dist;
 }
 

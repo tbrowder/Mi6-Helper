@@ -3,7 +3,6 @@
 use Mi6::Helper;
 
 use App::Mi6;
-use Config::INI;
 use Text::Utils :normalize-string;
 use File::Find;
 use Ask;

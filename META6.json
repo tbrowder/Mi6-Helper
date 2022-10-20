@@ -9,7 +9,6 @@
   "depends": [
     "Ask",
     "App::Mi6",
-    "Config::INI",
     "Text::Utils"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
