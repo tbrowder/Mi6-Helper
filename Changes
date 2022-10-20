@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.5.3  2022-10-20T06:29:03-05:00
     - Removed unneeded dependency
 
 0.5.2  2022-10-20T06:01:11-05:00
