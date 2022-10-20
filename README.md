@@ -14,7 +14,7 @@ SYNOPSIS
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
-  * Published in the **zef** Raku module ecosystem
+  * Published in the **Zef** Raku module ecosystem
 
   * User choice of the 'provides' text
 

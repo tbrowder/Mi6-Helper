@@ -2,6 +2,7 @@ Revision history for Mi6-Helper
 
 {{$NEXT}}
     - Capitalize Zef in the description
+    - Add missing dependency
 
 0.5.1  2022-09-30T08:55:09-05:00
     - The 'new' mode is now functional
