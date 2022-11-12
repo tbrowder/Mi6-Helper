@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/Mi6-Helper/workflows/test/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions)
+[![Actions Status](https://github.com/tbrowder/Mi6-Helper/workflows/linux/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions) [![Actions Status](https://github.com/tbrowder/Mi6-Helper/workflows/macos/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions) [![Actions Status](https://github.com/tbrowder/Mi6-Helper/workflows/windows/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions)
 
 NAME
 ====
