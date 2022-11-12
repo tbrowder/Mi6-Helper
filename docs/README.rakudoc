@@ -52,12 +52,13 @@ old  ***NOT YET IMPLEMENTED***
 
 Inspects an existing Git repository of a Raku module to help convert
 it to one that uses the C<App::Mi6> module with the Zef
-repository. Essentially all it does is add or mofify the following
+repository. Essentially all it does is add or modify the following
 files:
 
     =item Changes
     =item dist.ini
     =item README.md
+    =item .github/workflows/test.yml
     
 =end item
 
