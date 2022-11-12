@@ -140,8 +140,46 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $fh.say($_) for @omodfil;
     $fh.close;
 
+    # mod the .github/workflows/test.yml files
+    my $testfil  = "$modpdir/.github/workflows/test.yml";
+    my @itestfil = $testfil.IO.lines;
+
+    my $Lfil = "$modpdir/.github/workflows/linux.yml";
+    my $Wfil = "$modpdir/.github/workflows/windows.yml";
+    my $Mfil = "$modpdir/.github/workflows/macos.yml";
+
+    my $Lfh = open $Lfil, :w;
+    my $Wfh = open $Wfil, :w;
+    my $Mfh = open $Mfil, :w;
+
+    while @itestfil.elems {
+        my $line = @itestfil.shift;
+        if $line ~~ /'name:' \h+ test / {
+            $Lfh.say: "name: Linux";
+            $Wfh.say: "name: Win64";
+            $Mfh.say: "name: MacOS";
+            next;
+        }
+        if $line ~~ /'-' \h+ [ubuntu|windows|macos] '-' latest / {
+            # need to replace three lines with one
+            @itestfil.shift;
+            @itestfil.shift;
+            $Lfh.say: "name: Linux";
+            $Wfh.say: "name: Win64";
+            $Mfh.say: "name: MacOS";
+            next;
+        }
+        $Lfh.say: $line;
+        $Wfh.say: $line;
+        $Mfh.say: $line;
+    }
+    $Lfh.close;
+    $Wfh.close;
+    $Mfh.close;
+    unlink $testfil; # don't need the old one
+
     # mod the dist.ini file
-    my $distfil = "$modpdir/dist.ini";
+    my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
     my @odistfil;
     for @idistfil -> $line is copy {
@@ -149,8 +187,16 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         #   filename = lib/Foo/Bar.rakumod
         if $line ~~ /filename \h+ '=' / {
             $line = "filename = docs/README.rakudoc";
+            @odistfil.push: $line;
         }
-        @odistfil.push: $line;
+        elsif $line ~~ /provider \h+ '=' / {
+            $line = "provider = github-actions/linux.yml";
+            @odistfil.push: $line;
+            $line = "provider = github-actions/macos.yml";
+            @odistfil.push: $line;
+            $line = "provider = github-actions/windows.yml";
+            @odistfil.push: $line;
+        }
     }
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
