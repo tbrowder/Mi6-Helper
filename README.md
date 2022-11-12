@@ -67,6 +67,47 @@ Modified files for mode **new**
         # thus leaving:
         unit class Foo::Bar;
 
+      .github/workflows/test.yml:
+        # Create three new files to provide three separate test badges
+        .github/workflows/linux.yml
+        .github/workflows/windows.yml
+        .github/workflows/macos.yml
+        # Remove the original test.yml file
+
+### New directory and file:
+
+      # new directory
+      docs/
+        # new file:
+        README.rakudoc
+        # This new file first gets all the lines removed from
+        # 'lib/Foo/Bar.rakumod' resulting in a complete pod
+        # documement:
+        =begin pod
+           ...
+        =end pod
+        # Then, four lines are changed:
+
+        # 1. The line that begins:
+        Foo::Bar - blah blah blah
+        # is changed to either:
+        B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
+        # or:
+        B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
+
+        # 2. The line that begins:
+        Foo::Bar is ...
+        # is changed to:
+        B<Foo::Bar> is ...
+
+        # 3. The line that begins:
+        Copyright {current year} ...
+        # is changed to:
+        <copyright symbol> {current year} ...
+
+        # 4. The line that reads:
+        This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
 ### New directory and file:
 
       # new directory
