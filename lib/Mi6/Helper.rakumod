@@ -262,10 +262,11 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         next unless %opt-sections{$section}:exists and not $included
         ++$nsections;
         note "DEBUG: section '$section' not found, adding it" if $debug;
-        my $str = get
+        my $str = get-section $section;
+        @odistfil.push: $str;
     }
 
-    note "Found $nsections sectons" if $debug;
+    note "Found $nsections sections" if $debug;
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
 
