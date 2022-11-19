@@ -59,7 +59,7 @@ files:
     =item dist.ini
     =item README.md
     =item .github/workflows/test.yml
-    
+
 =end item
 
 =head2 Modified files for mode B<new>
@@ -74,6 +74,14 @@ Z<===================================================================>
     filename = lib/Foo/Bar.rakumod
     # is changed to:
     filename = docs/README.rakudoc
+    # the following App::Mi6 optional sections are added
+    # if not found:
+    #   PruneFiles
+    #   MetaNoIndex
+    #   AutoScanPackages
+    #   RunBeforeBuild
+    #   RunAfterBuild
+
 
   META6.json:
     # The line that begins:

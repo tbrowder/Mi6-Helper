@@ -202,11 +202,42 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     }
 
 
-    # mod the dist.ini file
+    # mod the dist.ini file. add ALL optional sections recognized byApp::Mi6
     my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
     my @odistfil;
+    # all 9 known sections
+    my %sections = [
+        ReadmeFromPod => False, # not normally optional
+        UploadToZef => False,   # not normally optional
+        UploadToCPAN => False,  # not normally optional
+        Badges => False,        # not normally optional
+        PruneFiles => False,
+        MetaNoIndex => False,
+        AutoScanPackages => False,
+        RunBeforeBuild => False,
+        RunAfterBuild => False,
+    ];
+    # optional sections we will add
+    my %opt-sections = set <
+        PruneFiles
+        MetaNoIndex
+        AutoScanPackages
+        RunBeforeBuild
+        RunAfterBuild
+    >;
+
     for @idistfil -> $line is copy {
+        # track sections used
+        if $line ~~ /'[' (\S\+) ']'/ {
+            my $section = ~$0;
+            if %sections{$section}:exists {
+                %sections{$section} = True;
+            }
+            else {
+                die "FATAL: Unknown App::Mi6 dist.ini section '$section'";
+            }
+        }
         # change the README line
         #   filename = lib/Foo/Bar.rakumod
         if $line ~~ /filename \h+ '=' / {
@@ -225,8 +256,19 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         }
         @odistfil.push: $line;
     }
+    # add optional sections
+    my $nsections = 0;
+    for %sections.kv -> $section, Bool $included {
+        next unless %opt-sections{$section}:exists and not $included
+        ++$nsections;
+        note "DEBUG: section '$section' not found, adding it" if $debug;
+        my $str = get
+    }
+
+    note "Found $nsections sectons" if $debug;
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
+
     $fh.close;
 
     # mod the META6.json file
@@ -255,4 +297,56 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
 
 sub is-git-repo($dir) {
     "$dir/.git".IO.d;
+}
+
+sub get-section($section --> Str) {
+    # returns the default section desired
+    if $section eq 'PruneFiles' {
+        return q:to/HERE/;
+
+        [PruneFiles]
+        ; if you want to prune files when packaging, then
+        ; filename = utils/tool.pl
+        ;
+        ; you can use Raku regular expressions
+        ; match = ^ 'xt/'
+        HERE
+    }
+    elsif $section eq 'MetaNoIndex' {
+        return q:to/HERE/;
+
+        [MetaNoIndex]
+        ; if you do not want to list some files in META6.json as "provides", then
+        ; filename = lib/Should/Not/List/Provides.rakumod
+        HERE
+    }
+    elsif $section eq 'AutoScanPackages' {
+        return q:to/HERE/;
+
+        [AutoScanPackages]
+        ; if you do not want mi6 to scan packages at all,
+        ; but you want to manage "provides" in META6.json by yourself, then:
+        ; enabled = false
+        HERE
+    }
+    elsif $section eq 'RunBeforeBuild' {
+        return q:to/HERE/;
+
+        ; execute some commands before 'mi6 build'
+        [RunBeforeBuild]
+        ; %x will be replaced by $*EXECUTABLE
+        ; cmd = %x -e 'say "hello"'
+        ; cmd = %x -e 'say "world"'
+        HERE
+    }
+    elsif $section eq 'RunAfterBuild' {
+        return q:to/HERE/;
+        ; execute some commands after `mi6 build`
+        [RunAfterBuild]
+        ; cmd = some shell command here
+        HERE
+    }
+    else {
+        dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
+    }
 }

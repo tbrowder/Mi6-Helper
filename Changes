@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Add all optional sections of the 'dist.ini' file
 
 0.6.0  2022-11-19T07:02:49-06:00
     - Correct gross error in creating three badges
@@ -21,7 +22,7 @@ Revision history for Mi6-Helper
 
 0.5.1  2022-09-30T08:55:09-05:00
     - The 'new' mode is now functional
-    - Add some advertising 
+    - Add some advertising
 
 0.5.0  2022-09-29T19:45:27-05:00
     - Publish to the Zef repository

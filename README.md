@@ -57,6 +57,14 @@ Modified files for mode **new**
         filename = lib/Foo/Bar.rakumod
         # is changed to:
         filename = docs/README.rakudoc
+        # the following App::Mi6 optional sections are added
+        # if not found:
+        #   PruneFiles
+        #   MetaNoIndex
+        #   AutoScanPackages
+        #   RunBeforeBuild
+        #   RunAfterBuild
+
 
       META6.json:
         # The line that begins:

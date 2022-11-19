@@ -8,7 +8,7 @@
   ],
   "depends": [
     "Ask",
-    "App::Mi6",
+    "App::Mi6:ver<3.0.0>",
     "Text::Utils"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",

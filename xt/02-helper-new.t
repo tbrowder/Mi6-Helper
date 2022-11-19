@@ -1,5 +1,6 @@
 use Test;
 
+use Ask;
 use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
@@ -47,6 +48,7 @@ ok $tempdir.IO.d;
 
     chdir $tempdir;
 
+    run "touch", ".Foo-Bar";
     my $module-name = "Foo::Bar";
     my $parent-dir  = $tempdir;
     my $provides = "Provides a framistan";
