@@ -24,6 +24,8 @@ if not @*ARGS.elems {
               Creates safe defaults for an 'mi6'-managed module in an existing
               Git Raku module repository. Reports findings and recommendations.
               See details in the README.
+ 
+    version
 
     Options:
       dir=X      - Selects parent directory 'X' for the operations, default is '.'
@@ -43,6 +45,7 @@ if not @*ARGS.elems {
     HERE
     exit;
 }
+
 
 # modes
 my $old   = 0;
@@ -75,8 +78,15 @@ for @*ARGS {
     when /^'dir=' (\S+)/ {
         $parent-dir = ~$0;
     }
-    when / ^d  / { ++$docs  }
-    when / ^D  / { ++$debug }
+    when / ^do[cs]?  / { ++$docs  }
+    when / ^de[bug]? / { ++$debug }
+    when /^v[ersion]? / {
+        # check for this version
+        #my $ver = %meta<version>:exists ?? %meta<version> !! '';
+        say "NYI"; #$ver;
+        exit;
+    }
+
     when /^'provides=' (\S+)/ {
         $provides = ~$0;
         if $provides.IO.r {
@@ -91,7 +101,6 @@ for @*ARGS {
         else {
             die "FATAL: Unable to read provides file '$provides'";
         }
-
     }
     default {
         die "FATAL: Unknown arg '$_'.";
@@ -223,6 +232,8 @@ else {
 
 # check for module name
 my $modnam = %meta<name>:exists ?? %meta<name> !! '';
+# check for this version
+my $ver = %meta<version>:exists ?? %meta<version> !! '';
 if not $modnam {
     # Can we use an App::Mi6 instance?
     # Not easily.
