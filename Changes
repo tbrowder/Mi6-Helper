@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.6.0  2022-11-19T07:02:49-06:00
     - Correct gross error in creating three badges
     - Make a hidden 'provides' file expected, but not required,
       in the event of no explicit 'provides' file.
