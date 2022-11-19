@@ -5,28 +5,38 @@ use Mi6::Helper;
 use App::Mi6;
 use Text::Utils :normalize-string;
 use File::Find;
+use JSON::Fast;
 use Ask;
 
-if not @*ARGS.elems {
-    print qq:to/HERE/;
-    Usage: {$*PROGRAM.basename} <mode> [options...]
+# check for META6.json and critical data
+my $metafil = "META6.json";
+my %meta;
+if $metafil.IO.r {
+    %meta = from-json $metafil.IO.slurp;
+    #%meta = App::Mi6::JSON::decode(slurp $metafil);
+    #say "META6.json' file found and read.";
+}
 
+if not @*ARGS.elems {
+    say qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <mode> [options...]
+    
     CAUTION: With mode 'old=X', ensure all user code is committed before using 
              the 'docs' option.
-
+    
     Modes:
       new=X - Creates a new module (named X) directory by driving 'mi6', then
               changing certain files in the new repo to conform to the 'docs'
               option.  It also uses the 'provides' option for a short
               description of its main purpose. See details in the README.
-
+    
       old   - *****NOT YET IMPLEMENTED*****
               Creates safe defaults for an 'mi6'-managed module in an existing
               Git Raku module repository. Reports findings and recommendations.
               See details in the README.
- 
+     
     version
-
+    
     Options:
       dir=X      - Selects parent directory 'X' for the operations, default is '.'
       provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
@@ -41,8 +51,9 @@ if not @*ARGS.elems {
                    to produce 'README.md'. Note extra preparation is REQUIRED
                    by the user before using it.
       Debug      - For developer use
+     
+    HERE         
 
-    HERE
     exit;
 }
 
@@ -82,8 +93,8 @@ for @*ARGS {
     when / ^de[bug]? / { ++$debug }
     when /^v[ersion]? / {
         # check for this version
-        #my $ver = %meta<version>:exists ?? %meta<version> !! '';
-        say "NYI"; #$ver;
+        my $ver = %meta<version>:exists ?? %meta<version> !! '';
+        say "version: $ver";
         exit;
     }
 
