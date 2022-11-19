@@ -1,6 +1,10 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Correct gross error in creating three badges
+    - Make a hidden 'provides' file expected, but not required,
+      in the event of no explicit 'provides' file.
+    - run 'git add' for the new files created
 
 0.5.4  2022-11-12T14:08:20-06:00
     - Add three testing badges to the README

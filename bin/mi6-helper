@@ -30,8 +30,8 @@ if not @*ARGS.elems {
       provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
                    in place of 'blah blah blah'. (Note No spaces are allowed in 
                    a text entry: use periods ['.'] between words.)
-      provides   - Without '=X', the program expects a hidden text file named
-                   the same as the module name but with hyphens in place of 
+                 - Without 'provide=X', the program will use a hidden text file 
+                   named the same as the module name but with hyphens in place of 
                    colon pairs. For example, the file for module 'Foo::Bar' is 
                    expected to be '.Foo-Bar'.
       force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
@@ -52,7 +52,7 @@ my $force = 0;
 my $debug = 0;
 my $docs  = 0;
 my $provides;
-my $provides-hidden = 0;
+my $provides-hidden = 1;
 
 # assume we are in the current working directory
 my $parent-dir   = '.';
@@ -77,9 +77,6 @@ for @*ARGS {
     }
     when / ^d  / { ++$docs  }
     when / ^D  / { ++$debug }
-    when /^ \h* provides \h* $/ {
-        ++$provides-hidden;
-    }
     when /^'provides=' (\S+)/ {
         $provides = ~$0;
         if $provides.IO.r {
@@ -89,10 +86,12 @@ for @*ARGS {
                 $provides ~= " $_";
             }
             $provides = normalize-string $provides;
+            $provides-hidden = 0;
         }
         else {
-            $provides ~~ s:g/'.'/ /;
+            die "FATAL: Unable to read provides file '$provides'";
         }
+
     }
     default {
         die "FATAL: Unknown arg '$_'.";
@@ -101,8 +100,8 @@ for @*ARGS {
 
 # Take care of 'provides'
 # PRO
-if $provides-hidden and not $provides.defined {
-    # info is expected to be in the hidden file
+if not $provides.defined {
+    # info should be in a hidden file
     my $hidden = ".$module-name";
     $hidden ~~ s:g/'::'/-/;
     if $hidden.IO.r {
@@ -115,7 +114,14 @@ if $provides-hidden and not $provides.defined {
         say "Getting description text from hidden file '$hidden'";
     }
     else {
-        die "FATAL: Unable to find the hidden file '$hidden'.";
+        say "FATAL: Unable to find the hidden file '$hidden'.";
+        my $res = ask "Do you want to continue without it (y/N): ";
+        if $res ~~ /:i ^ y/ {
+            say "Okay, continuing without a 'provides' input...";
+        }
+        else {
+            say "Aborting and exiting early.";
+        }
     }
 }
 

@@ -30,13 +30,11 @@ method git-user-name {
 multi method is-git-repo($dir) {
     "$dir/.git".IO.d;
 }
+
 multi method is-git-dir($dir) {
     "$dir/.git".IO.d;
 }
 
-multi method is-mi6-repo($dir) {
-    "$dir/dist.ini".IO.f;
-}
 multi method is-mi6-repo($dir) {
     "$dir/dist.ini".IO.f;
 }
@@ -134,6 +132,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     my $fh = open $docfil, :w;
     $fh.say($_) for @odocfil;
     $fh.close;
+    run("git", "add", $docfil) if is-git-repo "docs".IO.parent;
 
     # rewrite the module file
     $fh = open $mpath, :w;
@@ -152,21 +151,39 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     my $Wfh = open $Wfil, :w;
     my $Mfh = open $Mfil, :w;
 
+    my ($L, $W, $M);
     while @itestfil.elems {
         my $line = @itestfil.shift;
         if $line ~~ /'name:' \h+ test / {
-            $Lfh.say: "name: Linux";
-            $Wfh.say: "name: Win64";
-            $Mfh.say: "name: MacOS";
+            $L = $line;
+            $W = $line;
+            $M = $line;
+
+            $L ~~ s/test/Linux/;
+            $W ~~ s/test/Win64/;
+            $M ~~ s/test/MacOS/;
+
+            $Lfh.say: $L;
+            $Wfh.say: $W;
+            $Mfh.say: $M;
             next;
         }
         if $line ~~ /'-' \h+ [ubuntu|windows|macos] '-' latest / {
             # need to replace three lines with one
             @itestfil.shift;
             @itestfil.shift;
-            $Lfh.say: "name: Linux";
-            $Wfh.say: "name: Win64";
-            $Mfh.say: "name: MacOS";
+
+            $L = $line;
+            $W = $line;
+            $M = $line;
+
+            $L ~~ s/[ubuntu|windows|macos]/ubuntu/;
+            $W ~~ s/[ubuntu|windows|macos]/windows/;
+            $M ~~ s/[ubuntu|windows|macos]/macos/;
+
+            $Lfh.say: $L;
+            $Wfh.say: $W;
+            $Mfh.say: $M;
             next;
         }
         $Lfh.say: $line;
@@ -178,6 +195,13 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $Mfh.close;
     unlink $testfil; # don't need the old one
 
+    if is-git-repo ".github".IO.parent {
+        run "git", "add", $Lfil;
+        run "git", "add", $Wfil;
+        run "git", "add", $Mfil;
+    }
+
+
     # mod the dist.ini file
     my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
@@ -188,6 +212,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         if $line ~~ /filename \h+ '=' / {
             $line = "filename = docs/README.rakudoc";
             @odistfil.push: $line;
+            next;
         }
         elsif $line ~~ /provider \h+ '=' / {
             $line = "provider = github-actions/linux.yml";
@@ -196,7 +221,9 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
             @odistfil.push: $line;
             $line = "provider = github-actions/windows.yml";
             @odistfil.push: $line;
+            next;
         }
+        @odistfil.push: $line;
     }
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
@@ -225,3 +252,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     }
 
 } # sub mi6-helper-new
+
+sub is-git-repo($dir) {
+    "$dir/.git".IO.d;
+}
