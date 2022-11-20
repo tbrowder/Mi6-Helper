@@ -264,6 +264,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         }
         @odistfil.push: $line;
     }
+
     # add optional sections
     my $nsections = 0;
     my %sections-to-add;
@@ -273,7 +274,11 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         note "DEBUG: section '$section' not found, adding it" if $debug;
         %sections-to-add{$section} = True;
     }
+
     # add missing sections in order
+    # if so, add a blank line for neatness
+    @odistfil.push("") if %sections-to-add.elems;
+
     for @opt-sections -> $section {
         next unless %sections-to-add{$section}:exists;
         my $str = get-section $section;
