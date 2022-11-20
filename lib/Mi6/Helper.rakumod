@@ -227,6 +227,13 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         RunBeforeBuild
         RunAfterBuild
     >;
+    my @opt-sections = <
+        PruneFiles
+        MetaNoIndex
+        AutoScanPackages
+        RunBeforeBuild
+        RunAfterBuild
+    >;
 
     for @idistfil -> $line is copy {
         # track sections used
@@ -259,10 +266,16 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     }
     # add optional sections
     my $nsections = 0;
+    my %sections-to-add;
     for %sections.kv -> $section, Bool $included {
         next unless %opt-sections{$section}:exists and not $included
         ++$nsections;
         note "DEBUG: section '$section' not found, adding it" if $debug;
+        %sections-to-add{$section} = True;
+    }
+    # add missing sections in order
+    for @opt-sections -> $section {
+        next unless %sections-to-add{$section}:exists;
         my $str = get-section $section;
         @odistfil.push: $str;
     }
@@ -305,7 +318,6 @@ sub get-section($section --> Str) {
     # returns the default section desired
     if $section eq 'PruneFiles' {
         return q:to/HERE/;
-
         [PruneFiles]
         ; if you want to prune files when packaging, then
         ; filename = utils/tool.pl
@@ -316,7 +328,6 @@ sub get-section($section --> Str) {
     }
     elsif $section eq 'MetaNoIndex' {
         return q:to/HERE/;
-
         [MetaNoIndex]
         ; if you do not want to list some files in META6.json as "provides", then
         ; filename = lib/Should/Not/List/Provides.rakumod
@@ -324,7 +335,6 @@ sub get-section($section --> Str) {
     }
     elsif $section eq 'AutoScanPackages' {
         return q:to/HERE/;
-
         [AutoScanPackages]
         ; if you do not want mi6 to scan packages at all,
         ; but you want to manage "provides" in META6.json by yourself, then:
@@ -333,7 +343,6 @@ sub get-section($section --> Str) {
     }
     elsif $section eq 'RunBeforeBuild' {
         return q:to/HERE/;
-
         ; execute some commands before 'mi6 build'
         [RunBeforeBuild]
         ; %x will be replaced by $*EXECUTABLE
