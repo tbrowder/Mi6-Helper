@@ -8,15 +8,6 @@ use File::Find;
 use JSON::Fast;
 use Ask;
 
-# check for META6.json and critical data
-my $metafil = "META6.json";
-my %meta;
-if $metafil.IO.r {
-    %meta = from-json $metafil.IO.slurp;
-    #%meta = App::Mi6::JSON::decode(slurp $metafil);
-    #say "META6.json' file found and read.";
-}
-
 if not @*ARGS.elems {
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
@@ -93,11 +84,10 @@ for @*ARGS {
     when / ^de[bug]? / { ++$debug }
     when /^v[ersion]? / {
         # check for this version
-        my $ver = %meta<version>:exists ?? %meta<version> !! '';
+        my $ver = get-version;
         say "version: $ver";
         exit;
     }
-
     when /^'provides=' (\S+)/ {
         $provides = ~$0;
         if $provides.IO.r {

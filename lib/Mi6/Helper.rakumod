@@ -1,6 +1,7 @@
 unit class Mi6::Helper;
 
 use App::Mi6;
+use JSON::Fast;
 
 has $.parent-dir = '.';
 has $.module-name;             #= e.g., 'Foo::Bar'
@@ -350,4 +351,20 @@ sub get-section($section --> Str) {
     else {
         dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
     }
+}
+
+sub get-version()  is export {
+    # check for META6.json and critical data
+    my $metafil = "dist".IO.parent.child("META6.json");
+    my %meta;
+    if $metafil.IO.r {
+        %meta = from-json $metafil.IO.slurp;
+        #%meta = App::Mi6::JSON::decode(slurp $metafil);
+        #say "META6.json' file found and read.";
+        %meta<version>:exists ?? %meta<version> !! '';
+    }
+    else {
+        die "FATAL: Unable to find META6 file";
+    }
+
 }
