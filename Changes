@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.6.1  2022-11-19T20:00:56-06:00
     - Add all optional sections of the 'dist.ini' file
     - Add a 'version' mode for the module
     - Remove resources subdir
