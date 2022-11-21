@@ -29,7 +29,8 @@ Note this is API 2 and its approach has changed significantly since the author h
 
 This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation:
 
-### new
+new
+---
 
   * new=X dir=Y
 
@@ -43,7 +44,8 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
   * Put a semicolon in the `dist.ini` file to comment out the line naming the `macos.yml` file
 
-### old
+old
+---
 
   * old ***NOT YET IMPLEMENTED***
 
