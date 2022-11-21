@@ -133,7 +133,6 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     my $fh = open $docfil, :w;
     $fh.say($_) for @odocfil;
     $fh.close;
-    run("git", "add", $docfil) if is-git-repo $modpdir;
 
     # rewrite the module file
     $fh = open $mpath, :w;
@@ -195,12 +194,6 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $Wfh.close;
     $Mfh.close;
     unlink $testfil; # don't need the old one
-
-    if is-git-repo $modpdir {
-        run "git", "add", $Lfil;
-        run "git", "add", $Wfil;
-        run "git", "add", $Mfil;
-    }
 
     # mod the dist.ini file. add ALL optional sections recognized byApp::Mi6
     my $distfil  = "$modpdir/dist.ini";
@@ -310,6 +303,16 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         # works okay for Foo::Bar (creates dir Foo-Bar)
         note "Exiting after mi6 create";
         exit
+    }
+
+    if is-git-repo $modpdir {
+        # need to change dirs
+        note "$modpdir IS a git repo" if $debug;
+        temp $*CWD = $modpdir.IO;
+        run "git", "add", ".github/workflows/linux.yml";
+        run "git", "add", ".github/workflows/windows.yml";
+        run "git", "add", ".github/workflows/macos.yml";
+        run "git", "add", "docs/README.rakudoc";
     }
 
 } # sub mi6-helper-new
