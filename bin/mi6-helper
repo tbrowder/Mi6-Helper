@@ -83,7 +83,7 @@ for @*ARGS {
     when / ^do[cs]?  / { ++$docs  }
     when / ^de[bug]? / { ++$debug }
     when /^v[ersion]? / {
-        # check for this version
+        # check for this module's version
         my $ver = get-version;
         say "version: $ver";
         exit;
@@ -217,6 +217,8 @@ else {
       '$ fez register' and follow the instructions.
     HERE
 }
+
+#sub get-version {
 
 # check for META6.json and critical data
 my $metafil = "$dir/META6.json";

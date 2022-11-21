@@ -133,7 +133,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     my $fh = open $docfil, :w;
     $fh.say($_) for @odocfil;
     $fh.close;
-    run("git", "add", $docfil) if is-git-repo "$modpdir";
+    run("git", "add", $docfil) if is-git-repo $modpdir;
 
     # rewrite the module file
     $fh = open $mpath, :w;
@@ -196,7 +196,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $Mfh.close;
     unlink $testfil; # don't need the old one
 
-    if is-git-repo "$modpdir" {
+    if is-git-repo $modpdir {
         run "git", "add", $Lfil;
         run "git", "add", $Wfil;
         run "git", "add", $Mfil;
@@ -366,18 +366,21 @@ sub get-section($section --> Str) {
     }
 }
 
-sub get-version()  is export {
-    # check for META6.json and critical data
-    my $metafil = "dist".IO.parent.child("META6.json");
-    my %meta;
+sub get-version() is export {
+    # are we local or installed?
+    my $ver;
+
+    my $metafil = "dist.ini".IO.parent.child("META6.json");
     if $metafil.IO.r {
-        %meta = from-json $metafil.IO.slurp;
-        #%meta = App::Mi6::JSON::decode(slurp $metafil);
-        #say "META6.json' file found and read.";
-        %meta<version>:exists ?? %meta<version> !! '';
+        # must be local
+        my %meta = from-json $metafil.IO.slurp;
+        $ver = %meta<version>:exists ?? %meta<version> !! '';
     }
     else {
         die "FATAL: Unable to find META6 file";
     }
+    return $ver if $ver;
 
+    $ver = $?DISTRIBUTION.meta<ver> // '';
+    $ver
 }
