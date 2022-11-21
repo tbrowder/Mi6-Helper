@@ -58,7 +58,7 @@ files:
     =item Changes
     =item dist.ini
     =item README.md
-    =item .github/workflows/test.yml
+    =item .github/workflows/*.yml
 
 =end item
 
@@ -101,10 +101,10 @@ Z<===================================================================>
     .github/workflows/macos.yml
     # Remove the original test.yml file
 
-
 =end code
 
 Z<===================================================================>
+
 =head3 New directory and file:
 
 =begin code
@@ -115,7 +115,7 @@ Z<===================================================================>
     README.rakudoc
     # This new file first gets all the lines removed from
     # 'lib/Foo/Bar.rakumod' resulting in a complete pod
-    # documement:
+    # document:
     =begin pod
        ...
     =end pod
@@ -155,7 +155,7 @@ Z<===================================================================>
     README.rakudoc
     # This new file first gets all the lines removed from
     # 'lib/Foo/Bar.rakumod' resulting in a complete pod
-    # documement:
+    # document:
     =begin pod
        ...
     =end pod

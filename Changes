@@ -2,7 +2,8 @@ Revision history for Mi6-Helper
 
 {{$NEXT}}
     - Fixed 'git add' for new files
-    - Corected 'version' option to handle both local and installed locations
+    - Corrected 'version' option to handle both local and installed locations
+    - Updated README for details on the three workflow test files
 
 0.6.1  2022-11-19T20:00:56-06:00
     - Add all optional sections of the 'dist.ini' file
