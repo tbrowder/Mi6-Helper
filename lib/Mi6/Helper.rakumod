@@ -196,7 +196,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $Mfh.close;
     unlink $testfil; # don't need the old one
 
-    if is-git-repo "$modpdir {
+    if is-git-repo "$modpdir" {
         run "git", "add", $Lfil;
         run "git", "add", $Wfil;
         run "git", "add", $Mfil;
