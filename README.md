@@ -29,17 +29,21 @@ Note this is API 2 and its approach has changed significantly since the author h
 
 This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation:
 
+### new
+
   * new=X dir=Y
 
     Creates a new module 'X' in parent directory 'Y' (default '.') using **mi6** and then changes some of the files and directories to satisfy the 'docs' option and, optionally, substitute 'blah...' with the user's short description (if it is provided).
 
     CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` option is used. Use the `force` option at your own risk!
 
-NOTE: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps (for example, remove the `macos` test):
+**NOTE**: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps (for example, remove the `macos` test):
 
   * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir name <dev> to hold such things).
 
   * Put a semicolon in the `dist.ini` file to comment out the line naming the `macos.yml` file
+
+### old
 
   * old ***NOT YET IMPLEMENTED***
 

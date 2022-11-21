@@ -34,6 +34,8 @@ recovery from any unwanted changes.
 This module installs a Raku executable named C<mi6-helper> which is
 designed for two major modes of operation:
 
+=head3 new
+
 =begin item
 new=X dir=Y
 
@@ -47,12 +49,15 @@ will abort B<unless> the C<force> option is used. Use the C<force> option at you
 own risk!
 =end item
 
-NOTE: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
+B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
 (for example, remove the C<macos> test):
 
 =item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the author uses a subdir
 name <dev> to hold such things).
 =item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
+
+
+=head3 old
 
 =begin item
 old  ***NOT YET IMPLEMENTED***
