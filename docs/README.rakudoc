@@ -47,7 +47,7 @@ will abort B<unless> the C<force> option is used. Use the C<force> option at you
 own risk!
 =end item
 
-NOTE: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps,
+NOTE: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
 (for example, remove the C<macos> test):
 
 =item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the author uses a subdir
