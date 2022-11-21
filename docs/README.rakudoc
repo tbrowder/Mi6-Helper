@@ -63,7 +63,6 @@ files:
 =end item
 
 =head2 Modified files for mode B<new>
-
 =head3 Files with replaced, modified, or added lines:
 
 =begin code
@@ -137,7 +136,6 @@ files:
 
     # 4. The line that reads:
     This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
 
 =end code
 
