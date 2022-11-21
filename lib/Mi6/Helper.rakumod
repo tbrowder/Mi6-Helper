@@ -133,7 +133,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     my $fh = open $docfil, :w;
     $fh.say($_) for @odocfil;
     $fh.close;
-    run("git", "add", $docfil) if is-git-repo "docs".IO.parent;
+    run("git", "add", $docfil) if is-git-repo "$modpdir/docs".IO.parent;
 
     # rewrite the module file
     $fh = open $mpath, :w;
@@ -196,7 +196,7 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
     $Mfh.close;
     unlink $testfil; # don't need the old one
 
-    if is-git-repo ".github".IO.parent {
+    if is-git-repo "$modpdir/.github".IO.parent {
         run "git", "add", $Lfil;
         run "git", "add", $Wfil;
         run "git", "add", $Mfil;
