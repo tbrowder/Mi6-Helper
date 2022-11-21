@@ -35,6 +35,12 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
     CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` option is used. Use the `force` option at your own risk!
 
+NOTE: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps, (for example, remove the `macos` test):
+
+  * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir name <dev> to hold such things).
+
+  * Put a semicolon in the `dist.ini` file to comment out the line naming the `macos.yml` file
+
   * old ***NOT YET IMPLEMENTED***
 
     Inspects an existing Git repository of a Raku module to help convert it to one that uses the `App::Mi6` module with the Zef repository. Essentially all it does is add or modify the following files:
