@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.6.2  2022-11-21T18:45:16-06:00
     - Fixed 'git add' for new files
     - Corrected 'version' option to handle both local and installed locations
     - Updated README for details on the three workflow test files;
