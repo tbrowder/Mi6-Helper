@@ -72,7 +72,7 @@ ok $tempdir.IO.d, "check tempdir";
     }
     is %meta<auth>, $auth;
     is @(%meta<authors>)[0], $author;
-    my $doc = slurp "$moddir/lib";
+    #my $doc = slurp "$moddir/lib";
 }
 
 done-testing;
