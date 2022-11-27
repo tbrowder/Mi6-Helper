@@ -45,7 +45,7 @@ option and, optionally, substitute 'blah...' with the user's short
 description (if it is provided).
 
 Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
-so the new repository is ready to C<git push <remote> <branch>>,
+so the new repository is ready to C<git push <remote> <branch>>
 and C<mi6 release>.
 
 CAUTION: If file C<dist.ini> already exists in the parent directory, the program
