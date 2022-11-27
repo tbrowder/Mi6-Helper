@@ -1,6 +1,12 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Ensure either $new or $old is selected before dealing with $provides
+    - Move 'version' in help message to be aligned with other modes
+    - Correctly corrected 'version' option to handle both local and installed locations
+    - Make new repo push ready after all changes are made, including a final 'mi6 build'
+      to update the 'README.md' and then a 'git commit -m"initial commit"'
+    - Update the README for the new capabilities
 
 0.6.2  2022-11-21T18:45:16-06:00
     - Fixed 'git add' for new files

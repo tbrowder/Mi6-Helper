@@ -100,7 +100,8 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
             }
             else {
                 # bold module name only
-                $line ~~ s/\h*$module-name/B<$module-name>/;
+                $line = "B<$module-name> - "
+                #$line ~~ s/\h*$module-name/B<$module-name>/;
             }
         }
         elsif $line.contains("$module-name is") {
@@ -313,6 +314,10 @@ sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
         run "git", "add", ".github/workflows/windows.yml";
         run "git", "add", ".github/workflows/macos.yml";
         run "git", "add", "docs/README.rakudoc";
+
+        # finish the repo to be ready for pushing
+        run "mi6", "build";
+        run "git", "commit", "-a", "-m'initial commit'";
     }
 
 } # sub mi6-helper-new
@@ -378,9 +383,6 @@ sub get-version() is export {
         # must be local
         my %meta = from-json $metafil.IO.slurp;
         $ver = %meta<version>:exists ?? %meta<version> !! '';
-    }
-    else {
-        die "FATAL: Unable to find META6 file";
     }
     return $ver if $ver;
 

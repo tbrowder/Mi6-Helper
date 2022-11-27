@@ -44,6 +44,10 @@ B<mi6> and then changes some of the files and directories to satisfy the 'docs'
 option and, optionally, substitute 'blah...' with the user's short
 description (if it is provided).
 
+Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
+so the new repository is ready to C<git push <remote> <branch>>,
+and C<mi6 release>.
+
 CAUTION: If file C<dist.ini> already exists in the parent directory, the program
 will abort B<unless> the C<force> option is used. Use the C<force> option at your
 own risk!
