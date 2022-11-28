@@ -23,7 +23,6 @@ management by C<App::Mi6> with modifications including:
 =head2 Special installation requirements
 
 The user must install and have an account with C<fez> to use this module.
-Installation
 
 =head1 DESCRIPTION
 
