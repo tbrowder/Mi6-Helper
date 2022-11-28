@@ -20,6 +20,11 @@ SYNOPSIS
 
   * `README.md` file source removed from the base module and placed in a new `docs/README.rakudoc file`
 
+Special installation requirements
+---------------------------------
+
+The use must install and have an account with <fez> to use this module. Installation
+
 DESCRIPTION
 ===========
 

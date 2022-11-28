@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Add notice about the fez requirement
 
 0.7.0  2022-11-27T15:14:25-06:00
     - Ensure either $new or $old is selected before dealing with $provides
