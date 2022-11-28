@@ -23,7 +23,7 @@ SYNOPSIS
 Special installation requirements
 ---------------------------------
 
-The use must install and have an account with <fez> to use this module. Installation
+The user must install and have an account with `fez` to use this module. Installation
 
 DESCRIPTION
 ===========
