@@ -20,9 +20,9 @@ method mi6-old-cmd(:$parent-dir, :$module-name, :$debug) {
     #run "mi6", 'new', '--zef', $module-name;
 }
 
-method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
-    chdir $parent-dir;
-    run "mi6", 'new', '--zef', $module-name;
+method git-status(--> Bool) {
+    # branch and working tree status
+    my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
 }
 
 method git-user-email {
