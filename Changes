@@ -2,6 +2,7 @@ Revision history for Mi6-Helper
 
 {{$NEXT}}
     - Add rudimentary "old" mode, checks git status only for now
+    - Correct typo
 
 0.7.1  2022-11-28T08:40:25-06:00
     - Add notice about the fez requirement
