@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Update required version of App::Mi6 and Ask
     - Add rudimentary "old" mode, checks git status only for now
     - Correct typo
 
