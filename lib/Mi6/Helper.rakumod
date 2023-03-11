@@ -15,9 +15,14 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
-    chdir $parent-dir;
-    run "mi6", 'new', '--zef', $module-name;
+method mi6-old-cmd(:$parent-dir, :$module-name, :$debug) {
+    #chdir $parent-dir;
+    #run "mi6", 'new', '--zef', $module-name;
+}
+
+method git-status {
+    # branch and working tree status
+    my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
 }
 
 method git-user-email {
@@ -55,7 +60,10 @@ sub get-hidden-name(:$module-name) is export {
     $s ~ '.' ~ $s;
 }
 
-sub mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug) is export {
+sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
+}
+
+sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {

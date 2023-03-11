@@ -8,9 +8,9 @@
   ],
   "depends": [
     "JSON::Fast",
-    "Ask:ver<0.0.3>",
-    "App::Mi6:ver<3.0.2>",
-    "Text::Utils"
+    "App::Mi6:ver<3.0.2+>",
+    "Text::Utils",
+    "Ask:ver<0.0.3+>"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
   "license": "Artistic-2.0",
@@ -29,5 +29,5 @@
     "File::Directory::Tree",
     "File::Temp"
   ],
-  "version": "0.7.1"
+  "version": "0.7.2"
 }

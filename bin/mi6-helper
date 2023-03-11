@@ -14,7 +14,6 @@ if not @*ARGS.elems {
     
     CAUTION: With mode 'old=X', ensure all user code is committed before using 
              the 'docs' option.
-    
     Modes:
       new=X - Creates a new module (named X) directory by driving 'mi6', then
               changing certain files in the new repo to conform to the 'docs'
@@ -33,10 +32,10 @@ if not @*ARGS.elems {
       provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
                    in place of 'blah blah blah'. (Note No spaces are allowed in 
                    a text entry: use periods ['.'] between words.)
-                 - Without the 'provides' options, the program will use a hidden 
-                   text file named the same as the module name but with hyphens 
-                   in place of colon pairs. For example, the file for module 
-                   'Foo::Bar' is expected to be '.Foo-Bar'.
+                 - Without 'provides=X', the program will use a hidden text file 
+                   named the same as the module name but with hyphens in place of 
+                   colon pairs. For example, the file for module 'Foo::Bar' is 
+                   expected to be '.Foo-Bar'.
       force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
       docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
                    to produce 'README.md'. Note extra preparation is REQUIRED
@@ -47,7 +46,6 @@ if not @*ARGS.elems {
 
     exit;
 }
-
 
 # modes
 my $old   = 0;
