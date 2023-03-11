@@ -8,8 +8,8 @@
   ],
   "depends": [
     "JSON::Fast",
-    "Ask",
-    "App::Mi6:ver<3.0.0>",
+    "Ask:ver<0.0.3>",
+    "App::Mi6:ver<3.0.2>",
     "Text::Utils"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
