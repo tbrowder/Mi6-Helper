@@ -1,6 +1,12 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Fix error with rudementary "old" mode
+
+0.7.2  2023-03-10T09:18:22-06:00
+    - Update required version of App::Mi6 and Ask
+    - Add rudimentary "old" mode, checks git status only for now
+    - Correct typo
 
 0.7.2  2023-03-10T09:18:22-06:00
     - Update required version of App::Mi6 and Ask

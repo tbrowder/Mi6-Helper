@@ -14,7 +14,6 @@ if not @*ARGS.elems {
     
     CAUTION: With mode 'old=X', ensure all user code is committed before using 
              the 'docs' option.
-    
     Modes:
       new=X - Creates a new module (named X) directory by driving 'mi6', then
               changing certain files in the new repo to conform to the 'docs'
@@ -47,7 +46,6 @@ if not @*ARGS.elems {
 
     exit;
 }
-
 
 # modes
 my $old   = 0;
