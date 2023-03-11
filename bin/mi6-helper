@@ -33,10 +33,10 @@ if not @*ARGS.elems {
       provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
                    in place of 'blah blah blah'. (Note No spaces are allowed in 
                    a text entry: use periods ['.'] between words.)
-                 - Without 'provide=X', the program will use a hidden text file 
-                   named the same as the module name but with hyphens in place of 
-                   colon pairs. For example, the file for module 'Foo::Bar' is 
-                   expected to be '.Foo-Bar'.
+                 - Without the 'provides' options, the program will use a hidden 
+                   text file named the same as the module name but with hyphens 
+                   in place of colon pairs. For example, the file for module 
+                   'Foo::Bar' is expected to be '.Foo-Bar'.
       force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
       docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
                    to produce 'README.md'. Note extra preparation is REQUIRED

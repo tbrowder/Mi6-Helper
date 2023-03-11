@@ -1,0 +1,7 @@
+Get a list of the tags:
+
+  $ git tag -l
+
+Start a new branch from a tag:
+
+  $ git switch -c <new branch> <tag>
