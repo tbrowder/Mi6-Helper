@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.7.3  2023-03-10T18:50:25-06:00
     - Fix error with rudementary "old" mode
 
 0.7.2  2023-03-10T09:18:22-06:00
