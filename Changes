@@ -1,6 +1,10 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Really fix error with version 0.7.2 (and thus 0.7.3) 
+      and get back on a good track
+    - Add rudimentary "old" mode, checks git status only for now
+    - Move all extra dev material to /dev directory
 
 0.7.3  2023-03-10T18:50:25-06:00
     - Fix error with rudementary "old" mode

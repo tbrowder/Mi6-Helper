@@ -15,9 +15,9 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-method mi6-old-cmd(:$parent-dir, :$module-name, :$debug) {
-    #chdir $parent-dir;
-    #run "mi6", 'new', '--zef', $module-name;
+method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
+    chdir $parent-dir;
+    run "mi6", 'new', '--zef', $module-name;
 }
 
 method git-status {

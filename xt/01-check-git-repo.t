@@ -8,7 +8,7 @@ use Temp::Path;
 #    standard start in order to test detecting unversioned or uncommited files.
 # 2. Unmanaged modules with varying required files missing:
 
-my $debug = 1;
+my $debug; # = 0;
 my $tdir;
 if not $debug.defined {
     $tdir = make-temp-dir;
