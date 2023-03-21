@@ -382,18 +382,6 @@ sub get-section($section --> Str) {
     }
 }
 
-sub get-version() is export {
-    # are we local or installed?
-    my $ver;
-
-    my $metafil = "dist.ini".IO.parent.child("META6.json");
-    if $metafil.IO.r {
-        # must be local
-        my %meta = from-json $metafil.IO.slurp;
-        $ver = %meta<version>:exists ?? %meta<version> !! '';
-    }
-    return $ver if $ver;
-
-    $ver = $?DISTRIBUTION.meta<ver> // '';
-    $ver
+sub get-version is export {
+    $?DISTRIBUTION.meta<version>
 }

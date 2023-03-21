@@ -1,9 +1,10 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Get the 'version' mode working for the installed module. Thanks @ugexe!
 
 0.8.0  2023-03-16T19:05:43-05:00
-    - Really fix error with version 0.7.2 (and thus 0.7.3) 
+    - Really fix error with version 0.7.2 (and thus 0.7.3)
       and get back on a good track
     - Add rudimentary "old" mode, checks git status only for now
     - Move all extra dev material to /dev directory
