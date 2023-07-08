@@ -29,13 +29,22 @@ if not @*ARGS.elems {
     
     Options:
       dir=X      - Selects parent directory 'X' for the operations, default is '.'
+
+      [hidden-option]
+                 - If a hidden file (e.g., '.X') is provided, the program will
+                   use the contents of that hidden text file for the 'provides'
+                   text. The hidden file must be named the same as the module
+                   name, but with hyphens in place of any colon pairs. For 
+                   example, the file for module 'new=Foo::Bar' is expected to 
+                   be '.Foo-Bar'. Note the author prefers this option for two
+                   reasons: (1) it doesn't clutter the visible work space and
+                   (2) it is more reliable when you make an error and want to
+                   recreate the module.
+
       provides=X - With '=X', defines either a file 'X' or text 'X' to be used 
                    in place of 'blah blah blah'. (Note No spaces are allowed in 
                    a text entry: use periods ['.'] between words.)
-                 - Without 'provides=X', the program will use a hidden text file 
-                   named the same as the module name but with hyphens in place of 
-                   colon pairs. For example, the file for module 'Foo::Bar' is 
-                   expected to be '.Foo-Bar'.
+
       force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
       docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
                    to produce 'README.md'. Note extra preparation is REQUIRED
