@@ -1,9 +1,14 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Improved the documentation for use of the hidden file for
+      the 'provides' text.
+    - Recommend the 'hidden file' option for the 'provides'
+      text.
 
 0.8.1  2023-03-21T17:06:58-05:00
-    - Get the 'version' mode working for the installed module. Thanks @ugexe!
+    - Get the 'version' mode working for the installed module. 
+      Thanks, @ugexe!
 
 0.8.0  2023-03-16T19:05:43-05:00
     - Really fix error with version 0.7.2 (and thus 0.7.3)
