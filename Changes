@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Get windows testing to be more reliable
 
 0.8.1  2023-03-21T17:06:58-05:00
     - Get the 'version' mode working for the installed module. Thanks @ugexe!
