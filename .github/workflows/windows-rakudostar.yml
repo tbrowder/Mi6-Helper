@@ -26,7 +26,7 @@ jobs:
       - name: Install Dependencies
         run: |
             choco install rakudostar
-            zef install --debug --/test --test-depends --deps-only .
+            zef --exclude="z" install --debug --/test --test-depends --deps-only .
       - name: Install App::Prove6
         run: zef install --debug --/test App::Prove6
       - name: Run Tests
