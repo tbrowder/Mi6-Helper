@@ -27,6 +27,7 @@ jobs:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
         run: |
+            choco install zip
             zef install --debug 'z:from<native>'
             zef install --debug --/test --test-depends --deps-only .
       - name: Install App::Prove6
