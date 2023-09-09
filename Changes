@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.9.1  2023-09-09T15:48:27-05:00
     - Get Windows testing to be more reliable by using Github workflows
       test lines like 'zef --exclude="z" install ..." (for Windows only,
       not needed for Linux or MacOS).
