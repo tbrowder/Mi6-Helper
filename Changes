@@ -1,6 +1,9 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Get Windows testing to be more reliable by using Github workflows
+      test lines like 'zef --exclude="z" install ..." (for Windows only,
+      not needed for Linux or MacOS).
 
 0.9.0  2023-07-08T18:20:35-05:00
     - Improved the documentation for use of the hidden file for
