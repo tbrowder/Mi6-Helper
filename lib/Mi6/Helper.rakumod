@@ -148,7 +148,16 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $fh.say($_) for @omodfil;
     $fh.close;
 
-    # use the .github/workflows/*.yml files as I've updated them
+    # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
+    # but they will be in DISTRIBUTION.contents
+    my ($Lstr, $Mstr, $Wstr) = get-workflows; # fil = "$parent-dir/.github/workflows/linux.yml";
+    my $Lfil = "$modpdir/.github/workflows/linux.yml";
+    my $Wfil = "$modpdir/.github/workflows/windows.yml";
+    my $Mfil = "$modpdir/.github/workflows/macos.yml";
+
+    spurt $Lfil, $Lstr;
+    spurt $Mfil, $Mstr;
+    spurt $Wfil, $Wstr;
 
     =begin comment
     my $testfil  = "$modpdir/.github/workflows/test.yml";
@@ -388,6 +397,13 @@ sub get-section($section --> Str) {
     else {
         dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
     }
+}
+
+sub get-workflows(--> List) is export {
+    my $L = $?DISTRIBUTION.contents<.github/workflows/linux.yml>;
+    my $M = $?DISTRIBUTION.contents<.github/workflows/macos.yml>;
+    my $W = $?DISTRIBUTION.contents<.github/workflows/windows.yml>;
+    $L, $M, $L
 }
 
 sub get-version is export {
