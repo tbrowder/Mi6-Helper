@@ -96,7 +96,7 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         }
         @omodfil.push: $line;
     }
-    # put ramaining content in the README.rakudoc file
+    # put remaining content in the README.rakudoc file
     @idocfil.push($_) for @imodfil;
 
     # treat the README file
@@ -118,8 +118,8 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         }
         elsif $line ~~ /^ \h* Copyright/ {
             # use copyright symbol
-            #  Copyright © 2021 Tom Browder
-            #  Copyright E<0x00a9> 2021 Tom Browder
+            #  Copyright © 2023 Tom Browder
+            #  Copyright E<0x00a9> 2023 Tom Browder
             $line ~~ s/Copyright/©/;
         }
         elsif $line ~~ /^ \h* This \h+ library/ {
@@ -148,18 +148,24 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $fh.say($_) for @omodfil;
     $fh.close;
 
-    # mod the .github/workflows/test.yml files
+    # use the .github/workflows/*.yml files as I've updated them
+
+    =begin comment
     my $testfil  = "$modpdir/.github/workflows/test.yml";
     my @itestfil = $testfil.IO.lines;
+    =end comment
 
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
     my $Wfil = "$modpdir/.github/workflows/windows.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
 
+    =begin comment
     my $Lfh = open $Lfil, :w;
     my $Wfh = open $Wfil, :w;
     my $Mfh = open $Mfil, :w;
+    =end comment
 
+    =begin comment
     my ($L, $W, $M);
     while @itestfil.elems {
         my $line = @itestfil.shift;
@@ -203,8 +209,10 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $Wfh.close;
     $Mfh.close;
     unlink $testfil; # don't need the old one
+    =end comment
 
-    # mod the dist.ini file. add ALL optional sections recognized byApp::Mi6
+    # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
+
     my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
     my @odistfil;

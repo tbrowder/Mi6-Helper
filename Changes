@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Use @ugexe's solution to replace prove6
     - Get Windows testing to be more reliable by using Github workflows
       test lines like 'zef --exclude="z" install ..." (for Windows only,
       not needed for Linux or MacOS).

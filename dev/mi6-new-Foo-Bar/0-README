@@ -69,3 +69,11 @@ Foo-Bar/
     This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
     # is changed to better English::
     This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+
+# 2023-09-29
+
+  .github/workflows
+    # 1. The single test.yml file has been split into separate OS files:
+        linux.yml
+        macos.yml
+        windows.yml
