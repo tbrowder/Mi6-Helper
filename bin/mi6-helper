@@ -40,7 +40,7 @@ if not @*ARGS.elems {
       docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
                    to produce 'README.md'. Note extra preparation is REQUIRED
                    by the user before using it.
-      Debug      - For developer use
+      debug      - For developer use
      
     HERE         
 
@@ -79,7 +79,21 @@ for @*ARGS {
         $parent-dir = ~$0;
     }
     when / ^do[cs]?  / { ++$docs  }
-    when / ^de[bug]? / { ++$debug }
+    when / ^de[bug]? / { 
+        ++$debug; 
+        # check for this module's workflows file(s'
+        say "DEBUG checking for expected workflow(s):";
+        for "linux", "macos", "windows" -> $OS {
+            my $path = ".github/workflows/$OS.yml";
+            if $path {
+                say "  found path '$path'";
+            }
+            else {
+                say "  did NOT find '$path'";
+            }
+        }
+        exit;
+    }
     when /^v[ersion]? / {
         # check for this module's version
         my $ver = get-version;

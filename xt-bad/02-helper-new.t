@@ -14,7 +14,7 @@ my $email       = $oo.git-user-email;
 my $author      = $oo.git-user-name;
 my $meta-author = "$author <$email>";
 
-my $debug = 0;
+my $debug = 1;
 
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
@@ -48,10 +48,14 @@ ok $tempdir.IO.d;
 
     chdir $tempdir;
 
-    run "touch", ".Foo-Bar";
-    my $module-name = "Foo::Bar";
+    run "touch", '.Foo-Bar';
+    my $module-name = 'Foo::Bar';
     my $parent-dir  = $tempdir;
-    my $provides = "Provides a framistan";
+    my $provides    = "Provides a framistan";
+
+    note "DEBUG: module-name: $module-name";
+    note "DEBUG: parent-dir: $parent-dir";
+
     mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
     my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;

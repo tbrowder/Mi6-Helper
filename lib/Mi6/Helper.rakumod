@@ -15,7 +15,7 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
+method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug) {
     chdir $parent-dir;
     run "mi6", 'new', '--zef', $module-name;
 }
@@ -150,10 +150,10 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
     # but they will be in DISTRIBUTION.contents
-    my ($Lstr, $Mstr, $Wstr) = get-workflows; # fil = "$parent-dir/.github/workflows/linux.yml";
+    my ($Lfh, $Mfh, $Wfh); #  = get-workflows; # fil = "$parent-dir/.github/workflows/linux.yml";
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
-    my $Wfil = "$modpdir/.github/workflows/windows.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
+    my $Wfil = "$modpdir/.github/workflows/windows.yml";
 
     spurt $Lfil, $Lstr;
     spurt $Mfil, $Mstr;
@@ -162,11 +162,11 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     =begin comment
     my $testfil  = "$modpdir/.github/workflows/test.yml";
     my @itestfil = $testfil.IO.lines;
-    =end comment
 
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
     my $Wfil = "$modpdir/.github/workflows/windows.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
+    =end comment
 
     =begin comment
     my $Lfh = open $Lfil, :w;
@@ -399,11 +399,9 @@ sub get-section($section --> Str) {
     }
 }
 
-sub get-workflows(--> List) is export {
-    my $L = $?DISTRIBUTION.contents<.github/workflows/linux.yml>;
-    my $M = $?DISTRIBUTION.contents<.github/workflows/macos.yml>;
-    my $W = $?DISTRIBUTION.contents<.github/workflows/windows.yml>;
-    $L, $M, $L
+sub get-workflow($path --> IO::Handle) is export {
+    # returns three expected file handles (an opened file)
+    my $fh = $?DISTRIBUTION.content($path) // Nil;
 }
 
 sub get-version is export {
