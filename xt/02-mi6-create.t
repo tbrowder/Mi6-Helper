@@ -1,20 +1,29 @@
 use Test;
 
-use Ask;
 use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
 use File::Directory::Tree;
+use Proc::Easier;
 
 # check the system for known values used for fez and mi6
-my $oo          = Mi6::Helper.new: :module-name("null");
+my $oo          = Mi6::Helper.new;
 my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;
 my $author      = $oo.git-user-name;
 my $meta-author = "$author <$email>";
 
-my $debug = 1;
+my $debug = 0;
+if 0 and $debug {
+    note qq:to/HERE/;
+    DEBUG:
+    author: $author
+    email:  $email
+    auth:   zef:$auth
+    HERE
+    note "DEBUG early exit";exit;
+}
 
 # provide a unique testing directory by test file name
 my $debug-base = "debug-test";
@@ -34,7 +43,7 @@ else {
     $tempdir = mkdir $debug-dir;
 }
 
-ok $tempdir.IO.d;
+ok $tempdir.IO.d, "check tempdir";
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
@@ -48,23 +57,23 @@ ok $tempdir.IO.d;
 
     chdir $tempdir;
 
-    run "touch", '.Foo-Bar';
-    my $module-name = 'Foo::Bar';
-    my $parent-dir  = $tempdir;
-    my $provides    = "Provides a framistan";
-
-    note "DEBUG: module-name: $module-name";
-    note "DEBUG: parent-dir: $parent-dir";
-
-    mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
+    my $module-name = "Foo::Bar";
     my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;
+    run("mi6", 'new', '--zef', $module-name);
     ok $moddir.IO.d;
 
     # check the meta file for known values
     my %meta = App::Mi6::JSON.decode(slurp "$moddir/META6.json");
+    if $debug {
+        note "DEBUG:";
+        for %meta.kv -> $k, $v {
+            note "    key: '$k' => '$v'";
+        }
+    }
     is %meta<auth>, $auth;
     is @(%meta<authors>)[0], $author;
+    #my $doc = slurp "$moddir/lib";
 }
 
 done-testing;

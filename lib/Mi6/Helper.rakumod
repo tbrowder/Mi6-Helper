@@ -2,6 +2,7 @@ unit class Mi6::Helper;
 
 use App::Mi6;
 use JSON::Fast;
+use Proc::Easier;
 
 has $.parent-dir = '.';
 has $.module-name;             #= e.g., 'Foo::Bar'
@@ -150,17 +151,22 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
     # but they will be in DISTRIBUTION.contents
-    my $Lfh = DISTRIBUTION.content(".github/workflows/linux.yml");
-    my $Mfh = DISTRIBUTION.content(".github/workflows/macos.yml");
-    my $Wfh = DISTRIBUTION.content(".github/workflows/windows.yml");
+    # note the file handles are CLOSED!!
+    my $Lfh = $?DISTRIBUTION.content(".github/workflows/linux.yml").open;
+    my $Mfh = $?DISTRIBUTION.content(".github/workflows/macos.yml").open;
+    my $Wfh = $?DISTRIBUTION.content(".github/workflows/windows.yml").open;
+
+    my $Lstr = $Lfh.slurp; # lines.flat;
+    my $Mstr = $Mfh.slurp; # lines.flat;
+    my $Wstr = $Wfh.slurp; # lines.flat;
 
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
     my $Wfil = "$modpdir/.github/workflows/windows.yml";
 
-    spurt $Lfil, $Lfh.slurp;
-    spurt $Mfil, $Mfh.slurp;
-    spurt $Wfil, $Wfh.slurp;
+    spurt $Lfil, $Lstr;     
+    spurt $Mfil, $Mstr;     
+    spurt $Wfil, $Wstr;     
 
     =begin comment
     my $testfil  = "$modpdir/.github/workflows/test.yml";
