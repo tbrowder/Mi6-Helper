@@ -150,14 +150,17 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
     # but they will be in DISTRIBUTION.contents
-    my ($Lfh, $Mfh, $Wfh); #  = get-workflows; # fil = "$parent-dir/.github/workflows/linux.yml";
+    my $Lfh = DISTRIBUTION.content(".github/workflows/linux.yml");
+    my $Mfh = DISTRIBUTION.content(".github/workflows/macos.yml");
+    my $Wfh = DISTRIBUTION.content(".github/workflows/windows.yml");
+
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
     my $Wfil = "$modpdir/.github/workflows/windows.yml";
 
-    spurt $Lfil, $Lstr;
-    spurt $Mfil, $Mstr;
-    spurt $Wfil, $Wstr;
+    spurt $Lfil, $Lfh.slurp;
+    spurt $Mfil, $Mfh.slurp;
+    spurt $Wfil, $Wfh.slurp;
 
     =begin comment
     my $testfil  = "$modpdir/.github/workflows/test.yml";
