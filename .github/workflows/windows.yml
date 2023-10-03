@@ -21,11 +21,11 @@ jobs:
           - 'latest'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: Raku/setup-raku@v1
       - name: Install Dependencies
         run: |
             choco install rakudostar
             zef --exclude="z" install --debug --/test --test-depends --deps-only .
       - name: Run Tests
-        run: zef --debug --/prove --/tap-harness test .
+        run: zef --debug test .
