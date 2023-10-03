@@ -5,6 +5,7 @@ use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
 use File::Directory::Tree;
+use Proc::Easier;
 
 # check the system for known values used for fez and mi6
 my $oo          = Mi6::Helper.new: :module-name("null");
@@ -12,7 +13,7 @@ my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;
 my $author      = $oo.git-user-name;
-my $meta-author = "$author <$email>";
+my $meta-author = "$author \<$email\>";
 
 my $debug = 0;
 
@@ -48,10 +49,18 @@ ok $tempdir.IO.d;
 
     chdir $tempdir;
 
-    run "touch", ".Foo-Bar";
-    my $module-name = "Foo::Bar";
+    #run "touch", '.Foo-Bar';
+    cmd "touch '.Foo-Bar'";
+
+    my $module-name = 'Foo::Bar';
     my $parent-dir  = $tempdir;
-    my $provides = "Provides a framistan";
+    my $provides    = "Provides a framistan";
+
+    if $debug {
+        note "DEBUG: module-name: $module-name";
+        note "DEBUG: parent-dir: $parent-dir";
+    }
+
     mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
     my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;
@@ -59,8 +68,8 @@ ok $tempdir.IO.d;
 
     # check the meta file for known values
     my %meta = App::Mi6::JSON.decode(slurp "$moddir/META6.json");
-    is %meta<auth>, $auth;
-    is @(%meta<authors>)[0], $author;
+    is %meta<auth>, $auth, "is auth $auth?";
+    is @(%meta<authors>)[0], $author, "is author 1 $author?";
 }
 
 done-testing;

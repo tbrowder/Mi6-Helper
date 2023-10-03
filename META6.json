@@ -10,7 +10,7 @@
     "JSON::Fast",
     "App::Mi6:ver<3.0.2+>",
     "Text::Utils",
-    "Ask:ver<0.0.3+>"
+    "Proc::Easier"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",
   "license": "Artistic-2.0",

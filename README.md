@@ -148,11 +148,13 @@ CREDITS
 
 The very useful Raku modules used herein:
 
-  * `App::Mi6` by **github:skaji**
+  * `App::Mi6` by **zef:skaji**
 
   * `File::Directory::Tree` by **github:labster**
 
   * `File::Temp` by **zef:rbt**
+
+  * `Proc::Easier` by **zef:sdondley**
 
 COPYRIGHT AND LICENSE
 =====================

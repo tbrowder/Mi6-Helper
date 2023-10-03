@@ -167,9 +167,10 @@ Tom Browder <tbrowder@acm.org>
 
 The very useful Raku modules used herein:
 
-=item C<App::Mi6>              by B<github:skaji>
+=item C<App::Mi6>              by B<zef:skaji>
 =item C<File::Directory::Tree> by B<github:labster>
 =item C<File::Temp>            by B<zef:rbt>
+=item C<Proc::Easier>          by B<zef:sdondley>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,6 +1,10 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - More extensive and useful testing in xt
+    - Clearer code using 'cmd' from module'Pro::Easier' instead of 'raku's 'run'
+      (thanks, @sdondely!)
+    - Use @ugexe's solution to replace prove6 (thanks, @ugexe!)
 
 0.9.1  2023-09-09T15:48:27-05:00
     - Get Windows testing to be more reliable by using Github workflows

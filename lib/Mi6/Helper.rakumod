@@ -2,6 +2,7 @@ unit class Mi6::Helper;
 
 use App::Mi6;
 use JSON::Fast;
+use Proc::Easier;
 
 has $.parent-dir = '.';
 has $.module-name;             #= e.g., 'Foo::Bar'
@@ -15,22 +16,22 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-method mi6-new-cmd(:$parent-dir, :$module-name, :$debug) {
+method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug) {
     chdir $parent-dir;
-    run "mi6", 'new', '--zef', $module-name;
+    cmd "mi6 new --zef $module-name";
 }
 
 method git-status {
     # branch and working tree status
-    my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
+    cmd("git status -b -s").out.chomp
 }
 
 method git-user-email {
-    run("git", "config", "--get", "--global", "user.email", :out).out.slurp.chomp
+    cmd("git config --get --global user.email").out.chomp
 }
 
 method git-user-name {
-    run("git", "config", "--get", "--global", "user.name", :out).out.slurp.chomp
+    cmd("git config --get --global user.name").out.chomp
 }
 
 multi method is-git-repo($dir) {
@@ -96,7 +97,7 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         }
         @omodfil.push: $line;
     }
-    # put ramaining content in the README.rakudoc file
+    # put remaining content in the README.rakudoc file
     @idocfil.push($_) for @imodfil;
 
     # treat the README file
@@ -118,8 +119,8 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         }
         elsif $line ~~ /^ \h* Copyright/ {
             # use copyright symbol
-            #  Copyright © 2021 Tom Browder
-            #  Copyright E<0x00a9> 2021 Tom Browder
+            #  Copyright © 2023 Tom Browder
+            #  Copyright E<0x00a9> 2023 Tom Browder
             $line ~~ s/Copyright/©/;
         }
         elsif $line ~~ /^ \h* This \h+ library/ {
@@ -148,63 +149,23 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $fh.say($_) for @omodfil;
     $fh.close;
 
-    # mod the .github/workflows/test.yml files
-    my $testfil  = "$modpdir/.github/workflows/test.yml";
-    my @itestfil = $testfil.IO.lines;
+    # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
+    # but they will be in DISTRIBUTION.contents
+    # note the file handles are CLOSED!!
+    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
+    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
+    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
 
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
-    my $Wfil = "$modpdir/.github/workflows/windows.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
+    my $Wfil = "$modpdir/.github/workflows/windows.yml";
 
-    my $Lfh = open $Lfil, :w;
-    my $Wfh = open $Wfil, :w;
-    my $Mfh = open $Mfil, :w;
+    spurt $Lfil, $Lstr;     
+    spurt $Mfil, $Mstr;     
+    spurt $Wfil, $Wstr;     
 
-    my ($L, $W, $M);
-    while @itestfil.elems {
-        my $line = @itestfil.shift;
-        if $line ~~ /'name:' \h+ test / {
-            $L = $line;
-            $W = $line;
-            $M = $line;
+    # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
 
-            $L ~~ s/test/Linux/;
-            $W ~~ s/test/Win64/;
-            $M ~~ s/test/MacOS/;
-
-            $Lfh.say: $L;
-            $Wfh.say: $W;
-            $Mfh.say: $M;
-            next;
-        }
-        if $line ~~ /'-' \h+ [ubuntu|windows|macos] '-' latest / {
-            # need to replace three lines with one
-            @itestfil.shift;
-            @itestfil.shift;
-
-            $L = $line;
-            $W = $line;
-            $M = $line;
-
-            $L ~~ s/[ubuntu|windows|macos]/ubuntu/;
-            $W ~~ s/[ubuntu|windows|macos]/windows/;
-            $M ~~ s/[ubuntu|windows|macos]/macos/;
-
-            $Lfh.say: $L;
-            $Wfh.say: $W;
-            $Mfh.say: $M;
-            next;
-        }
-        $Lfh.say: $line;
-        $Wfh.say: $line;
-        $Mfh.say: $line;
-    }
-    $Lfh.close;
-    $Wfh.close;
-    $Mfh.close;
-    unlink $testfil; # don't need the old one
-
-    # mod the dist.ini file. add ALL optional sections recognized byApp::Mi6
     my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
     my @odistfil;
@@ -286,10 +247,9 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         @odistfil.push: $str;
     }
 
-    note "Found $nsections sections" if $debug;
+    note "DEBUG: Found $nsections sections" if $debug;
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
-
     $fh.close;
 
     # mod the META6.json file
@@ -318,14 +278,14 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         # need to change dirs
         note "$modpdir IS a git repo" if $debug;
         temp $*CWD = $modpdir.IO;
-        run "git", "add", ".github/workflows/linux.yml";
-        run "git", "add", ".github/workflows/windows.yml";
-        run "git", "add", ".github/workflows/macos.yml";
-        run "git", "add", "docs/README.rakudoc";
+        cmd "git add '.github/workflows/linux.yml'";
+        cmd "git add '.github/workflows/windows.yml'";
+        cmd "git add '.github/workflows/macos.yml'";
+        cmd "git add docs/README.rakudoc";
 
         # finish the repo to be ready for pushing
-        run "mi6", "build";
-        run "git", "commit", "-a", "-m'initial commit'";
+        cmd "mi6 build";
+        cmd "git commit -a -m'initial commit'";
     }
 
 } # sub mi6-helper-new

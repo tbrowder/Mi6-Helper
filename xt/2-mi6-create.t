@@ -4,6 +4,7 @@ use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
 use File::Directory::Tree;
+use Proc::Easier;
 
 # check the system for known values used for fez and mi6
 my $oo          = Mi6::Helper.new;

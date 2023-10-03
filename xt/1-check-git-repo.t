@@ -2,6 +2,7 @@ use Test;
 use Mi6::Helper;
 use App::Mi6;
 use Temp::Path;
+use Proc::Easier;
 
 # Create some test repos:
 # 1. An Mi6 dir with three types of files in addition to a 
