@@ -6,7 +6,6 @@ use App::Mi6;
 use Text::Utils :normalize-string;
 use File::Find;
 use JSON::Fast;
-use Ask;
 
 if not @*ARGS.elems {
     say qq:to/HERE/;
@@ -141,7 +140,7 @@ if not $provides.defined {
     }
     else {
         say "FATAL: Unable to find the hidden file '$hidden'.";
-        my $res = ask "Do you want to continue without it (y/N): ";
+        my $res = prompt "Do you want to continue without it (y/N): ";
         if $res ~~ /:i ^ y/ {
             say "Okay, continuing without a 'provides' input...";
         }
@@ -179,7 +178,7 @@ if $dist-ini.IO.f {
     say "Danger, file '$dist-ini' exists.";
     say "Checking for the 'force' option...";
     if $force {
-        my $ans = ask "Are you sure you want to continue (y/N): ";
+        my $ans = prompt "Are you sure you want to continue (y/N): ";
         if $ans ~~ /:i ^y/ {
             say "Continuing with mods...":
         }
