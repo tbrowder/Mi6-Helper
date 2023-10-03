@@ -1,6 +1,9 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Correct Steve's handle:
+    - Clearer code using 'cmd' from module'Pro::Easier' instead of 'raku's 'run'
+      (thanks, @sdondley!)
 
 0.10.0  2023-10-03T13:15:39-05:00
     - More extensive and useful testing in xt
