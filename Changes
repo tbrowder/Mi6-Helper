@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - More extensive and useful testing in xt
+    - Clearer code using 'cmd' from module'Pro::Easier' instead of 'raku's 'run'
     - Use @ugexe's solution to replace prove6
     - Get Windows testing to be more reliable by using Github workflows
       test lines like 'zef --exclude="z" install ..." (for Windows only,

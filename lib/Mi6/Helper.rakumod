@@ -18,23 +18,19 @@ submethod TWEAK {
 
 method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug) {
     chdir $parent-dir;
-    #run "mi6", 'new', '--zef', $module-name;
     cmd "mi6 new --zef $module-name";
 }
 
 method git-status {
     # branch and working tree status
-    #my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
     cmd("git status -b -s").out.chomp
 }
 
 method git-user-email {
-    #run("git", "config", "--get", "--global", "user.email", :out).out.slurp.chomp
     cmd("git config --get --global user.email").out.chomp
 }
 
 method git-user-name {
-    #run("git", "config", "--get", "--global", "user.name", :out).out.slurp.chomp
     cmd("git config --get --global user.name").out.chomp
 }
 
@@ -251,10 +247,9 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         @odistfil.push: $str;
     }
 
-    note "Found $nsections sections" if $debug;
+    note "DEBUG: Found $nsections sections" if $debug;
     $fh = open $distfil, :w;
     $fh.say($_) for @odistfil;
-
     $fh.close;
 
     # mod the META6.json file
@@ -283,22 +278,12 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         # need to change dirs
         note "$modpdir IS a git repo" if $debug;
         temp $*CWD = $modpdir.IO;
-        =begin comment
-        run "git", "add", ".github/workflows/linux.yml";
-        run "git", "add", ".github/workflows/windows.yml";
-        run "git", "add", ".github/workflows/macos.yml";
-        run "git", "add", "docs/README.rakudoc";
-        =end comment
         cmd "git add '.github/workflows/linux.yml'";
         cmd "git add '.github/workflows/windows.yml'";
         cmd "git add '.github/workflows/macos.yml'";
         cmd "git add docs/README.rakudoc";
 
         # finish the repo to be ready for pushing
-        =begin comment
-        run "mi6", "build";
-        run "git", "commit", "-a", "-m'initial commit'";
-        =end comment
         cmd "mi6 build";
         cmd "git commit -a -m'initial commit'";
     }
@@ -356,13 +341,6 @@ sub get-section($section --> Str) {
         dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
     }
 }
-
-#=begin comment
-sub show-workflow($path) is export {
-    # returns contents of $path
-    say $?DISTRIBUTION.content($path);
-}
-#=end comment
 
 sub get-version is export {
     $?DISTRIBUTION.meta<version>
