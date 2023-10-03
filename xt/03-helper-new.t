@@ -49,13 +49,17 @@ ok $tempdir.IO.d;
 
     chdir $tempdir;
 
-    run "touch", '.Foo-Bar';
+    #run "touch", '.Foo-Bar';
+    cmd "touch '.Foo-Bar'";
+
     my $module-name = 'Foo::Bar';
     my $parent-dir  = $tempdir;
     my $provides    = "Provides a framistan";
 
-    note "DEBUG: module-name: $module-name";
-    note "DEBUG: parent-dir: $parent-dir";
+    if $debug {
+        note "DEBUG: module-name: $module-name";
+        note "DEBUG: parent-dir: $parent-dir";
+    }
 
     mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
     my $moddir = $module-name;
@@ -64,8 +68,8 @@ ok $tempdir.IO.d;
 
     # check the meta file for known values
     my %meta = App::Mi6::JSON.decode(slurp "$moddir/META6.json");
-    is %meta<auth>, $auth;
-    is @(%meta<authors>)[0], $author;
+    is %meta<auth>, $auth, "is auth $auth?";
+    is @(%meta<authors>)[0], $author, "is author 1 $author?";
 }
 
 done-testing;

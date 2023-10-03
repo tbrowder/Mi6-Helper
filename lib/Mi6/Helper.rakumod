@@ -344,10 +344,16 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         # need to change dirs
         note "$modpdir IS a git repo" if $debug;
         temp $*CWD = $modpdir.IO;
+        =begin comment
         run "git", "add", ".github/workflows/linux.yml";
         run "git", "add", ".github/workflows/windows.yml";
         run "git", "add", ".github/workflows/macos.yml";
         run "git", "add", "docs/README.rakudoc";
+        =end comment
+        cmd "git add '.github/workflows/linux.yml'";
+        cmd "git add '.github/workflows/windows.yml'";
+        cmd "git add '.github/workflows/macos.yml'";
+        cmd "git add docs/README.rakudoc";
 
         # finish the repo to be ready for pushing
         run "mi6", "build";
@@ -408,9 +414,9 @@ sub get-section($section --> Str) {
     }
 }
 
-sub get-workflow($path --> IO::Handle) is export {
-    # returns three expected file handles (an opened file)
-    my $fh = $?DISTRIBUTION.content($path) // Nil;
+sub show-workflow($path) is export {
+    # returns contents of $path
+    say $?DISTRIBUTION.content($path);
 }
 
 sub get-version is export {
