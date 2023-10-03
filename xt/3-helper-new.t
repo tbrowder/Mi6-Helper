@@ -13,7 +13,7 @@ my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;
 my $author      = $oo.git-user-name;
-my $meta-author = "$author <$email>";
+my $meta-author = "$author \<$email\>";
 
 my $debug = 0;
 

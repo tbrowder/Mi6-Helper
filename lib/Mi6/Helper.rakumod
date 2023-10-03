@@ -18,20 +18,24 @@ submethod TWEAK {
 
 method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug) {
     chdir $parent-dir;
-    run "mi6", 'new', '--zef', $module-name;
+    #run "mi6", 'new', '--zef', $module-name;
+    cmd "mi6 new --zef $module-name";
 }
 
 method git-status {
     # branch and working tree status
-    my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
+    #my $res = run("git", "status", "-b", "-s", :out).out.slurp.chomp
+    cmd("git status -b -s").out.chomp
 }
 
 method git-user-email {
-    run("git", "config", "--get", "--global", "user.email", :out).out.slurp.chomp
+    #run("git", "config", "--get", "--global", "user.email", :out).out.slurp.chomp
+    cmd("git config --get --global user.email").out.chomp
 }
 
 method git-user-name {
-    run("git", "config", "--get", "--global", "user.name", :out).out.slurp.chomp
+    #run("git", "config", "--get", "--global", "user.name", :out).out.slurp.chomp
+    cmd("git config --get --global user.name").out.chomp
 }
 
 multi method is-git-repo($dir) {
@@ -152,13 +156,9 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
     # but they will be in DISTRIBUTION.contents
     # note the file handles are CLOSED!!
-    my $Lfh = $?DISTRIBUTION.content(".github/workflows/linux.yml").open;
-    my $Mfh = $?DISTRIBUTION.content(".github/workflows/macos.yml").open;
-    my $Wfh = $?DISTRIBUTION.content(".github/workflows/windows.yml").open;
-
-    my $Lstr = $Lfh.slurp; # lines.flat;
-    my $Mstr = $Mfh.slurp; # lines.flat;
-    my $Wstr = $Wfh.slurp; # lines.flat;
+    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
+    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
+    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
 
     my $Lfil = "$modpdir/.github/workflows/linux.yml";
     my $Mfil = "$modpdir/.github/workflows/macos.yml";
@@ -167,67 +167,6 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     spurt $Lfil, $Lstr;     
     spurt $Mfil, $Mstr;     
     spurt $Wfil, $Wstr;     
-
-    =begin comment
-    my $testfil  = "$modpdir/.github/workflows/test.yml";
-    my @itestfil = $testfil.IO.lines;
-
-    my $Lfil = "$modpdir/.github/workflows/linux.yml";
-    my $Wfil = "$modpdir/.github/workflows/windows.yml";
-    my $Mfil = "$modpdir/.github/workflows/macos.yml";
-    =end comment
-
-    =begin comment
-    my $Lfh = open $Lfil, :w;
-    my $Wfh = open $Wfil, :w;
-    my $Mfh = open $Mfil, :w;
-    =end comment
-
-    =begin comment
-    my ($L, $W, $M);
-    while @itestfil.elems {
-        my $line = @itestfil.shift;
-        if $line ~~ /'name:' \h+ test / {
-            $L = $line;
-            $W = $line;
-            $M = $line;
-
-            $L ~~ s/test/Linux/;
-            $W ~~ s/test/Win64/;
-            $M ~~ s/test/MacOS/;
-
-            $Lfh.say: $L;
-            $Wfh.say: $W;
-            $Mfh.say: $M;
-            next;
-        }
-        if $line ~~ /'-' \h+ [ubuntu|windows|macos] '-' latest / {
-            # need to replace three lines with one
-            @itestfil.shift;
-            @itestfil.shift;
-
-            $L = $line;
-            $W = $line;
-            $M = $line;
-
-            $L ~~ s/[ubuntu|windows|macos]/ubuntu/;
-            $W ~~ s/[ubuntu|windows|macos]/windows/;
-            $M ~~ s/[ubuntu|windows|macos]/macos/;
-
-            $Lfh.say: $L;
-            $Wfh.say: $W;
-            $Mfh.say: $M;
-            next;
-        }
-        $Lfh.say: $line;
-        $Wfh.say: $line;
-        $Mfh.say: $line;
-    }
-    $Lfh.close;
-    $Wfh.close;
-    $Mfh.close;
-    unlink $testfil; # don't need the old one
-    =end comment
 
     # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
 
@@ -356,8 +295,12 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         cmd "git add docs/README.rakudoc";
 
         # finish the repo to be ready for pushing
+        =begin comment
         run "mi6", "build";
         run "git", "commit", "-a", "-m'initial commit'";
+        =end comment
+        cmd "mi6 build";
+        cmd "git commit -a -m'initial commit'";
     }
 
 } # sub mi6-helper-new
@@ -414,10 +357,12 @@ sub get-section($section --> Str) {
     }
 }
 
+#=begin comment
 sub show-workflow($path) is export {
     # returns contents of $path
     say $?DISTRIBUTION.content($path);
 }
+#=end comment
 
 sub get-version is export {
     $?DISTRIBUTION.meta<version>
