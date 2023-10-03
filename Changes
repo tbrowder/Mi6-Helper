@@ -3,7 +3,8 @@ Revision history for Mi6-Helper
 {{$NEXT}}
     - More extensive and useful testing in xt
     - Clearer code using 'cmd' from module'Pro::Easier' instead of 'raku's 'run'
-    - Use @ugexe's solution to replace prove6
+      (thanks, @sdondely!)
+    - Use @ugexe's solution to replace prove6 (thanks, @ugexe!)
 
 0.9.1  2023-09-09T15:48:27-05:00
     - Get Windows testing to be more reliable by using Github workflows
@@ -11,13 +12,14 @@ Revision history for Mi6-Helper
       not needed for Linux or MacOS).
 
 0.9.0  2023-07-08T18:20:35-05:00
-    - Improved the documentation for use of the hidded file for
+    - Improved the documentation for use of the hidden file for
       the 'provides' text.
     - Recommend the 'hidden file' option for the 'provides'
       text.
 
 0.8.1  2023-03-21T17:06:58-05:00
-    - Get the 'version' mode working for the installed module. Thanks @ugexe!
+    - Get the 'version' mode working for the installed module. 
+      Thanks, @ugexe!
 
 0.8.0  2023-03-16T19:05:43-05:00
     - Really fix error with version 0.7.2 (and thus 0.7.3)

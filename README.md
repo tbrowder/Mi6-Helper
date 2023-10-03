@@ -10,7 +10,8 @@ SYNOPSIS
 
     use Mi6::Helper
 
-    $ mi6-helper new=Foo::Bar provides=Bar-description.txt
+    $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
+                               # '.Foo-Bar' (recommended method)
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 

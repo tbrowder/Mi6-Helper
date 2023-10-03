@@ -9,7 +9,8 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 =begin code
 use Mi6::Helper
 
-$ mi6-helper new=Foo::Bar provides=Bar-description.txt
+$ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
+                           # '.Foo-Bar' (recommended method)
 =end code
 
 B<Easily> create the template for a new Raku module repository for
