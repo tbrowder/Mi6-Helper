@@ -64,8 +64,9 @@ sub get-hidden-name(:$module-name) is export {
 sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 }
 
-sub get-file-content($fnam) is export {
-    $?DISTRIBUTION.content("resources/$fnam").open.slurp;
+sub get-file-content($fnam --> Str) is export {
+    #$?DISTRIBUTION.content("resources/$fnam").open.slurp;
+    %?RESOURCES{$fnam}.slurp;
 }
 
 sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
@@ -154,8 +155,6 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $fh.close;
 
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
-    # but they will be in DISTRIBUTION.contents
-    # note the file handles are CLOSED!!
 
     my $Lf = "linux.yml";
     my $Mf = "macos.yml";
@@ -172,6 +171,10 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     spurt $Lfil, $Lstr;     
     spurt $Mfil, $Mstr;     
     spurt $Wfil, $Wstr;     
+
+    # remove the existing test.yml file
+    my $unwanted = "$modpdir/.github/workflows/test.yml";
+    unlink $unwanted if $unwanted.IO.e;
 
     # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
 
