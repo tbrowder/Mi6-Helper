@@ -1,8 +1,9 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
-    - Correct handling of $?DISTRIBUTION.content for installed modules
-      by making a separate routine for getting the contents.
+    - Corrected handling of .github/workflow files by
+      copying them to the resources directory so they
+      are accessible to the $?DISTRIBUTION.
 
 0.10.1  2023-10-03T13:28:59-05:00
     - Correct Steve's handle

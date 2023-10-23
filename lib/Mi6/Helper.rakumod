@@ -65,13 +65,7 @@ sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 }
 
 sub get-file-content($fnam) is export {
-    $?DISTRIBUTION.content($fnam).open.slurp;
-
-    =begin comment
-    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
-    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
-    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
-    =end comment
+    $?DISTRIBUTION.content("resources/$fnam").open.slurp;
 }
 
 sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
@@ -163,17 +157,17 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     # but they will be in DISTRIBUTION.contents
     # note the file handles are CLOSED!!
 
-    my $Lf = ".github/workflows/linux.yml";
-    my $Mf = ".github/workflows/macos.yml";
-    my $Wf = ".github/workflows/windows.yml";
+    my $Lf = "linux.yml";
+    my $Mf = "macos.yml";
+    my $Wf = "windows.yml";
 
     my $Lstr = get-file-content($Lf);
     my $Mstr = get-file-content($Mf);
     my $Wstr = get-file-content($Wf);
 
-    my $Lfil = "$modpdir/$Lf";
-    my $Mfil = "$modpdir/$Mf";
-    my $Wfil = "$modpdir/$Wf";
+    my $Lfil = "$modpdir/.github/workflows/$Lf";
+    my $Mfil = "$modpdir/.github/workflows/$Mf";
+    my $Wfil = "$modpdir/.github/workflows/$Wf";
 
     spurt $Lfil, $Lstr;     
     spurt $Mfil, $Mstr;     
