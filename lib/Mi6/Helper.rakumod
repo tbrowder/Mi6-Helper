@@ -64,6 +64,16 @@ sub get-hidden-name(:$module-name) is export {
 sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 }
 
+sub get-file-content($fnam) is export {
+    $?DISTRIBUTION.content($fnam).open.slurp;
+
+    =begin comment
+    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
+    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
+    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
+    =end comment
+}
+
 sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 
     # test module is "Foo::Bar"
@@ -152,13 +162,18 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
     # but they will be in DISTRIBUTION.contents
     # note the file handles are CLOSED!!
-    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
-    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
-    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
 
-    my $Lfil = "$modpdir/.github/workflows/linux.yml";
-    my $Mfil = "$modpdir/.github/workflows/macos.yml";
-    my $Wfil = "$modpdir/.github/workflows/windows.yml";
+    my $Lf = ".github/workflows/linux.yml";
+    my $Mf = ".github/workflows/macos.yml";
+    my $Wf = ".github/workflows/windows.yml";
+
+    my $Lstr = get-file-content($Lf);
+    my $Mstr = get-file-content($Mf);
+    my $Wstr = get-file-content($Wf);
+
+    my $Lfil = "$modpdir/$Lf";
+    my $Mfil = "$modpdir/$Mf";
+    my $Wfil = "$modpdir/$Wf";
 
     spurt $Lfil, $Lstr;     
     spurt $Mfil, $Mstr;     
