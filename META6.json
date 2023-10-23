@@ -20,6 +20,9 @@
     "Mi6::Helper": "lib/Mi6/Helper.rakumod"
   },
   "resources": [
+    "linux.yml",
+    "macos.yml",
+    "windows.yml"
   ],
   "source-url": "https://github.com/tbrowder/Mi6-Helper.git",
   "tags": [

@@ -64,6 +64,11 @@ sub get-hidden-name(:$module-name) is export {
 sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 }
 
+sub get-file-content($fnam --> Str) is export {
+    #$?DISTRIBUTION.content("resources/$fnam").open.slurp;
+    %?RESOURCES{$fnam}.slurp;
+}
+
 sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
 
     # test module is "Foo::Bar"
@@ -150,19 +155,26 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $fh.close;
 
     # use the Mi6-Helper/.github/workflows/*.yml files as I've updated them
-    # but they will be in DISTRIBUTION.contents
-    # note the file handles are CLOSED!!
-    my $Lstr = $?DISTRIBUTION.content(".github/workflows/linux.yml").open.slurp;
-    my $Mstr = $?DISTRIBUTION.content(".github/workflows/macos.yml").open.slurp;
-    my $Wstr = $?DISTRIBUTION.content(".github/workflows/windows.yml").open.slurp;
 
-    my $Lfil = "$modpdir/.github/workflows/linux.yml";
-    my $Mfil = "$modpdir/.github/workflows/macos.yml";
-    my $Wfil = "$modpdir/.github/workflows/windows.yml";
+    my $Lf = "linux.yml";
+    my $Mf = "macos.yml";
+    my $Wf = "windows.yml";
+
+    my $Lstr = get-file-content($Lf);
+    my $Mstr = get-file-content($Mf);
+    my $Wstr = get-file-content($Wf);
+
+    my $Lfil = "$modpdir/.github/workflows/$Lf";
+    my $Mfil = "$modpdir/.github/workflows/$Mf";
+    my $Wfil = "$modpdir/.github/workflows/$Wf";
 
     spurt $Lfil, $Lstr;     
     spurt $Mfil, $Mstr;     
     spurt $Wfil, $Wstr;     
+
+    # remove the existing test.yml file
+    my $unwanted = "$modpdir/.github/workflows/test.yml";
+    unlink $unwanted if $unwanted.IO.e;
 
     # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
 

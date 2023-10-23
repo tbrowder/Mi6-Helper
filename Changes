@@ -1,9 +1,13 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Corrected handling of .github/workflow files by
+      copying them to the resources directory so they
+      are accessible to the %?RESOURCES hash.
+    - Eliminate the .github/workflows/test.yml file.
 
 0.10.1  2023-10-03T13:28:59-05:00
-    - Correct Steve's handle:
+    - Correct Steve's handle
     - Clearer code using 'cmd' from module'Pro::Easier' instead of 'raku's 'run'
       (thanks, @sdondley!)
 
