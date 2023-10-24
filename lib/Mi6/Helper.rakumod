@@ -65,7 +65,6 @@ sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 }
 
 sub get-file-content($fnam --> Str) is export {
-    #$?DISTRIBUTION.content("resources/$fnam").open.slurp;
     %?RESOURCES{$fnam}.slurp;
 }
 
@@ -293,6 +292,7 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         cmd "git add '.github/workflows/linux.yml'";
         cmd "git add '.github/workflows/windows.yml'";
         cmd "git add '.github/workflows/macos.yml'";
+        cmd "git rm  '.github/workflows/test.yml'";
         cmd "git add docs/README.rakudoc";
 
         # finish the repo to be ready for pushing
