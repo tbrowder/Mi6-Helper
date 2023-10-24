@@ -9,18 +9,18 @@ has $.parent-dir = '.';
 has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar::Baz'
 has $.module-base;             #= as known to git, e.g., 'Foo-Bar-Baz'
 # libs are determined by the '::' separators in the module name
-has @.libdirs;                 #= 'lib/Foo/Bar/Baz.rakumod' 
+has @.libdirs is rw;           #= 'lib/Foo/Bar/Baz.rakumod' 
                                #= 'lib
                                #= 'lib/Foo
                                #= 'lib/Foo/Bar
-has $.libfile;                 #= 'lib/Foo/Bar/Baz.rakumod;
+has $.libfile is rw;           #= 'lib/Foo/Bar/Baz.rakumod;
 
 =begin comment
 e.g., Foo-Baz::Bar
 =end comment
 
-has $.provides;                #= text to replace 'blah blah blah'
-has $.mode;                    #= "old" or "new"
+has $.provides is rw;          #= text to replace 'blah blah blah'
+has $.mode is rw;              #= "old" or "new"
 
 submethod TWEAK {
     return if not $!module-name.defined;
@@ -32,7 +32,8 @@ method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
     self.libdirs = find :dir(self.module-base), :type<dir>;
-    self.libfile = find :dir({self.module-base} ~ "/lib"), :type<file>;
+    my $dir = "$!module-base/lib";
+    self.libfile = find :$dir, :type<file>;
 }
 
 method git-status {
@@ -75,19 +76,19 @@ sub get-hidden-name(:$module-name) is export {
     $s ~ '.' ~ $s;
 }
 
-sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
+sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
 }
 
 sub get-file-content($fnam --> Str) is export {
     %?RESOURCES{$fnam}.slurp;
 }
 
-sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export {
+sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
 
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {
     my $o = Mi6::Helper.new: :$module-name;
-    $o.mi6-new-cmd(:$parent-dir, :$module-name, :$debug);
+    $o.mi6-new-cmd(:$parent-dir, :$module-name, :$debug, :$debug2);
 
     # get the name of the module file to change and move content
     my $modpdir = $module-name;
@@ -95,7 +96,7 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     $modpdir ~~ s:g/'::'/-/;
     $modpath ~~ s:g/'::'/\//;
     my $mpath = "$modpdir/lib/$modpath";
-    say "DEBUG: Foo::Bar path: '$mpath'" if $debug;
+    #say "DEBUG: Foo::Bar path: '$mpath'" if $debug;
 
     $mpath ~= '.rakumod';
 
@@ -176,6 +177,8 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     my $Lstr = get-file-content($Lf);
     my $Mstr = get-file-content($Mf);
     my $Wstr = get-file-content($Wf);
+
+    #note "DEBUG: \$Lstr = $Lstr";
 
     my $Lfil = "$modpdir/.github/workflows/$Lf";
     my $Mfil = "$modpdir/.github/workflows/$Mf";
@@ -301,21 +304,33 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
 
     if is-git-repo $modpdir {
         # need to change dirs
-        note "$modpdir IS a git repo" if $debug;
+        my $d = $modpdir.IO.absolute;
+        #note "'$d' IS a git repo" if 1; #$debug;
         #temp $*CWD = $modpdir.IO;
+        #autodie(:on);
         chdir $modpdir;
-        cmd "git add '.github/workflows/linux.yml'";
-        cmd "git add '.github/workflows/windows.yml'";
-        cmd "git add '.github/workflows/macos.yml'";
-        cmd "git rm  '.github/workflows/test.yml'";
-        cmd "git add docs/README.rakudoc";
+        note cmd("git add .github/workflows/linux.yml").err;
+        note cmd("git add .github/workflows/macos.yml").err;
+        note cmd("git add .github/workflows/windows.yml").err;
+        note cmd("git rm -f .github/workflows/test.yml").err;
+        note cmd("git add docs/README.rakudoc").err;
 
         # finish the repo to be ready for pushing
-        cmd "mi6 build";
-        cmd "git commit -a -m'initial commit'";
+        note cmd("mi6 build").err;
+
+        note cmd("git add META6.json").err;
+        note cmd("git add README.md").err;
+        note cmd("git add dist.ini").err;
+        note cmd("git add lib/*").err;
+
+        note cmd("git add t/*").err;
+        note cmd("git add docs/*").err;
+
+        #note cmd('git commit -m"initial commit" ').err;
+        run("git", "commit", "-a", "-m'initial'");
     }
     else {
-        note "FATAL: Directory '$modpdir' is NOT a git repo!";
+        die "FATAL: Directory '$modpdir' is NOT a git repo!";
     }
 
 } # sub mi6-helper-new
