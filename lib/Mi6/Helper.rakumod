@@ -3,12 +3,24 @@ unit class Mi6::Helper;
 use App::Mi6;
 use JSON::Fast;
 use Proc::Easier;
+use File::Find;
 
 has $.parent-dir = '.';
-has $.module-name;             #= e.g., 'Foo::Bar'
+has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar::Baz'
+has $.module-base;             #= as known to git, e.g., 'Foo-Bar-Baz'
+# libs are determined by the '::' separators in the module name
+has @.libdirs;                 #= 'lib/Foo/Bar/Baz.rakumod' 
+                               #= 'lib
+                               #= 'lib/Foo
+                               #= 'lib/Foo/Bar
+has $.libfile;                 #= 'lib/Foo/Bar/Baz.rakumod;
+
+=begin comment
+e.g., Foo-Baz::Bar
+=end comment
+
 has $.provides;                #= text to replace 'blah blah blah'
 has $.mode;                    #= "old" or "new"
-has $.module-base;             #= e.g., 'Foo-Bar'
 
 submethod TWEAK {
     return if not $!module-name.defined;
@@ -16,9 +28,11 @@ submethod TWEAK {
     $!module-base ~~ s:g/'::'/-/;
 }
 
-method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug) {
+method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
+    self.libdirs = find :dir(self.module-base), :type<dir>;
+    self.libfile = find :dir({self.module-base} ~ "/lib"), :type<file>;
 }
 
 method git-status {
@@ -288,7 +302,8 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
     if is-git-repo $modpdir {
         # need to change dirs
         note "$modpdir IS a git repo" if $debug;
-        temp $*CWD = $modpdir.IO;
+        #temp $*CWD = $modpdir.IO;
+        chdir $modpdir;
         cmd "git add '.github/workflows/linux.yml'";
         cmd "git add '.github/workflows/windows.yml'";
         cmd "git add '.github/workflows/macos.yml'";
@@ -298,6 +313,9 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug) is export
         # finish the repo to be ready for pushing
         cmd "mi6 build";
         cmd "git commit -a -m'initial commit'";
+    }
+    else {
+        note "FATAL: Directory '$modpdir' is NOT a git repo!";
     }
 
 } # sub mi6-helper-new

@@ -18,7 +18,8 @@ management by C<App::Mi6> with modifications including:
 
 =item Published in the B<Zef> Raku module ecosystem
 =item User choice of the 'provides' text
-=item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc file>
+=item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
+=item Uses three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
 
 =head2 Special installation requirements
 
@@ -83,6 +84,7 @@ files:
 =end item
 
 =head2 Modified files for mode B<new>
+
 =head3 Files with replaced, modified, or added lines:
 
 =begin code
@@ -171,6 +173,7 @@ The very useful Raku modules used herein:
 =item C<File::Directory::Tree> by B<github:labster>
 =item C<File::Temp>            by B<zef:rbt>
 =item C<Proc::Easier>          by B<zef:sdondley>
+=item C<File::Find>            by B<zef:raku-community-modules>
 
 =head1 COPYRIGHT AND LICENSE
 

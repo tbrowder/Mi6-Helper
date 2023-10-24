@@ -49,6 +49,7 @@ if not @*ARGS.elems {
                    to produce 'README.md'. Note extra preparation is REQUIRED
                    by the user before using it.
       debug      - For developer use
+      debug2     - For developer use
      
     HERE         
 
@@ -59,9 +60,10 @@ if not @*ARGS.elems {
 my $old   = 0;
 my $new   = 0;
 # options
-my $force = 0;
-my $debug = 0;
-my $docs  = 0;
+my $force  = 0;
+my $debug  = 0;
+my $debug2 = 0;
+my $docs   = 0;
 my $provides;
 my $provides-hidden = 1;
 
@@ -87,6 +89,9 @@ for @*ARGS {
         $parent-dir = ~$0;
     }
     when / ^do[cs]?  / { ++$docs  }
+    when / ^de[bug]2? / { 
+        ++$debug2; 
+    }
     when / ^de[bug]? / { 
         ++$debug; 
         # check for this module's workflows file(s'
@@ -100,7 +105,7 @@ for @*ARGS {
                 say "  did NOT find '$path'";
             }
         }
-        exit;
+        #exit;
     }
     when /^v[ersion]? / {
         # check for this module's version
@@ -165,7 +170,7 @@ die "FATAL: Path '$parent-dir' is not a directory."
 say "Using directory '$parent-dir' as the working directory.";
 
 if $new {
-    mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug;
+    mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug, :$debug2;
     say qq:to/HERE/;
     Exit after 'new' mode run. See new module repo '$module-name' 
       in parent dir '$parent-dir'.
