@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.11.1  2023-10-24T21:03:25-05:00
     - Major improvements:
       + Fix dist.ini to show correct windows workflows file.
       + Eliminate spurious .github/workflows/test.yml file.
