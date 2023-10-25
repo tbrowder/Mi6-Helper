@@ -19,7 +19,9 @@ SYNOPSIS
 
   * User choice of the 'provides' text
 
-  * `README.md` file source removed from the base module and placed in a new `docs/README.rakudoc file`
+  * `README.md` file source removed from the base module and placed in a new `docs/README.rakudoc` file
+
+  * Uses three separate OS tests in `.github/workflows` and shows results of each in the `README.md` file
 
 Special installation requirements
 ---------------------------------
@@ -155,6 +157,8 @@ The very useful Raku modules used herein:
   * `File::Temp` by **zef:rbt**
 
   * `Proc::Easier` by **zef:sdondley**
+
+  * `File::Find` by **zef:raku-community-modules**
 
 COPYRIGHT AND LICENSE
 =====================

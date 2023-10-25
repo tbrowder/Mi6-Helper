@@ -1,7 +1,11 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
-    - Fix dist.ini to show correct windows workflows file.
+    - Major improvements:
+      + Fix dist.ini to show correct windows workflows file.
+      + Eliminate spurious .github/workflows/test.yml file.
+      + Add dependency File::Find
+      + Solved problem of incomplete commits
 
 0.11.0  2023-10-23T14:14:48-05:00
     - Corrected handling of .github/workflow files by
