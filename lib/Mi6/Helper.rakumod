@@ -309,24 +309,24 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2)
         #temp $*CWD = $modpdir.IO;
         #autodie(:on);
         chdir $modpdir;
-        note cmd("git add .github/workflows/linux.yml").err;
-        note cmd("git add .github/workflows/macos.yml").err;
-        note cmd("git add .github/workflows/windows.yml").err;
-        note cmd("git rm -f .github/workflows/test.yml").err;
-        note cmd("git add docs/README.rakudoc").err;
+        cmd("git add .github/workflows/linux.yml");
+        cmd("git add .github/workflows/macos.yml");
+        cmd("git add .github/workflows/windows.yml");
+        cmd("git rm -f .github/workflows/test.yml");
+        cmd("git add docs/README.rakudoc");
 
         # finish the repo to be ready for pushing
-        note cmd("mi6 build").err;
+        cmd("mi6 build");
 
-        note cmd("git add META6.json").err;
-        note cmd("git add README.md").err;
-        note cmd("git add dist.ini").err;
-        note cmd("git add lib/*").err;
+        cmd("git add META6.json");
+        cmd("git add README.md");
+        cmd("git add dist.ini");
+        cmd("git add lib/*");
 
-        note cmd("git add t/*").err;
-        note cmd("git add docs/*").err;
+        cmd("git add t/*");
+        cmd("git add docs/*");
 
-        #note cmd('git commit -m"initial commit" ').err;
+        #note cmd('git commit -m"initial commit" ').err; # this fails
         run("git", "commit", "-a", "-m'initial'");
     }
     else {

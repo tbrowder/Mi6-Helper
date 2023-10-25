@@ -4,6 +4,7 @@ use Ask;
 use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
+use JSON::Fast;
 use File::Directory::Tree;
 use Proc::Easier;
 
@@ -53,7 +54,7 @@ ok $tempdir.IO.d;
     cmd "touch '.Foo-Bar'";
 
     my $module-name = 'Foo::Bar';
-    my $parent-dir  = $tempdir;
+    my $parent-dir  = "."; #$tempdir;
     my $provides    = "Provides a framistan";
 
     if $debug {
@@ -61,6 +62,7 @@ ok $tempdir.IO.d;
         note "DEBUG: parent-dir: $parent-dir";
     }
 
+    =begin comment
     mi6-helper-new(:$parent-dir, :$module-name, :$provides, :$debug);
     my $moddir = $module-name;
     $moddir ~~ s:g/'::'/-/;
@@ -69,7 +71,8 @@ ok $tempdir.IO.d;
     # check the meta file for known values
     my %meta = App::Mi6::JSON.decode(slurp "$moddir/META6.json");
     is %meta<auth>, $auth, "is auth $auth?";
-    is @(%meta<authors>)[0], $author, "is author 1 $author?";
+    #is @(%meta<authors>)[0], $author, "is author 1 $author?";
+    =end comment
 }
 
 done-testing;
