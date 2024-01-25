@@ -4,7 +4,9 @@
 
 B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
-=head1 WARNING There is a serious bug in the current version: it is
+=head1 WARNING 
+
+There is a serious bug in the current version: it is
 unable to to correctly handle a desired module name with 
 mixed '::' and hyphens ('-'). An issue has been filed, but, unless a
 user needs it soon, a fix will be delayed. A work-around is to manually
