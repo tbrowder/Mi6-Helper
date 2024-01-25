@@ -6,14 +6,13 @@ use Proc::Easier;
 use File::Find;
 
 has $.parent-dir = '.';
-has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar::Baz'
+has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-base;             #= as known to git, e.g., 'Foo-Bar-Baz'
 # libs are determined by the '::' separators in the module name
-has @.libdirs is rw;           #= 'lib/Foo/Bar/Baz.rakumod' 
+has @.libdirs is rw;           #= 'lib/Foo/Bar-Baz.rakumod' 
                                #= 'lib
                                #= 'lib/Foo
-                               #= 'lib/Foo/Bar
-has $.libfile is rw;           #= 'lib/Foo/Bar/Baz.rakumod;
+has $.libfile is rw;           #= 'lib/Foo/Bar-Baz.rakumod;
 
 =begin comment
 e.g., Foo-Baz::Bar
@@ -24,7 +23,10 @@ has $.mode is rw;              #= "old" or "new"
 
 submethod TWEAK {
     return if not $!module-name.defined;
-    $!module-base = $!module-name;
+    my $module-base = $!module-name;
+    # separate the name by splitting on '::' only
+    my @parts = $module-base.split('::');
+
     $!module-base ~~ s:g/'::'/-/;
 }
 

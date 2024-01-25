@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Fix issue #?: confused by mixed '::' and '-' hyphens in module name
     - Add $HOME/.mi6-helper/config.json for customizations
       such as:
       + t/testfile.suffix
