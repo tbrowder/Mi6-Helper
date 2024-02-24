@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.11.2  2024-02-24T13:25:07-06:00
     - Add warning about issue #11
     - Use @ugexe's recommended test run line for linux and macos
 
