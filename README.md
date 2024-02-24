@@ -5,11 +5,15 @@ NAME
 
 **Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6**
 
+WARNING 
+========
+
+There is a serious bug in the current version: it is unable to to correctly handle a desired module name with mixed '::' and hyphens ('-'). An issue has been filed, but, unless a user needs it soon, a fix will be delayed. A work-around is to manually make the necessary changes after the failure message. Please comment in the issue entry (#11) if a fix is important for your current project.
+
 SYNOPSIS
 ========
 
     use Mi6::Helper
-
     $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
                                # '.Foo-Bar' (recommended method)
 
