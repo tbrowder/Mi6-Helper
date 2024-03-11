@@ -27,7 +27,7 @@
   ],
   "source-url": "https://github.com/tbrowder/Mi6-Helper.git",
   "tags": [
-    "mi6 fez zef repo"
+    "mi6-helper mi6 fez zef repo"
   ],
   "test-depends": [
     "File::Directory::Tree",
