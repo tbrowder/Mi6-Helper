@@ -164,7 +164,6 @@ if not $provides.defined {
     }
 }
 
-
 die "FATAL: Path '$parent-dir' is not a directory."
     unless $parent-dir.IO.d;
 say "Using directory '$parent-dir' as the working directory.";
@@ -182,7 +181,6 @@ if $old {
     say "NOTE: Mode 'old' is not yet implemented.";
     exit;
 }
-
 
 =finish
 
