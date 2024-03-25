@@ -1,6 +1,10 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Fix issue #11: confused by mixed '::' and '-' characters in module name
+    - Change attribute names for clarity
+      + $!module-name => $!module-zef
+      + $!module-base => $!module-git
 
 0.11.3  2024-03-11T11:04:12-05:00
     - Add 'mi6-helper' to tags'
@@ -45,7 +49,7 @@ Revision history for Mi6-Helper
       text.
 
 0.8.1  2023-03-21T17:06:58-05:00
-    - Get the 'version' mode working for the installed module. 
+    - Get the 'version' mode working for the installed module.
       Thanks, @ugexe!
 
 0.8.0  2023-03-16T19:05:43-05:00
