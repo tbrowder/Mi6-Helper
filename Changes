@@ -2,9 +2,8 @@ Revision history for Mi6-Helper
 
 {{$NEXT}}
     - Fix issue #11: confused by mixed '::' and '-' characters in module name
-    - Change attribute names for clarity
-      + $!module-name => $!module-zef
-      + $!module-base => $!module-git
+    - Change attribute name for clarity
+      + $!module-base => $!module-dir
 
 0.11.3  2024-03-11T11:04:12-05:00
     - Add 'mi6-helper' to tags'
