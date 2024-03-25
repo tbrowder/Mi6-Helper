@@ -86,12 +86,13 @@ sub get-file-content($fnam --> Str) is export {
     %?RESOURCES{$fnam}.slurp;
 }
 
-sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
+sub mi6-helper-new(:$parent-dir!, :$module-dir, :$module-name!, :$provides, 
+                   :$debug, :$debug2) is export {
 
-    # test module is "Foo::Bar"
+    # test module is "Foo::Bar-Baz"
     # method mi6-cmd(:$parent-dir, :$module-name) {
     my $o = Mi6::Helper.new: :$module-name;
-    $o.mi6-new-cmd(:$parent-dir, :$module-name, :$debug, :$debug2);
+    $o.mi6-new-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
 
     # get the name of the module file to change and move content
     my $modpdir = $module-name;
