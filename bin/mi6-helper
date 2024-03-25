@@ -74,6 +74,7 @@ my $parent-dir   = '.';
 my $err = 0; # track number of possible errors
 
 my $module-name;
+my $module-dir;
 
 for @*ARGS {
     when /:i ^'old=' (\S+) / {
@@ -88,11 +89,11 @@ for @*ARGS {
     when /^'dir=' (\S+)/ {
         $parent-dir = ~$0;
     }
-    when / ^do[cs]?  / { ++$docs  }
-    when / ^de[bug]2? / { 
+    when / ^do  / { ++$docs  }
+    when / ^de2 / { 
         ++$debug2; 
     }
-    when / ^de[bug]? / { 
+    when / ^de / { 
         ++$debug; 
         # check for this module's workflows file(s'
         say "DEBUG checking for expected workflow(s):";
@@ -107,7 +108,7 @@ for @*ARGS {
         }
         #exit;
     }
-    when /^v[ersion]? / {
+    when /^v / {
         # check for this module's version
         my $ver = get-version;
         say "version: $ver";
@@ -168,10 +169,15 @@ die "FATAL: Path '$parent-dir' is not a directory."
     unless $parent-dir.IO.d;
 say "Using directory '$parent-dir' as the working directory.";
 
+# take care of the module directory: replace '::' with '-'
+$module-dir = $module-name;
+$module-dir ~~ s:g/'::'/-/;
+
 if $new {
-    mi6-helper-new :$parent-dir, :$module-name, :$provides, :$debug, :$debug2;
+    mi6-helper-new :$parent-dir, :$module-dir, :$module-name, :$provides, 
+                   :$debug, :$debug2;
     say qq:to/HERE/;
-    Exit after 'new' mode run. See new module repo '$module-name' 
+    Exit after 'new' mode run. See new module repo '$module-dir' 
       in parent dir '$parent-dir'.
     HERE
     exit;
