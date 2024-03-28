@@ -33,5 +33,5 @@
     "File::Directory::Tree",
     "File::Temp"
   ],
-  "version": "0.11.3"
+  "version": "0.11.4"
 }
