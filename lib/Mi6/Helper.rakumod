@@ -6,17 +6,17 @@ use Proc::Easier;
 use File::Find;
 
 has $.parent-dir = '.';
-has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar::Baz'
-has $.module-base;             #= as known to git, e.g., 'Foo-Bar-Baz'
+has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar-Baz'
+# top-level directory
+has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
 # libs are determined by the '::' separators in the module name
-has @.libdirs is rw;           #= 'lib/Foo/Bar/Baz.rakumod' 
-                               #= 'lib
-                               #= 'lib/Foo
-                               #= 'lib/Foo/Bar
-has $.libfile is rw;           #= 'lib/Foo/Bar/Baz.rakumod;
+has @.libdirs is rw;           #= 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod'
+                               #= 'Foo-Bar-Baz/lib
+                               #= 'Foo-Bar-Baz/lib/Foo
+has $.libfile is rw;           #= 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod;
 
 =begin comment
-e.g., Foo-Baz::Bar
+e.g., Foo:Bar-Baz
 =end comment
 
 has $.provides is rw;          #= text to replace 'blah blah blah'
@@ -24,15 +24,18 @@ has $.mode is rw;              #= "old" or "new"
 
 submethod TWEAK {
     return if not $!module-name.defined;
-    $!module-base = $!module-name;
-    $!module-base ~~ s:g/'::'/-/;
+
+    # determine directory and file names
+    my @dir-parts = $!module-name.split('::');
+    $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;
+    @!libdirs = @dir-parts;
 }
 
-method mi6-new-cmd(:$parent-dir!, :$module-name!, :$debug, :$debug2) {
+method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
-    self.libdirs = find :dir(self.module-base), :type<dir>;
-    my $dir = "$!module-base/lib";
+    self.libdirs = :dir($module-dir), :type<dir>;
+    my $dir = "$!module-dir/lib";
     self.libfile = find :$dir, :type<file>;
 }
 
@@ -76,19 +79,20 @@ sub get-hidden-name(:$module-name) is export {
     $s ~ '.' ~ $s;
 }
 
-sub mi6-helper-old(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
+sub mi6-helper-old(:$parent-dir!, :$module-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
 }
 
 sub get-file-content($fnam --> Str) is export {
     %?RESOURCES{$fnam}.slurp;
 }
 
-sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
+sub mi6-helper-new(:$parent-dir!, :$module-dir, :$module-name!, :$provides, 
+                   :$debug, :$debug2) is export {
 
-    # test module is "Foo::Bar"
+    # test module is "Foo::Bar-Baz"
     # method mi6-cmd(:$parent-dir, :$module-name) {
     my $o = Mi6::Helper.new: :$module-name;
-    $o.mi6-new-cmd(:$parent-dir, :$module-name, :$debug, :$debug2);
+    $o.mi6-new-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
 
     # get the name of the module file to change and move content
     my $modpdir = $module-name;
@@ -184,9 +188,9 @@ sub mi6-helper-new(:$parent-dir!, :$module-name!, :$provides, :$debug, :$debug2)
     my $Mfil = "$modpdir/.github/workflows/$Mf";
     my $Wfil = "$modpdir/.github/workflows/$Wf";
 
-    spurt $Lfil, $Lstr;     
-    spurt $Mfil, $Mstr;     
-    spurt $Wfil, $Wstr;     
+    spurt $Lfil, $Lstr;
+    spurt $Mfil, $Mstr;
+    spurt $Wfil, $Wstr;
 
     # remove the existing test.yml file
     my $unwanted = "$modpdir/.github/workflows/test.yml";
