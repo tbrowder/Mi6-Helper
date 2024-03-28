@@ -34,7 +34,7 @@ submethod TWEAK {
 method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
-    self.libdirs = find :dir(self.module-dir), :type<dir>;
+    self.libdirs = :dir($module-dir), :type<dir>;
     my $dir = "$!module-dir/lib";
     self.libfile = find :$dir, :type<file>;
 }

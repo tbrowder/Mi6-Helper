@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Require App::Mi6:ver<3.0.5+> (which fixed its own problem
+        with mixed '::' and '-' separators)
     - Fix issue #11: confused by mixed '::' and '-' characters in module name
     - Change attribute name for clarity
       + $!module-base => $!module-dir
