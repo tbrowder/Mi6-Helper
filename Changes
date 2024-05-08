@@ -1,6 +1,12 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Correct error in dist.ini: .yml extension was missing
+    - Correct error in 'method mi6-new-cmd':
+      + replaced line 38 reading
+          my $dir = "$!module-dir/lib";
+        with
+          my $dir = "$module-dir/lib";
 
 0.11.4  2024-03-28T10:30:48-05:00
     - Require App::Mi6:ver<3.0.5+> (which fixed its own problem

@@ -35,7 +35,7 @@ method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debu
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
     self.libdirs = :dir($module-dir), :type<dir>;
-    my $dir = "$!module-dir/lib";
+    my $dir = "$module-dir/lib";
     self.libfile = find :$dir, :type<file>;
 }
 
@@ -86,7 +86,7 @@ sub get-file-content($fnam --> Str) is export {
     %?RESOURCES{$fnam}.slurp;
 }
 
-sub mi6-helper-new(:$parent-dir!, :$module-dir, :$module-name!, :$provides, 
+sub mi6-helper-new(:$parent-dir!, :$module-dir, :$module-name!, :$provides,
                    :$debug, :$debug2) is export {
 
     # test module is "Foo::Bar-Baz"
