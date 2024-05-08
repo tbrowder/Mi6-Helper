@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+0.11.5  2024-05-08T12:54:09-05:00
     - Correct error in dist.ini: .yml extension was missing
     - Correct error in 'method mi6-new-cmd':
       + replaced line 38 reading
