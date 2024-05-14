@@ -64,7 +64,7 @@ new
 Modified files for mode **new**
 -------------------------------
 
-See [NewMode](NewMode)|NewMode.md> for details of each changed line.
+See [NewMode](NewMode.md) for details of each changed line.
 
 ### Files with replaced, modified, or added lines:
 

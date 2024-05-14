@@ -77,7 +77,7 @@ name <dev> to hold such things).
 
 =head2 Modified files for mode B<new>
 
-See L<NewMode>|NewMode.md> for details of each changed line.
+See L<NewMode|NewMode.md> for details of each changed line.
 
 =head3 Files with replaced, modified, or added lines:
 
