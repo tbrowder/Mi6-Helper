@@ -33,16 +33,16 @@ The user must install and have an account with `fez` to use this module.
 DESCRIPTION
 ===========
 
-Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
+Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
-this module installs a Raku executable named `mi6-helper` which is designed for the following modes of operation:
+This module installs a Raku executable named `mi6-helper` which is designed for the following modes of operation:
 
 lint
 ----
 
-Checks the contents of the "resources" list in the 'META6.json' and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+Checks the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
 
 new
 ---
@@ -64,7 +64,7 @@ new
 Modified files for mode **new**
 -------------------------------
 
-See [NewMode](NewMode)|./NewMode.md> for details of each changed line.
+See [NewMode](NewMode)|NewMode.md> for details of each changed line.
 
 ### Files with replaced, modified, or added lines:
 
