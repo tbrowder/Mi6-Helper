@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - IMPORTANT: The next version will remove all 'provides' options 
+                 other than the hidden file
     - Add new 'lint' option.
     - Move most executable code from /bin/mi6-helper to new Mi6/Utils.rakumod
         for more pre-compiled code

@@ -7,6 +7,9 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
 =head1 SYNOPSIS
 
+NOTE: The next version will remove all 'provides' methods except
+      the use of the hidden file.
+
 =begin code
 use Mi6::Helper
 $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 

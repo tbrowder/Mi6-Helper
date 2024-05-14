@@ -8,6 +8,8 @@ NAME
 SYNOPSIS
 ========
 
+NOTE: The next version will remove all 'provides' methods except the use of the hidden file.
+
     use Mi6::Helper
     $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
                                # '.Foo-Bar' (recommended method)

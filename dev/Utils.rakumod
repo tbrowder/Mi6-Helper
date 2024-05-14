@@ -12,22 +12,51 @@ sub action() is export {
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
+    CAUTION: With mode 'old=X', ensure all user code is committed before using
+             the 'docs' option.
     Modes:
-      new=X  - Creates a new module (named X) directory by driving 'mi6', then
-               changing certain files in the new repo to conform to the 'docs'
-               option.  It also uses the 'provides' option for a short
-               description of its main purpose. See details in the README.
+      new=X - Creates a new module (named X) directory by driving 'mi6', then
+              changing certain files in the new repo to conform to the 'docs'
+              option.  It also uses the 'provides' option for a short
+              description of its main purpose. See details in the README.
 
-      lint   - Checks for match of entries in the 'resources' dir and the
-               'resources' entries in the 'META6.json' file.
+      lint  - Checks for match of entries in the 'resources' dir and the
+              'resources' entries in the 'META6.json' file.
+
+      old   - *****NOT YET IMPLEMENTED*****
+              Creates safe defaults for an 'mi6'-managed module in an existing
+              Git Raku module repository. Reports findings and recommendations.
+              See details in the README.
+
+      version
 
     Options:
-      dir=X  - Selects parent directory 'X' for the operations, default is '.'
+      dir=X      - Selects parent directory 'X' for the operations, default is '.'
 
-      ver    - show version of 'mi6-helper'
+      [hidden-option]
+                 - If a hidden file (e.g., '.X') is provided, the program will
+                   use the contents of that hidden text file for the 'provides'
+                   text. The hidden file must be named the same as the module
+                   name, but with hyphens in place of any colon pairs. For
+                   example, the file for module 'new=Foo::Bar' is expected to
+                   be '.Foo-Bar'. Note the author prefers this option for two
+                   reasons: (1) it doesn't clutter the visible work space and
+                   (2) it is more reliable when you make an error and want to
+                   recreate the module.
+
+      provides=X - With '=X', defines either a file 'X' or text 'X' to be used
+                   in place of 'blah blah blah'. (Note No spaces are allowed in
+                   a text entry: use periods ['.'] between words.)
+
+      force      - Used with the 'old' mode: allows overwriting file 'dist.ini'
+      docs       - Used with the 'old' mode: uses file 'docs/README.rakudoc'
+                   to produce 'README.md'. Note extra preparation is REQUIRED
+                   by the user before using it.
+      debug      - For developer use
+      debug2     - For developer use
 
     HERE
-} # sub action()
+}
 
 sub action(@args) is export {
     # do the work
@@ -164,11 +193,5 @@ sub action(@args) is export {
         say "NOTE: Mode 'old' is not yet implemented.";
         exit;
     }
-} # sub action(@args) 
 
-sub lint($dir = '.', :$debug) is export {
-    # must be a .git repo
-    # must be a dir
-    
 }
-
