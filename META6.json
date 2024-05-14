@@ -18,7 +18,8 @@
   "name": "Mi6::Helper",
   "perl": "6.d",
   "provides": {
-    "Mi6::Helper": "lib/Mi6/Helper.rakumod"
+    "Mi6::Helper": "lib/Mi6/Helper.rakumod",
+    "Mi6::Utils": "lib/Mi6/Utils.rakumod"
   },
   "resources": [
     "linux.yml",

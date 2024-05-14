@@ -1,9 +1,7 @@
-[![Actions Status](https://github.com/tbrowder/Mi6-Helper/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions) [![Actions Status](https://github.com/tbrowder/Mi6-Helper/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions) [![Actions Status](https://github.com/tbrowder/Mi6-Helper/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/Mi6-Helper/actions)
-
 NAME
 ====
 
-**Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6** and checking them for errors
+**Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6**
 
 SYNOPSIS
 ========
@@ -11,9 +9,6 @@ SYNOPSIS
     use Mi6::Helper
     $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
                                # '.Foo-Bar' (recommended method)
-    # or
-
-    $ mi6-helper lint          # checks the CWD module repo for errors
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
@@ -37,7 +32,7 @@ Note this is API 2 and its approach has changed significantly since the author h
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
-this module installs a Raku executable named `mi6-helper` which is designed for the following modes of operation:
+This module installs a Raku executable named `mi6-helper` which is designed for two major modes of operation:
 
 lint
 ----
@@ -63,8 +58,6 @@ new
 
 Modified files for mode **new**
 -------------------------------
-
-See [NewMode](NewMode)|./NewMode.md> for details of each changed line.
 
 ### Files with replaced, modified, or added lines:
 

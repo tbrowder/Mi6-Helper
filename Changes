@@ -1,6 +1,9 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Add new 'lint' option.
+    - Move most executable code from /bin/mi6-helper to new Mi6/Utils.rakumod
+        for more pre-compiled code
 
 0.11.5  2024-05-08T12:54:09-05:00
     - Correct error in dist.ini: .yml extension was missing

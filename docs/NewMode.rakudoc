@@ -3,7 +3,6 @@
 =head1 NAME
 
 B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
-                 and checking them for errors
 
 =head1 SYNOPSIS
 
@@ -11,9 +10,6 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 use Mi6::Helper
 $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
                            # '.Foo-Bar' (recommended method)
-# or
-
-$ mi6-helper lint          # checks the CWD module repo for errors
 =end code
 
 B<Easily> create the template for a new Raku module repository for
@@ -39,8 +35,8 @@ B<CAUTION>: Before using this tool on a real module repository, the
 user should ensure all contents have been comitted with Git to enable
 recovery from any unwanted changes.
 
-this module installs a Raku executable named C<mi6-helper> which is
-designed for the following modes of operation:
+This module installs a Raku executable named C<mi6-helper> which is
+designed for two major modes of operation:
 
 =head2 lint
 
@@ -76,8 +72,6 @@ name <dev> to hold such things).
 =item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
 
 =head2 Modified files for mode B<new>
-
-See L<NewMode>|./NewMode.md> for details of each changed line.
 
 =head3 Files with replaced, modified, or added lines:
 
