@@ -7,7 +7,7 @@ use Text::Utils :normalize-string;
 use File::Find;
 use JSON::Fast;
 
-sub action() is export {
+multi sub action() is export {
     # usage
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
@@ -29,12 +29,13 @@ sub action() is export {
     HERE
 } # sub action()
 
-sub action(@args) is export {
+multi sub action(@args) is export {
     # do the work
 
     # modes
     my $old   = 0;
     my $new   = 0;
+    my $lint  = 0;
     # options
     my $force  = 0;
     my $debug  = 0;
@@ -43,7 +44,8 @@ sub action(@args) is export {
     my $provides;
     my $provides-hidden = 1;
 
-    # assume we are in the current working directory
+    # assume we are in the current 
+    # working directory
     my $parent-dir   = '.';
 
     # other args
@@ -57,6 +59,9 @@ sub action(@args) is export {
         when /:i ^'old=' (\S+) / {
             $module-name = ~$0;
             ++$old
+        }
+        when /:i ^lint / {
+            ++$lint;
         }
         when /:i ^'new=' (\S+) / {
             $module-name = ~$0;
@@ -117,7 +122,7 @@ sub action(@args) is export {
 
     # Take care of 'provides'
     # PRO
-    if not $provides.defined {
+    if $new and not $provides.defined {
         # info should be in a hidden file
         my $hidden = ".$module-name";
         $hidden ~~ s:g/'::'/-/;
