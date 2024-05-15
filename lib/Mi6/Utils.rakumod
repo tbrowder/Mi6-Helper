@@ -185,15 +185,23 @@ sub lint($dir, :$debug, --> Str) is export {
                      # to the user
 
     # get contents of the resources file
+    my @r = find :dir("$dir/resources");
 
     # get contents of the META6.json file
+    my %m = from-json {slurp "$dir/META6.json"};
+    my @r2 = %m<resources>;
 
-    # compare the two
+    #=====
+    # Compare the two
+    # the files in META6.json do not have to be under the 'resources'
+    # directory but they must referenced as relative to it and exist
+    # in the file tree
 
 
     #===
     #  other possible improvements
     # check the .github/workflows file(s)
+
     # check all 'use X' modules are in META6.json depends
     
 }
