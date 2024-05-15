@@ -1,6 +1,6 @@
-unit module Mi6::Utils;
-
 use Mi6::Helper;
+
+unit module Mi6::Utils;
 
 use App::Mi6;
 use Text::Utils :normalize-string;
