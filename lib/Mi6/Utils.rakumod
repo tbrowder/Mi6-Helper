@@ -13,19 +13,19 @@ sub action() is export {
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
-      new=Y  - Creates a new module (named 'Y') in directory 'X' (default '.')
-               by executing 'mi6', then changing certain files in the new 
-               repo to conform to the 'docs' option.  It also uses the 
-               'provides' option for a short description of its main purpose. 
-               See details in the README.
+      new=Y  -     Creates a new module (named 'Y') in directory 'X' (default '.')
+                   by executing 'mi6', then changing certain files in the new 
+                   repo to conform to the 'docs' option.  It also uses the 
+                   'provides' option for a short description of its main purpose. 
+                   See details in the README.
 
-      lint   - Checks for match of entries in the 'resources' dir and the
-               'resources' entries in the 'META6.json' file.
+      lint <dir> - Checks for match of entries in the 'resources' dir and the
+                   'resources' entries in the 'META6.json' file.
 
     Options:
-      dir=X  - Selects directory 'X' for the operations, default is '.'
+      dir=X  -     Selects directory 'X' for the operations, default is '.'
 
-      ver    - show version of 'mi6-helper'
+      ver    -     show version of 'mi6-helper'
     HERE
 } # sub action()
 
@@ -143,7 +143,7 @@ sub action(@args) is export {
     }
 
     die "FATAL: Path '$parent-dir' is not a directory."
-    unless $parent-dir.IO.d;
+        unless $parent-dir.IO.d;
     say "Using directory '$parent-dir' as the working directory.";
 
     # take care of the module directory: replace '::' with '-'
@@ -164,7 +164,7 @@ sub action(@args) is export {
         my $lint-results = lint $parent-dir, :$debug;
         say qq:to/HERE/;
         Exit after 'lint' mode run. See results in file '$lint-results'
-        in parent dir '$parent-dir'.
+        in directory '$parent-dir'.
         HERE
         exit;
     }
@@ -175,14 +175,26 @@ sub action(@args) is export {
     }
 } # sub action(@args) 
 
-sub lint($dir = '.', :$debug, --> Str) is export {
+sub lint($dir, :$debug, --> Str) is export {
     # must be a dir
+    die "FATAL: Path '$dir' is not a directory."
+        unless $dir.IO.d;
+
     # must have a 'resources' dir and a 'META6.json' file in the parent dir
     my $issues = ""; # to be spurted into a text file whose path name is returned
                      # to the user
+
     # get contents of the resources file
+
     # get contents of the META6.json file
+
+    # compare the two
+
+
+    #===
+    #  other possible improvements
     # check the .github/workflows file(s)
+    # check all 'use X' modules are in META6.json depends
     
 }
 

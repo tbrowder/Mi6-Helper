@@ -15,7 +15,7 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
                                # '.Foo-Bar' (recommended method)
     # or
 
-    $ mi6-helper lint          # checks the CWD module repo for errors
+    $ mi6-helper lint <dir>    # checks a module directory for errors
                                # and best practices
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
@@ -31,12 +31,12 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
 Special installation requirements
 ---------------------------------
 
-The user must install and have an account with `fez` to use this module.
+The user must install and have an account with `fez` to use this module to create a new module repository.
 
 DESCRIPTION
 ===========
 
-Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
+Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, discovering that accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
@@ -45,13 +45,13 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 lint
 ----
 
-  * lint dir=X
+  * lint <path>
 
-    Checks the module repo in directory 'X' (default '.') that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+    Checks the module repo in directory <path> that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
 
     Also checks for other configuration improvement possibilities. Note the 'lint' mode will work in repos *not* under App::Mi6 management.
 
-    Leaves a report of actions taken and suggestions for improvement in directory 'X'.
+    Leaves a report of actions taken and suggestions for improvement in the same directory.
 
 new
 ---

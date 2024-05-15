@@ -16,7 +16,7 @@ $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file
                            # '.Foo-Bar' (recommended method)
 # or
 
-$ mi6-helper lint          # checks the CWD module repo for errors
+$ mi6-helper lint <dir>    # checks a module directory for errors
                            # and best practices
 =end code
 
@@ -30,13 +30,14 @@ management by C<App::Mi6> with modifications including:
 
 =head2 Special installation requirements
 
-The user must install and have an account with C<fez> to use this module.
+The user must install and have an account with C<fez> to use this module to 
+create a new module repository.
 
 =head1 DESCRIPTION
 
 Note this module has changed significantly since
 the author has had much more experience using B<App::Mi6>.  For
-example, accidentally using C<mi6 test> in a non-mi6 module's base
+example, discovering that accidentally using C<mi6 test> in a non-mi6 module's base
 directory will corrupt an existing README.md file!
 
 B<CAUTION>: Before using this tool on a real module repository, the
@@ -49,9 +50,9 @@ designed for the following modes of operation:
 =head2 lint
 
 =begin item
-lint dir=X
+lint <path>
 
-Checks the module repo in directory 'X' (default '.') that
+Checks the module repo in directory <path> that
 the contents of the "resources" list in the 'META6.json' file
 and the distibution's './resources' directory agree. Modifies them as 
 necessary, displays the proposed changes, and prompts the user for 
@@ -61,7 +62,7 @@ Also checks for other configuration improvement possibilities.
 Note the 'lint' mode will work in repos I<not> under App::Mi6 management.
 
 Leaves a report of actions taken and suggestions for improvement in
-directory 'X'.
+the same directory.
 =end item
 
 =head2 new
