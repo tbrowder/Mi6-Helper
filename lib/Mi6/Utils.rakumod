@@ -13,19 +13,19 @@ sub action() is export {
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
-      new=X  - Creates a new module (named X) directory by driving 'mi6', then
-               changing certain files in the new repo to conform to the 'docs'
-               option.  It also uses the 'provides' option for a short
-               description of its main purpose. See details in the README.
+      new=Y  - Creates a new module (named 'Y') in directory 'X' (default '.')
+               by executing 'mi6', then changing certain files in the new 
+               repo to conform to the 'docs' option.  It also uses the 
+               'provides' option for a short description of its main purpose. 
+               See details in the README.
 
       lint   - Checks for match of entries in the 'resources' dir and the
                'resources' entries in the 'META6.json' file.
 
     Options:
-      dir=X  - Selects parent directory 'X' for the operations, default is '.'
+      dir=X  - Selects directory 'X' for the operations, default is '.'
 
       ver    - show version of 'mi6-helper'
-
     HERE
 } # sub action()
 
@@ -111,8 +111,8 @@ sub action(@args) is export {
         }
     }
 
-    if not ($new or $old) {
-        die "FATAL: Neither 'new' nor 'old' is selected.";
+    if not ($new or $lint) {
+        die "FATAL: Neither 'new' nor 'lint' is selected.";
     }
 
     # Take care of 'provides'
@@ -160,15 +160,30 @@ sub action(@args) is export {
         exit;
     }
 
+    if $lint {
+        my $lint-results = lint $parent-dir, :$debug;
+        say qq:to/HERE/;
+        Exit after 'lint' mode run. See results in file '$lint-results'
+        in parent dir '$parent-dir'.
+        HERE
+        exit;
+    }
+
     if $old {
         say "NOTE: Mode 'old' is not yet implemented.";
         exit;
     }
 } # sub action(@args) 
 
-sub lint($dir = '.', :$debug) is export {
-    # must be a .git repo
+sub lint($dir = '.', :$debug, --> Str) is export {
     # must be a dir
+    # must have a 'resources' dir and a 'META6.json' file in the parent dir
+    my $issues = ""; # to be spurted into a text file whose path name is returned
+                     # to the user
+    # get contents of the resources file
+    # get contents of the META6.json file
+    # check the .github/workflows file(s)
     
 }
+
 

@@ -3,7 +3,7 @@
 NAME
 ====
 
-**Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6** and checking them for errors
+**Mi6::Helper** - An aid for converting Raku modules to use **App::Mi6** and checking Raku module repos for errors
 
 SYNOPSIS
 ========
@@ -16,6 +16,7 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
     # or
 
     $ mi6-helper lint          # checks the CWD module repo for errors
+                               # and best practices
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
@@ -44,7 +45,13 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 lint
 ----
 
-Checks the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+  * lint dir=X
+
+    Checks the module repo in directory 'X' (default '.') that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+
+    Also checks for other configuration improvement possibilities. Note the 'lint' mode will work in repos *not* under App::Mi6 management.
+
+    Leaves a report of actions taken and suggestions for improvement in directory 'X'.
 
 new
 ---

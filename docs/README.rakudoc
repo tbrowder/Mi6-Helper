@@ -3,7 +3,7 @@
 =head1 NAME
 
 B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
-                 and checking them for errors
+                 and checking Raku module repos for errors
 
 =head1 SYNOPSIS
 
@@ -17,6 +17,7 @@ $ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file
 # or
 
 $ mi6-helper lint          # checks the CWD module repo for errors
+                           # and best practices
 =end code
 
 B<Easily> create the template for a new Raku module repository for
@@ -47,10 +48,21 @@ designed for the following modes of operation:
 
 =head2 lint
 
-Checks the contents of the "resources" list in the 'META6.json' file
+=begin item
+lint dir=X
+
+Checks the module repo in directory 'X' (default '.') that
+the contents of the "resources" list in the 'META6.json' file
 and the distibution's './resources' directory agree. Modifies them as 
 necessary, displays the proposed changes, and prompts the user for 
 permission to make the changes.
+
+Also checks for other configuration improvement possibilities.
+Note the 'lint' mode will work in repos I<not> under App::Mi6 management.
+
+Leaves a report of actions taken and suggestions for improvement in
+directory 'X'.
+=end item
 
 =head2 new
 
@@ -69,6 +81,7 @@ and C<mi6 release>.
 CAUTION: If file C<dist.ini> already exists in the parent directory, the program
 will abort B<unless> the C<force> option is used. Use the C<force> option at your
 own risk!
+
 =end item
 
 B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
