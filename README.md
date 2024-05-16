@@ -36,7 +36,7 @@ The user must install and have an account with `fez` to use this module to creat
 DESCRIPTION
 ===========
 
-Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, discovering that accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
+Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, discovering that accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file! (See 'App::Mi6' issue \#157.)
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
@@ -66,7 +66,7 @@ new
 
 **NOTE**: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps (for example, remove the `macos` test):
 
-  * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir name <dev> to hold such things).
+  * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir named <dev> to hold such things).
 
   * Put a semicolon in the `dist.ini` file to comment out the line naming the `macos.yml` file
 

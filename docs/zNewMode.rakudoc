@@ -22,14 +22,16 @@ management by C<App::Mi6> with modifications including:
 
 =head2 Special installation requirements
 
-The user must install and have an account with C<fez> to use this module.
+The user must install to and have an account with C<fez> to use this module
+for new module creation.
 
 =head1 DESCRIPTION
 
 Note this is API 2 and its approach has changed significantly since
 the author has had much more experience using B<App::Mi6>.  For
 example, accidentally using C<mi6 test> in a non-mi6 module's base
-directory will corrupt an existing README.md file!
+directory will corrupt an existing README.md file! (See 'App::Mi6'
+issue \#157.)
 
 B<CAUTION>: Before using this tool on a real module repository, the
 user should ensure all contents have been comitted with Git to enable

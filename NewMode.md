@@ -23,12 +23,12 @@ SYNOPSIS
 Special installation requirements
 ---------------------------------
 
-The user must install and have an account with `fez` to use this module.
+The user must install to and have an account with `fez` to use this module for new module creation.
 
 DESCRIPTION
 ===========
 
-Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file!
+Note this is API 2 and its approach has changed significantly since the author has had much more experience using **App::Mi6**. For example, accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file! (See 'App::Mi6' issue \#157.)
 
 **CAUTION**: Before using this tool on a real module repository, the user should ensure all contents have been comitted with Git to enable recovery from any unwanted changes.
 
