@@ -51,9 +51,9 @@ designed for the following modes of operation:
 =head2 lint
 
 =begin item
-lint <path>
+lint \<path\>
 
-Checks the module repo in directory <path> that
+Checks the module repo in directory \<path\> that
 the contents of the "resources" list in the 'META6.json' file
 and the distibution's './resources' directory agree. Modifies them as 
 necessary, displays the proposed changes, and prompts the user for 

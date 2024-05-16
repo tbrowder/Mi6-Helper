@@ -45,9 +45,9 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 lint
 ----
 
-  * lint <path>
+  * lint \<path\>
 
-    Checks the module repo in directory <path> that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+    Checks the module repo in directory \<path\> that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
 
     Also checks for other configuration improvement possibilities. Note the 'lint' mode will work in repos *not* under App::Mi6 management.
 
