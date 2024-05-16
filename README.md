@@ -20,13 +20,13 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
-  * Published in the **Zef** Raku module ecosystem
+  * Publishing in the **Zef** Raku module ecosystem
 
   * User choice of the 'provides' text
 
   * `README.md` file source removed from the base module and placed in a new `docs/README.rakudoc` file
 
-  * Uses three separate OS tests in `.github/workflows` and shows results of each in the `README.md` file
+  * Using three separate OS tests in `.github/workflows` and shows results of each in the `README.md` file
 
 Special installation requirements
 ---------------------------------

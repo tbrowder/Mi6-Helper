@@ -23,10 +23,10 @@ $ mi6-helper lint <dir>    # checks a module directory for errors
 B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
 
-=item Published in the B<Zef> Raku module ecosystem
+=item Publishing in the B<Zef> Raku module ecosystem
 =item User choice of the 'provides' text
 =item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
-=item Uses three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
+=item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
 
 =head2 Special installation requirements
 
