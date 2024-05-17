@@ -195,8 +195,8 @@ sub lint($dir, :$debug, --> Str) is export {
                      # to the user
 
     # get contents of the resources file
-    my @r = find :dir("$dir/resources");
-    if 1 {
+    my @r = find :dir("$dir/resources"); # TODO type file
+    if $debug {
         say "DEBUG dir resources:";
         say "  $_" for @r;
     }
@@ -204,7 +204,7 @@ sub lint($dir, :$debug, --> Str) is export {
     # get contents of the META6.json file
     my %m = from-json(slurp "$dir/META6.json");
     my @r2 = @(%m<resources>);
-    if 1 {
+    if $debug {
         say "DEBUG META6.json resources:";
         say "  $_" for @r2;
     }
@@ -212,7 +212,7 @@ sub lint($dir, :$debug, --> Str) is export {
     #=====
     # Compare the two
     # the files in META6.json do not have to be under the 'resources'
-    # directory but they must referenced as relative to it and exist
+    # directory, but they must referenced as relative to it and exist
     # in the file tree
 
 
