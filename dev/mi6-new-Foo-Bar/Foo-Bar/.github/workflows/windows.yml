@@ -30,4 +30,4 @@ jobs:
             choco install rakudostar
             zef --exclude="z" install --debug --/test --test-depends --deps-only .
       - name: Run Tests
-        run: zef --debug --/prove --/tap-harness test .
+        run: zef --debug install .

@@ -56,14 +56,15 @@ multi sub action(@args) is export {
 
     # @*ARGS
     for @args {
+        when $lint and $_.IO.d {
+           $parent-dir = $_; 
+        }
         when /:i ^'old=' (\S+) / {
             $module-name = ~$0;
             ++$old
         }
         when /:i ^lint / {
             ++$lint;
-            $parent-dir = @args.head;
-            last;
         }
         when /:i ^'new=' (\S+) / {
             $module-name = ~$0;
