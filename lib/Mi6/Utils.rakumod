@@ -46,7 +46,7 @@ multi sub action(@args) is export {
 
     # assume we are in the current 
     # working directory
-    my $parent-dir   = '.';
+    my $parent-dir; # set to '.' only if new and no dir= found
 
     # other args
     my $err = 0; # track number of possible errors
@@ -62,6 +62,8 @@ multi sub action(@args) is export {
         }
         when /:i ^lint / {
             ++$lint;
+            $parent-dir = @args.head;
+            last;
         }
         when /:i ^'new=' (\S+) / {
             $module-name = ~$0;
@@ -191,10 +193,18 @@ sub lint($dir, :$debug, --> Str) is export {
 
     # get contents of the resources file
     my @r = find :dir("$dir/resources");
+    if 1 {
+        say "DEBUG dir resources:";
+        say "  $_" for @r;
+    }
 
     # get contents of the META6.json file
     my %m = from-json {slurp "$dir/META6.json"};
     my @r2 = %m<resources>;
+    if 1 {
+        say "DEBUG META6.json resources:";
+        say "  $_" for @r2;
+    }
 
     #=====
     # Compare the two
