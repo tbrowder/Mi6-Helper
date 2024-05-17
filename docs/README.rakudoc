@@ -90,7 +90,7 @@ B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by d
 the following two steps (for example, remove the C<macos> test):
 
 =item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the 
-author uses a subdir named <dev> to hold such things).
+author uses a subdir named C<dev> to hold such things).
 =item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
 
 =head2 Modified files for mode B<new>
