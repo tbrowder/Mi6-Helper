@@ -8,3 +8,4 @@ dev/*.json
 debug-test/
 Foo-Bar/
 .Foo-Bar
+lint-results.txt

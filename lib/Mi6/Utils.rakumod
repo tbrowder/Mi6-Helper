@@ -154,11 +154,11 @@ multi sub action(@args) is export {
         unless $parent-dir.IO.d;
     say "Using directory '$parent-dir' as the working directory.";
 
-    # take care of the module directory: replace '::' with '-'
-    $module-dir = $module-name;
-    $module-dir ~~ s:g/'::'/-/;
-
     if $new {
+        # take care of the module directory: replace '::' with '-'
+        $module-dir = $module-name;
+        $module-dir ~~ s:g/'::'/-/;
+
         mi6-helper-new :$parent-dir, :$module-dir, :$module-name, :$provides,
         :$debug, :$debug2;
         say qq:to/HERE/;
@@ -170,8 +170,10 @@ multi sub action(@args) is export {
 
     if $lint {
         my $lint-results = lint $parent-dir, :$debug;
+        my $ofil = "lint-results.txt";
+        spurt $ofil, $lint-results;
         say qq:to/HERE/;
-        Exit after 'lint' mode run. See results in file '$lint-results'
+        Exit after 'lint' mode run. See results in file '$ofil'
         in directory '$parent-dir'.
         HERE
         exit;
@@ -200,8 +202,8 @@ sub lint($dir, :$debug, --> Str) is export {
     }
 
     # get contents of the META6.json file
-    my %m = from-json {slurp "$dir/META6.json"};
-    my @r2 = %m<resources>;
+    my %m = from-json(slurp "$dir/META6.json");
+    my @r2 = @(%m<resources>);
     if 1 {
         say "DEBUG META6.json resources:";
         say "  $_" for @r2;
@@ -219,7 +221,8 @@ sub lint($dir, :$debug, --> Str) is export {
     # check the .github/workflows file(s)
 
     # check all 'use X' modules are in META6.json depends
-    
+
+    $issues; 
 }
 
 

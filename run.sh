@@ -1,2 +1,0 @@
-raku -I. bin/* lint ..
-
