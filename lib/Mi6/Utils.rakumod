@@ -2,6 +2,7 @@ use Mi6::Helper;
 
 unit module Mi6::Utils;
 
+use RakupodObject;
 use App::Mi6;
 use Text::Utils :normalize-string;
 use File::Find;
@@ -223,6 +224,45 @@ sub lint($dir, :$debug, --> Str) is export {
     # check all 'use X' modules are in META6.json depends
 
     $issues; 
-}
+} # sub lint($dir, :$debug, --> Str) is export {
+
+sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+    my %h; # key: basename
+           # value: @paths
+    # use File::Find
+    # segregate into old suffixes corresponding to:
+
+    #   .raku
+    my @raku = find :$dir, :recurse(True), :type<file>, 
+                    :name(/:i '.' [perl6|perl|pl6|pl|p6] $/);
+    my %raku = get-basename-hash @raku;
+
+    #   .rakumod
+    my @rakumod = find :$dir, :recurse(True), :type<file>, 
+                        :name(/:i '.' [pm6|pm] $/);
+    my %rakumod = get-basename-hash @rakumod;
+
+    #   .rakudoc
+    my @rakudoc = find :$dir, :recurse(True), :type<file>, 
+                        :name(/:i '.' [pod6|pod] $/);
+    my %rakudoc = get-basename-hash @rakudoc;
+
+    #   .rakutest
+    my @rakutest = find :$dir, :recurse(True), :type<file>, 
+                        :name(/:i '.' [t] $/);
+    my %rakutest = get-basename-hash @rakutest;
+
+    # combine the hashes into
+    # key: type (raku, rakudoc, rakumod, rakutest)
+    # %h{$type}<basename>{$basename} = @paths
+
+    my %h; # %h{$type}<basename>{$basename} = @paths
+
+} # sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+
+sub get-basename-hash(@arr, :$debug --> Hash) {
+    # @arr is a list of paths; from it, create a hash keyed by basename
+    #   with its value an array of paths (usually one)
+} # sub get-basename-hash(@arr, :$debug --> Hash) {
 
 

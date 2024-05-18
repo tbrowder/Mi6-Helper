@@ -12,12 +12,12 @@ NOTE: The next version will remove all 'provides' methods except
 
 =begin code
 use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # uses the 'provides' text in hidden file 
+$ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file 
                            # '.Foo-Bar' (recommended method)
-# or
+    or
 
-$ mi6-helper lint <dir>    # checks a module directory for errors
-                           # and best practices
+$ mi6-helper lint <dir>    # Checks a module directory for errors
+                           # and best practice recommendations
 =end code
 
 B<Easily> create the template for a new Raku module repository for
@@ -63,7 +63,14 @@ Also checks for other configuration improvement possibilities.
 Note the 'lint' mode will work in repos I<not> under App::Mi6 management.
 
 Leaves a report of actions taken and suggestions for improvement in
-the same directory.
+the same directory. The report is named 'mi6-helper-lint.txt'.
+
+The items checked in this version include:
+=item2 Discrepancies in the META6.json file
+=item2 Obsolete file name conventions: .t, .pl, .pm, .p6, .pl6, .pm6, .pod, .pod6
+=item2 Use of 'perl6' instead of 'raku' in script 'shebang' lines 
+=item2 Use of CI testing using 'zef' instead of 'prove6'
+=item2 Use of Github for version archiving
 =end item
 
 =head2 new
