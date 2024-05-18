@@ -1,0 +1,34 @@
+{
+  "auth": "zef:tbrowder",
+  "authors": [
+    "Tom Browder <tbrowder@acm.org>"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+    "JSON::Fast",
+    "App::Mi6:ver<3.0.5+>",
+    "Text::Utils",
+    "File::Find",
+    "Proc::Easier"
+  ],
+  "description": "An aid for converting Raku modules to use App::Mi6",
+  "license": "Artistic-2.0",
+  "name": "Foo",
+  "perl": "6.d",
+  "provides": {
+    "Foo": "lib/Foo.pm6"
+  },
+  "resources": [
+    "linux.yml",
+    "macos.yml",
+    "windows.yml"
+  ],
+  "source-url": "",
+  "tags": [
+    "mi6-helper mi6 fez zef repo"
+  ],
+  "test-depends": [
+  ],
+  "version": "0.11.5"
+}
