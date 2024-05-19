@@ -263,6 +263,19 @@ sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
 sub get-basename-hash(@arr, :$debug --> Hash) {
     # @arr is a list of paths; from it, create a hash keyed by basename
     #   with its value an array of paths (usually one)
+    my %h;
+    for @arr -> $path {
+        my $f = $path.IO.basename;
+        if %h{$f}:exists {
+            %h{$f}.push: $f;
+        }
+        else {
+            %h{$f} = [];
+            %h{$f}.push: $f;
+        }
+    }
+    %h
+
 } # sub get-basename-hash(@arr, :$debug --> Hash) {
 
 
