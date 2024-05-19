@@ -192,8 +192,18 @@ sub lint($dir, :$debug, --> Str) is export {
         unless $dir.IO.d;
 
     # must have a 'resources' dir and a 'META6.json' file in the parent dir
-    my $issues = ""; # to be spurted into a text file whose path name is returned
-                     # to the user
+    my $issues; # to be spurted into a text file whose path name is returned
+                # to the user
+    my $res     # used to collect results from subs for the report
+    $issues = qq:to/HERE/;
+    Mi6:Helper Report ({DateTime.now})
+
+    Results of running 'mi6-helper lint <directory>'
+
+    Directory: '{$dir.IO.basename}'
+    Path:      '$dir'
+    ===============================
+    HERE
 
     # get contents of the resources file
     my @r = find :dir("$dir/resources"); # TODO type file
@@ -210,20 +220,33 @@ sub lint($dir, :$debug, --> Str) is export {
         say "  $_" for @r2;
     }
 
-    #=====
+    #================
     # Compare the two
     # the files in META6.json do not have to be under the 'resources'
     # directory, but they must referenced as relative to it and exist
     # in the file tree
 
 
-    #===
+    #================
     #  other possible improvements
-    # check the .github/workflows file(s)
+    # check the .github/workflows file(s) for recommended "zef test . --debug"
+    $res = check-ci-tests $dir;
 
+    #================
     # check all 'use X' modules are in META6.json depends
+    $res = check-ci-tests $dir;
 
-    $issues; 
+    #================
+    # check Chang* for name
+
+    #================
+    # check %meta<source> for github, etc.
+
+    #================
+    # check %meta<tags> for substance
+
+    # combine the two strings and return them
+    $report = $issues ~ $recs; 
 } # sub lint($dir, :$debug, --> Str) is export {
 
 sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
@@ -244,7 +267,7 @@ sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
 
     #   .rakudoc
     my @rakudoc = find :$dir, :recurse(True), :type<file>, 
-                        :name(/:i '.' [pod6|pod] $/);
+                        :name(/:i '.' [rakupod|pod6|pod] $/);
     my %rakudoc = get-basename-hash @rakudoc;
 
     #   .rakutest
@@ -252,12 +275,28 @@ sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
                         :name(/:i '.' [t] $/);
     my %rakutest = get-basename-hash @rakutest;
 
-    # combine the hashes into
+    # combine the hashes into TODO
     # key: type (raku, rakudoc, rakumod, rakutest)
     # %h{$type}<basename>{$basename} = @paths
 
     my %h; # %h{$type}<basename>{$basename} = @paths
-
+    for <raku rakudoc rakumod rakutest>.kv -> $i, $typ {
+        with $i {
+            when 0 {
+                %h{$typ} = %raku;
+            }
+            when 1 {
+                %h{$typ} = %rakudoc;
+            }
+            when 2 {
+                %h{$typ} = %rakumod;
+            }
+            when 3 {
+                %h{$typ} = %rakutest;
+            }
+        }
+    }
+    %h
 } # sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
 
 sub get-basename-hash(@arr, :$debug --> Hash) {
