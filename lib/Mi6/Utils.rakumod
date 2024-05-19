@@ -194,7 +194,9 @@ sub lint($dir, :$debug, --> Str) is export {
     # must have a 'resources' dir and a 'META6.json' file in the parent dir
     my $issues; # to be spurted into a text file whose path name is returned
                 # to the user
-    my $res     # used to collect results from subs for the report
+    my $res;    # used to collect results from subs for the report
+    my $recs;   # list of recommendation for 'best practices'
+
     $issues = qq:to/HERE/;
     Mi6:Helper Report ({DateTime.now})
 
@@ -203,8 +205,15 @@ sub lint($dir, :$debug, --> Str) is export {
     Directory: '{$dir.IO.basename}'
     Path:      '$dir'
     ===============================
+    Issues:
     HERE
 
+    $recs = qq:to/HERE/;
+    ===============================
+    Other observations:
+    HERE
+
+    
     # get contents of the resources file
     my @r = find :dir("$dir/resources"); # TODO type file
     if $debug {
@@ -225,22 +234,31 @@ sub lint($dir, :$debug, --> Str) is export {
     # the files in META6.json do not have to be under the 'resources'
     # directory, but they must referenced as relative to it and exist
     # in the file tree
+    $res = check-meta-vs-resources :meta-res(@r), :resources(@r2);
 
+    # other possible improvements
 
     #================
-    #  other possible improvements
     # check the .github/workflows file(s) for recommended "zef test . --debug"
     $res = check-ci-tests $dir;
 
+    # is it managed by App::Mi6
+    my $is-mi6 = "$dir/dist.ini".IO.f ?? True !! False;
+
     #================
-    # check all 'use X' modules are in META6.json depends
-    $res = check-ci-tests $dir;
+    # check all 'use X' modules are in META6.json depends or test-depends
+    #$res = check-ci-tests $dir;
+    $res = check-use-depends $dir;;
 
     #================
     # check Chang* for name
+    unless $is-mi6 {
+        $res = check-changes $dir;
+    }
 
     #================
     # check %meta<source> for github, etc.
+    $res = check-repo-source %meta;
 
     #================
     # check %meta<tags> for substance
@@ -314,7 +332,7 @@ sub get-basename-hash(@arr, :$debug --> Hash) {
         }
     }
     %h
-
 } # sub get-basename-hash(@arr, :$debug --> Hash) {
 
-
+sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
+} # sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
