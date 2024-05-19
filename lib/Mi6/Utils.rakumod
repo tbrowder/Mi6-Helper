@@ -196,6 +196,7 @@ sub lint($dir, :$debug, --> Str) is export {
                 # to the user
     my $res;    # used to collect results from subs for the report
     my $recs;   # list of recommendation for 'best practices'
+    my $report; # concatenation of $issues and $recs
 
     $issues = qq:to/HERE/;
     Mi6:Helper Report ({DateTime.now})
@@ -222,8 +223,8 @@ sub lint($dir, :$debug, --> Str) is export {
     }
 
     # get contents of the META6.json file
-    my %m = from-json(slurp "$dir/META6.json");
-    my @r2 = @(%m<resources>);
+    my %meta = from-json(slurp "$dir/META6.json");
+    my @r2 = @(%meta<resources>);
     if $debug {
         say "DEBUG META6.json resources:";
         say "  $_" for @r2;
@@ -265,11 +266,10 @@ sub lint($dir, :$debug, --> Str) is export {
 
     # combine the two strings and return them
     $report = $issues ~ $recs; 
+
 } # sub lint($dir, :$debug, --> Str) is export {
 
 sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
-    my %h; # key: basename
-           # value: @paths
     # use File::Find
     # segregate into old suffixes corresponding to:
 
