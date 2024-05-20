@@ -362,4 +362,34 @@ sub check-use-depends(IO::Path $dit, :$debug --> Str) {
 sub find-used-files($dir, :$debug --> Hash) {
     # look in: test files, raku files, module files
     # return a hash: key: type, value: list of paths
+    my @fils = find :$dir, :recurse(True), :type<file>;
+    my (@tests, @non-test);
+    for @fils {
+        when / '/t/' /   { @tests.push: $_    }
+        when / '/xt/' /  { @tests.push: $_    }
+        when / '/lib/' / { @non-test.push: $_ }
+        when / '/bin/' / { @non-test.push: $_ }
+    }
+    my (%test, %non-test);
+    for @tests {
+        for $_.IO.lines -> $line is copy {
+            $line = strip-comment $line;
+            next if $line !~~ /\S/;
+            # double-check this is NOT a double entry like
+            #   use Foo; use Bar;
+
+            say "Tom, fix this";
+            if /^ \h* use \h+ (\S+) ';' \h* $/ {
+                # this should be a 'use'd module
+                # double-check this is NOT a double entry like
+                #   use Foo; use Bar;
+            }
+        }
+    }
+
+    #my %test  = get-basename-hash @tests;
+    #my %ntest = get-basename-hash @non-test;
+
+
+
 } # sub find-used-files($dir, :$debug --> Hash) {
