@@ -4,7 +4,7 @@ unit module Mi6::Utils;
 
 use RakupodObject;
 use App::Mi6;
-use Text::Utils :normalize-string;
+use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
 
@@ -359,36 +359,117 @@ sub check-use-depends(IO::Path $dit, :$debug --> Str) {
     say "Tom, fix this";
 }
 
-sub find-used-files($dir, :$debug --> Hash) {
+sub find-used-files($dir, %meta, :$debug --> Hash) {
     # look in: test files, raku files, module files
     # return a hash: key: type, value: list of paths
     my @fils = find :$dir, :recurse(True), :type<file>;
-    my (@tests, @non-test);
+    my (@tests, @non-tests);
     for @fils {
-        when / '/t/' /   { @tests.push: $_    }
-        when / '/xt/' /  { @tests.push: $_    }
-        when / '/lib/' / { @non-test.push: $_ }
-        when / '/bin/' / { @non-test.push: $_ }
+        when / '/t/' /   { @tests.push: $_     }
+        when / '/xt/' /  { @tests.push: $_     }
+        when / '/lib/' / { @non-tests.push: $_ }
+        when / '/bin/' / { @non-tests.push: $_ }
     }
-    my (%test, %non-test);
+    my (%tests, %non-tests);
+    my $issues = "";
     for @tests {
+        my $f = $_;
         for $_.IO.lines -> $line is copy {
             $line = strip-comment $line;
             next if $line !~~ /\S/;
             # double-check this is NOT a double entry like
             #   use Foo; use Bar;
+            if / ';' \h* (\S+) / {
+                # cannot yet handle this, but could if a user wants it
+                my $s = qq:to/HERE/;
+                + This is a multiple statement line in file '$f':
+                      $line
+                  Correct it and run 'lint' again.
+                HERE
+                $issues ~= $s;
+                next;
+            }
 
-            say "Tom, fix this";
-            if /^ \h* use \h+ (\S+) ';' \h* $/ {
+            if /^ \h* use \h+ (\S+) 
+                  # may have some export tags following a space
+                  [\h+ \N+ ]?
+                  ';'? \h* 
+                $/ {
                 # this should be a 'use'd module
-                # double-check this is NOT a double entry like
-                #   use Foo; use Bar;
+                my $tmod = ~$0;
+                %tests{$tmod} = 1;
             }
         }
     }
 
-    #my %test  = get-basename-hash @tests;
-    #my %ntest = get-basename-hash @non-test;
+    for @non-tests {
+        my $f = $_;
+        for $_.IO.lines -> $line is copy {
+            $line = strip-comment $line;
+            next if $line !~~ /\S/;
+            # double-check this is NOT a double entry like
+            #   use Foo; use Bar;
+            if / ';' \h* (\S+) / {
+                # cannot yet handle this, but could if a user wants it
+                my $s = qq:to/HERE/;
+                + This is a multiple statement line in file '$f':
+                      $line
+                  Correct it and run 'lint' again.
+                HERE
+                $issues ~= $s;
+                next;
+            }
+
+            if /^ \h* use \h+ (\S+) 
+                  # may have some export tags following a space
+                  [\h+ \N+ ]?
+                  ';'? \h* 
+                $/ {
+                # this should be a 'use'd module
+                my $tmod = ~$0;
+                %non-tests{$tmod} = 1;
+            }
+        }
+    }
+
+    # step through the test mods to see if they are used in non-tests
+    for %tests.keys {
+        if %non-tests{$_}:exists {
+            %non-tests{$_}:delete;
+        }
+    }
+
+    # from %meta
+    my %mtest-deps = %(%meta<test-depends>);
+    my %mdeps      = %(%meta<depends>);
+    # ok if test dep is in deps
+    my @strings;
+    for %tests.keys {
+        my $in-tests = 0;
+        my $in-deps  = 0;
+        if %mtest-deps{$_}:exists {
+            ++$in-tests
+        }
+        if %mdeps{$_}:exists {
+            ++$in-deps
+        }
+    }
+    for %non-tests.keys {
+        my $in-tests = 0;
+        my $in-deps  = 0;
+        if %mtest-deps{$_}:exists {
+            ++$in-tests
+        }
+        if %mdeps{$_}:exists {
+            ++$in-deps
+        }
+    }
+
+    # add to the report
+    my $s = qq:to/HERE/;
+    HERE
+
+    say "Tom, fix this";
 
 
 
