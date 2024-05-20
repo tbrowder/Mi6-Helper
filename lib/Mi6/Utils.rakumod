@@ -240,6 +240,11 @@ sub lint($dir, :$debug, --> Str) is export {
     # other possible improvements
 
     #================
+    # check for obsolete file names
+    my %ns = find-non-standard-suffixes $dir;
+
+
+    #================
     # check the .github/workflows file(s) for recommended "zef test . --debug"
     $res = check-ci-tests $dir;
 
@@ -335,4 +340,26 @@ sub get-basename-hash(@arr, :$debug --> Hash) {
 } # sub get-basename-hash(@arr, :$debug --> Hash) {
 
 sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
+    say "Tom, fix this";
 } # sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
+
+sub check-changes(IO::Path $dit, :$debug --> Str) {
+    say "Tom, fix this";
+}
+
+sub check-meta-vs-resources(IO::Path $dit, :$debug --> Str) {
+    say "Tom, fix this";
+}
+
+sub check-repo-source(%meta, :$debug --> Str) {
+    say "Tom, fix this";
+}
+
+sub check-use-depends(IO::Path $dit, :$debug --> Str) {
+    say "Tom, fix this";
+}
+
+sub find-used-files($dir, :$debug --> Hash) {
+    # look in: test files, raku files, module files
+    # return a hash: key: type, value: list of paths
+} # sub find-used-files($dir, :$debug --> Hash) {
