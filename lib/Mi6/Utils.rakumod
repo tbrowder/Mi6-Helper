@@ -453,6 +453,13 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
         if %mdeps{$_}:exists {
             ++$in-deps
         }
+        if $in-tests and $in-deps {
+        }
+        elsif $in-tests {
+        }
+        elsif $in-deps {
+        }
+
     }
     for %non-tests.keys {
         my $in-tests = 0;
@@ -462,6 +469,12 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
         }
         if %mdeps{$_}:exists {
             ++$in-deps
+        }
+        if $in-tests and $in-deps {
+        }
+        elsif $in-tests {
+        }
+        elsif $in-deps {
         }
     }
 
