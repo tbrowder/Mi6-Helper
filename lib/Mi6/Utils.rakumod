@@ -517,12 +517,16 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     }
 
     # add to the report
-    my $s = qq:to/HERE/;
-    Check dependent modules are listed in the META6.json file:
-    HERE
+    my $st = "Check dependent modules are listed in the META6.json file:\n";
 
-    say "Tom, fix this";
+    if $issues {
+        $st ~= $issues;
+    }
+    else {
+        $st ~= "  No issues were found.\n";
+        
+    }
 
-
+    $st;
 
 } # sub find-used-files($dir, :$debug --> Hash) {
