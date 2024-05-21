@@ -372,6 +372,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     }
     my (%tests, %non-tests);
     my $issues = "";
+    my $errs   = 0;
     for @tests {
         my $f = $_;
         for $_.IO.lines -> $line is copy {
@@ -436,6 +437,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     for %tests.keys {
         if %non-tests{$_}:exists {
             %non-tests{$_}:delete;
+            # no need to report it
         }
     }
 
@@ -454,13 +456,28 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             ++$in-deps
         }
         if $in-tests and $in-deps {
+            # report and suggest delete from test deps
+            my $s = qq:to/HERE/;
+            Test-dependent module '$_' is also listed in 'depends'
+            HERE 
+            $issues ~= $s;
         }
         elsif $in-tests {
+            ; # ok
         }
         elsif $in-deps {
+            ; # ok
         }
-
+        else {
+            # error, not listed in either
+            my $s = qq:to/HERE/;
+            ERROR: Test-dependent module '$_' is not listed
+            HERE 
+            $issues ~= $s;
+            ++$errs;
+        }
     }
+
     for %non-tests.keys {
         my $in-tests = 0;
         my $in-deps  = 0;
@@ -470,16 +487,38 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
         if %mdeps{$_}:exists {
             ++$in-deps
         }
+
         if $in-tests and $in-deps {
+            # report and suggest delete from test deps
+            my $s = qq:to/HERE/;
+            Dependent module '$_' is also listed in 'test-depends'
+            HERE 
+            $issues ~= $s;
         }
         elsif $in-tests {
+            # error, should be in 'depends'
+            my $s = qq:to/HERE/;
+            ERROR: Dependent module '$_' is only listed in 'test-depends'
+            HERE 
+            $issues ~= $s;
+            ++$errs;
         }
         elsif $in-deps {
+            ; # ok
+        }
+        else {
+            # error, not listed in either
+            my $s = qq:to/HERE/;
+            ERROR: Dependent module '$_' is not listed
+            HERE 
+            $issues ~= $s;
+            ++$errs;
         }
     }
 
     # add to the report
     my $s = qq:to/HERE/;
+    Check dependent modules are listed in the META6.json file:
     HERE
 
     say "Tom, fix this";
