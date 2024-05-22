@@ -21,12 +21,13 @@ multi sub action() is export {
                    See details in the README.
 
       lint <dir> - Checks for match of entries in the 'resources' dir and the
-                   'resources' entries in the 'META6.json' file.
+                   'resources' entries in the 'META6.json' file. Looks for other
+                   issues.
 
     Options:
       dir=X  -     Selects directory 'X' for the operations, default is '.'
 
-      ver    -     show version of 'mi6-helper'
+      ver    -     Shows version of 'mi6-helper'
     HERE
 } # sub action()
 
@@ -192,6 +193,7 @@ sub lint($dir, :$debug, --> Str) is export {
         unless $dir.IO.d;
 
     # must have a 'resources' dir and a 'META6.json' file in the parent dir
+
     my $issues; # to be spurted into a text file whose path name is returned
                 # to the user
     my $res;    # used to collect results from subs for the report
@@ -236,6 +238,7 @@ sub lint($dir, :$debug, --> Str) is export {
     # directory, but they must referenced as relative to it and exist
     # in the file tree
     $res = check-meta-vs-resources :meta-res(@r), :resources(@r2);
+    # TODO add to issues doc
 
     # other possible improvements
 
@@ -247,27 +250,37 @@ sub lint($dir, :$debug, --> Str) is export {
     #================
     # check the .github/workflows file(s) for recommended "zef test . --debug"
     $res = check-ci-tests $dir;
+    # TODO add to issues doc
 
     # is it managed by App::Mi6
     my $is-mi6 = "$dir/dist.ini".IO.f ?? True !! False;
+    # TODO add to issues doc
 
     #================
     # check all 'use X' modules are in META6.json depends or test-depends
     #$res = check-ci-tests $dir;
     $res = check-use-depends $dir;;
+    # TODO add to issues doc
 
     #================
     # check Chang* for name
     unless $is-mi6 {
         $res = check-changes $dir;
+        # TODO add to issues doc
     }
 
     #================
     # check %meta<source> for github, etc.
     $res = check-repo-source %meta;
+    # TODO add to issues doc
 
     #================
     # check %meta<tags> for substance
+    # TODO add to issues doc
+
+    #================
+    # check pod for substance
+    # TODO add to issues doc
 
     # combine the two strings and return them
     $report = $issues ~ $recs; 
