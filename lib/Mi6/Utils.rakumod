@@ -249,16 +249,22 @@ sub lint($dir, :$debug, --> Str) is export {
     #   properly named files
     my %ns = find-file-suffixes $dir;
     # TODO finish this (put inside the sub?)
-    for %ns.keys -> $typ {
+    for %ns.keys -> $typ { # typ: lowercase...
         my @arr = @(%ns{$typ});
         # typ: raku, rakutest, rakumod, rakudoc
         for @arr {
             # TODO ensure the paths all begin with the distro name!! (c.f. IO::String)
             when /:i '.' $typ $/ {
-                ; # ok TODO notice any uppercase letters
+                # TODO notice any uppercase letters
+                my $t = $_.lc;
+                if $t ne $_ {
+                    ; # TODO report it
+                }
             }
             default {
-                # report the problem with the bad name
+                # TODO report the problem with the bad name
+                my $s = qq:to/HERE/;
+                HERE
             }
         }
     }
@@ -303,11 +309,17 @@ sub lint($dir, :$debug, --> Str) is export {
 
 } # sub lint($dir, :$debug, --> Str) is export {
 
-sub find-file-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
     # TODO then add the valid names back in for more checks
     # use File::Find
     # segregate into new AND old suffixes corresponding to the four types
     #   of files
+
+    # module distro name
+    my $mname = %meta<name>;
+    my $mpath = $mname;
+    $mpath ~~ s/'::'/\//;
+    note "DEBUG: repo name ($mname): path ($mpath)";
 
     #   .raku
     my @raku = find :$dir, :recurse(True), :type<file>, 
@@ -378,7 +390,7 @@ sub check-changes(IO::Path $dit, :$debug --> Str) {
     say "Tom, fix this";
 }
 
-sub check-meta-vs-resources(IO::Path $dit, :$debug --> Str) {
+sub check-meta-vs-resources(IO::Path $dir, :$debug --> Str) {
     say "Tom, fix this";
 }
 
