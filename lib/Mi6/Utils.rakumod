@@ -237,15 +237,31 @@ sub lint($dir, :$debug, --> Str) is export {
     # the files in META6.json do not have to be under the 'resources'
     # directory, but they must referenced as relative to it and exist
     # in the file tree
+    # TODO also check all provided names include the full distro pathe
+    #      to avoid the IO::String nightmare
     $res = check-meta-vs-resources :meta-res(@r), :resources(@r2);
     # TODO add to issues doc
 
     # other possible improvements
 
     #================
-    # check for obsolete file names
-    my %ns = find-non-standard-suffixes $dir;
-
+    # check for obsolete file names; note the hash also includes
+    #   properly named files
+    my %ns = find-file-suffixes $dir;
+    # TODO finish this (put inside the sub?)
+    for %ns.keys -> $typ {
+        my @arr = @(%ns{$typ});
+        # typ: raku, rakutest, rakumod, rakudoc
+        for @arr {
+            # TODO ensure the paths all begin with the distro name!! (c.f. IO::String)
+            when /:i '.' $typ $/ {
+                ; # ok TODO notice any uppercase letters
+            }
+            default {
+                # report the problem with the bad name
+            }
+        }
+    }
 
     #================
     # check the .github/workflows file(s) for recommended "zef test . --debug"
@@ -287,28 +303,30 @@ sub lint($dir, :$debug, --> Str) is export {
 
 } # sub lint($dir, :$debug, --> Str) is export {
 
-sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+sub find-file-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+    # TODO then add the valid names back in for more checks
     # use File::Find
-    # segregate into old suffixes corresponding to:
+    # segregate into new AND old suffixes corresponding to the four types
+    #   of files
 
     #   .raku
     my @raku = find :$dir, :recurse(True), :type<file>, 
-                    :name(/:i '.' [perl6|perl|pl6|pl|p6] $/);
+                    :name(/:i '.' [raku|perl6|perl|pl6|pl|p6] $/);
     my %raku = get-basename-hash @raku;
 
     #   .rakumod
     my @rakumod = find :$dir, :recurse(True), :type<file>, 
-                        :name(/:i '.' [pm6|pm] $/);
+                        :name(/:i '.' [rakumod|pm6|pm] $/);
     my %rakumod = get-basename-hash @rakumod;
 
     #   .rakudoc
     my @rakudoc = find :$dir, :recurse(True), :type<file>, 
-                        :name(/:i '.' [rakupod|pod6|pod] $/);
+                        :name(/:i '.' [rakudoc|rakupod|pod6|pod] $/);
     my %rakudoc = get-basename-hash @rakudoc;
 
     #   .rakutest
     my @rakutest = find :$dir, :recurse(True), :type<file>, 
-                        :name(/:i '.' [t] $/);
+                        :name(/:i '.' [rakutest|t] $/);
     my %rakutest = get-basename-hash @rakutest;
 
     # combine the hashes into TODO
@@ -333,7 +351,7 @@ sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
         }
     }
     %h
-} # sub find-non-standard-suffixes(IO::Path $dir, :$debug --> Hash) is export {
+} # sub find-file-suffixes(IO::Path $dir, :$debug --> Hash) is export {
 
 sub get-basename-hash(@arr, :$debug --> Hash) {
     # @arr is a list of paths; from it, create a hash keyed by basename
