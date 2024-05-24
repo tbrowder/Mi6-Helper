@@ -15,9 +15,9 @@ multi sub action() is export {
 
     Modes:
       new=Y  -     Creates a new module (named 'Y') in directory 'X' (default '.')
-                   by executing 'mi6', then changing certain files in the new 
-                   repo to conform to the 'docs' option.  It also uses the 
-                   'provides' option for a short description of its main purpose. 
+                   by executing 'mi6', then changing certain files in the new
+                   repo to conform to the 'docs' option.  It also uses the
+                   'provides' option for a short description of its main purpose.
                    See details in the README.
 
       lint <dir> - Checks for match of entries in the 'resources' dir and the
@@ -46,7 +46,7 @@ multi sub action(@args) is export {
     my $provides;
     my $provides-hidden = 1;
 
-    # assume we are in the current 
+    # assume we are in the current
     # working directory
     my $parent-dir; # set to '.' only if new and no dir= found
 
@@ -59,7 +59,7 @@ multi sub action(@args) is export {
     # @*ARGS
     for @args {
         when $lint and $_.IO.d {
-           $parent-dir = $_; 
+           $parent-dir = $_;
         }
         when /:i ^'old=' (\S+) / {
             $module-name = ~$0;
@@ -185,7 +185,7 @@ multi sub action(@args) is export {
         say "NOTE: Mode 'old' is not yet implemented.";
         exit;
     }
-} # sub action(@args) 
+} # sub action(@args)
 
 sub lint($dir, :$debug, --> Str) is export {
     # must be a dir
@@ -216,7 +216,7 @@ sub lint($dir, :$debug, --> Str) is export {
     Other observations:
     HERE
 
-    
+
     # get contents of the resources file
     my @r = find :dir("$dir/resources"); # TODO type file
     if $debug {
@@ -305,7 +305,7 @@ sub lint($dir, :$debug, --> Str) is export {
     # TODO add to issues doc
 
     # combine the two strings and return them
-    $report = $issues ~ $recs; 
+    $report = $issues ~ $recs;
 
 } # sub lint($dir, :$debug, --> Str) is export {
 
@@ -322,22 +322,22 @@ sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
     note "DEBUG: repo name ($mname): path ($mpath)";
 
     #   .raku
-    my @raku = find :$dir, :recurse(True), :type<file>, 
+    my @raku = find :$dir, :recurse(True), :type<file>,
                     :name(/:i '.' [raku|perl6|perl|pl6|pl|p6] $/);
     my %raku = get-basename-hash @raku;
 
     #   .rakumod
-    my @rakumod = find :$dir, :recurse(True), :type<file>, 
+    my @rakumod = find :$dir, :recurse(True), :type<file>,
                         :name(/:i '.' [rakumod|pm6|pm] $/);
     my %rakumod = get-basename-hash @rakumod;
 
     #   .rakudoc
-    my @rakudoc = find :$dir, :recurse(True), :type<file>, 
+    my @rakudoc = find :$dir, :recurse(True), :type<file>,
                         :name(/:i '.' [rakudoc|rakupod|pod6|pod] $/);
     my %rakudoc = get-basename-hash @rakudoc;
 
     #   .rakutest
-    my @rakutest = find :$dir, :recurse(True), :type<file>, 
+    my @rakutest = find :$dir, :recurse(True), :type<file>,
                         :name(/:i '.' [rakutest|t] $/);
     my %rakutest = get-basename-hash @rakutest;
 
@@ -407,16 +407,33 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     # return a hash: key: type, value: list of paths
     my @fils = find :$dir, :recurse(True), :type<file>;
     my (@tests, @non-tests);
-    for @fils {
-        when / '/t/' /   { @tests.push: $_     }
-        when / '/xt/' /  { @tests.push: $_     }
-        when / '/lib/' / { @non-tests.push: $_ }
-        when / '/bin/' / { @non-tests.push: $_ }
-    }
     my (%tests, %non-tests);
     my $issues = "";
     my $errs   = 0;
-    for @tests {
+
+    for @fils {
+        my $typ; # 0 = test; 1 = non-test
+        when / '/t/' /   {
+            @tests.push: $_;
+            $typ = 0;
+        }
+        when / '/xt/' /  {
+            @tests.push: $_;
+            $typ = 0;
+        }
+        when / '/lib/' / {
+            @non-tests.push: $_;
+            $typ = 1;
+        }
+        when / '/bin/' / {
+            @non-tests.push: $_;
+            $typ = 1;
+        }
+        default {
+            die "FATAL: Unrecognized path '$_'";
+        }
+
+        # handle the item and classify it as test or nontest
         my $f = $_;
         for $_.IO.lines -> $line is copy {
             $line = strip-comment $line;
@@ -434,46 +451,23 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
                 next;
             }
 
-            if /^ \h* use \h+ (\S+) 
+            if /^ \h* use \h+ (\S+)
                   # may have some export tags following a space
                   [\h+ \N+ ]?
-                  ';'? \h* 
+                  ';'? \h*
                 $/ {
                 # this should be a 'use'd module
                 my $tmod = ~$0;
-                %tests{$tmod} = 1;
+                if $typ == 0 {
+                    %non-tests{$tmod} = 1;
+                }
+                elsif $typ == 1 {
+                    %tests{$tmod} = 1;
+                }
+
             }
         }
-    }
 
-    for @non-tests {
-        my $f = $_;
-        for $_.IO.lines -> $line is copy {
-            $line = strip-comment $line;
-            next if $line !~~ /\S/;
-            # double-check this is NOT a double entry like
-            #   use Foo; use Bar;
-            if / ';' \h* (\S+) / {
-                # cannot yet handle this, but could if a user wants it
-                my $s = qq:to/HERE/;
-                + This is a multiple statement line in file '$f':
-                      $line
-                  Correct it and run 'lint' again.
-                HERE
-                $issues ~= $s;
-                next;
-            }
-
-            if /^ \h* use \h+ (\S+) 
-                  # may have some export tags following a space
-                  [\h+ \N+ ]?
-                  ';'? \h* 
-                $/ {
-                # this should be a 'use'd module
-                my $tmod = ~$0;
-                %non-tests{$tmod} = 1;
-            }
-        }
     }
 
     # step through the test mods to see if they are used in non-tests
@@ -502,7 +496,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             # report and suggest delete from test deps
             my $s = qq:to/HERE/;
             Test-dependent module '$_' is also listed in 'depends'
-            HERE 
+            HERE
             $issues ~= $s;
         }
         elsif $in-tests {
@@ -515,7 +509,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             # error, not listed in either
             my $s = qq:to/HERE/;
             ERROR: Test-dependent module '$_' is not listed
-            HERE 
+            HERE
             $issues ~= $s;
             ++$errs;
         }
@@ -535,14 +529,14 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             # report and suggest delete from test deps
             my $s = qq:to/HERE/;
             Dependent module '$_' is also listed in 'test-depends'
-            HERE 
+            HERE
             $issues ~= $s;
         }
         elsif $in-tests {
             # error, should be in 'depends'
             my $s = qq:to/HERE/;
             ERROR: Dependent module '$_' is only listed in 'test-depends'
-            HERE 
+            HERE
             $issues ~= $s;
             ++$errs;
         }
@@ -553,7 +547,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             # error, not listed in either
             my $s = qq:to/HERE/;
             ERROR: Dependent module '$_' is not listed
-            HERE 
+            HERE
             $issues ~= $s;
             ++$errs;
         }
@@ -567,7 +561,7 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     }
     else {
         $st ~= "  No issues were found.\n";
-        
+
     }
 
     $st;
