@@ -479,25 +479,33 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     }
 
     # from %meta
-    my %mtest-deps = %(%meta<test-depends>);
-    my %mdeps      = %(%meta<depends>);
+    my %mbuild-deps = %(%meta<build-depends>);
+    my %mtest-deps  = %(%meta<test-depends>);
+    my %mdeps       = %(%meta<depends>);
     # ok if test dep is in deps
     my @strings;
     for %tests.keys {
+        my $in-build = 0;
         my $in-tests = 0;
         my $in-deps  = 0;
+        if %mbuild-deps{$_}:exists {
+            ++$in-build;
+        }
         if %mtest-deps{$_}:exists {
-            ++$in-tests
+            ++$in-tests;
         }
         if %mdeps{$_}:exists {
-            ++$in-deps
+            ++$in-deps;
         }
-        if $in-tests and $in-deps {
-            # report and suggest delete from test deps
+        if ($in-build or $in-tests) and $in-deps {
+            # report and suggest delete from build or test deps
             my $s = qq:to/HERE/;
-            Test-dependent module '$_' is also listed in 'depends'
+            Build- or Test-dependent module '$_' is also listed in 'depends'
             HERE
             $issues ~= $s;
+        }
+        elsif $in-build {
+            ; # ok
         }
         elsif $in-tests {
             ; # ok
@@ -506,9 +514,9 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
             ; # ok
         }
         else {
-            # error, not listed in either
+            # error, not listed in any
             my $s = qq:to/HERE/;
-            ERROR: Test-dependent module '$_' is not listed
+            ERROR: Dependent module '$_' is not listed
             HERE
             $issues ~= $s;
             ++$errs;
