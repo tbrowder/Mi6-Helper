@@ -1,3 +1,5 @@
+#!/usr/bin/env raku
+
 my $line = q:to/HERE/;
 
 line-1 blan ndjfj
