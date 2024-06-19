@@ -14,20 +14,20 @@ multi sub action() is export {
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
-      new=Y  -     Creates a new module (named 'Y') in directory 'X' (default '.')
-                   by executing 'mi6', then changing certain files in the new
-                   repo to conform to the 'docs' option.  It also uses the
-                   'provides' option for a short description of its main purpose.
-                   See details in the README.
+      new=Y - Creates a new module (named 'Y') in directory 'X' (default '.')
+              by executing 'mi6', then changing certain files in the new
+              repository to conform to the 'docs' option.  It also uses the
+              'provides' option for a short description of its main purpose.
+              See details in the README.
 
-      lint <dir> - Checks for match of entries in the 'resources' dir and the
-                   'resources' entries in the 'META6.json' file. Looks for other
-                   issues.
+      lint  - Checks for match of entries in the 'resources' directory of the
+              current directory (default '.') and the 'resources' entries in 
+              the 'META6.json' file. Also looks for other issues.
 
     Options:
-      dir=X  -     Selects directory 'X' for the operations, default is '.'
+      dir=X - Selects directory 'X' for the operations, default is '.'
 
-      ver    -     Shows version of 'mi6-helper'
+      ver   - Shows the version of 'mi6-helper'
     HERE
 } # sub action()
 
@@ -45,10 +45,11 @@ multi sub action(@args) is export {
     my $docs   = 0;
     my $provides;
     my $provides-hidden = 1;
+    my $resources = 0; # add Resources subs?
 
     # assume we are in the current
     # working directory
-    my $parent-dir; # set to '.' only if new and no dir= found
+    my $parent-dir = $*CWD; # default
 
     # other args
     my $err = 0; # track number of possible errors
@@ -59,13 +60,13 @@ multi sub action(@args) is export {
     # @*ARGS
     for @args {
         when $lint and $_.IO.d {
-           $parent-dir = $_;
+           $parent-dir = $_.IO.d;
         }
         when /:i ^'old=' (\S+) / {
             $module-name = ~$0;
             ++$old
         }
-        when /:i ^lint / {
+        when /:i ^ [l|li|lin|lint] / {
             ++$lint;
         }
         when /:i ^'new=' (\S+) / {
@@ -152,8 +153,10 @@ multi sub action(@args) is export {
         }
     }
 
-    die "FATAL: Path '$parent-dir' is not a directory."
+    if $parent-dir.defined {
+        die "FATAL: Path '$parent-dir' is not a directory."
         unless $parent-dir.IO.d;
+    }
     say "Using directory '$parent-dir' as the working directory.";
 
     if $new {
@@ -398,7 +401,7 @@ sub check-repo-source(%meta, :$debug --> Str) {
     say "Tom, fix this";
 }
 
-sub check-use-depends(IO::Path $dit, :$debug --> Str) {
+sub check-use-depends(IO::Path $dir, :$debug --> Str) {
     say "Tom, fix this";
 }
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env raku
 
+use Git::Status;
+
 if not @*ARGS.elems {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <dir>

@@ -1,0 +1,27 @@
+Desired capabilities
+====================
+
+Implement old= mode
+  + use a config file
+    My-Module.yml
+      # contents?
+
+Implement lint mode
+  + Consider using Shell::Command 
+  + ensure there is a load test for
+    ALL files in /lib
+
+Add option to new= to add a Resources
+  module
+  + user-selected name (below top level)
+
+Add a new= method with a config file
+  instead of the hidden file
+  + deprecate the hidden file method
+  + the config file
+    <name>.yml
+    My-Module.yml
+      name: My::Module
+      provides: Blah blah
+
+

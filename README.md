@@ -31,7 +31,10 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
 Special installation requirements
 ---------------------------------
 
-The user must install and have an account with `fez` to use this module to create a new module repository.
+The user must install and have an account with `fez` to use this module to create a new module repository:
+
+    zef install fez
+    fez register
 
 DESCRIPTION
 ===========

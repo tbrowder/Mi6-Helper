@@ -4,12 +4,12 @@ use Mi6::Helper;
 use Mi6::Utils;
 
 if @*ARGS {
-   # do the work
-   action @*ARGS
+    # do the work
+    action @*ARGS
 }
 else {
-     # usage
-     action
+    # usage
+    action
 }
 
 =finish
