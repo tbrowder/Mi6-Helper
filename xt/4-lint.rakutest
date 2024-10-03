@@ -1,0 +1,49 @@
+use Test;
+
+use Mi6::Helper::Utils;
+
+=begin comment
+Give a module repo with a "resources" dir, make sure
+the META6.json file's "resources" list agrees with
+the file system's list. For example:
+
+See the two examples used for testing in subdir data.
+The Good repo has the META6.json file's "reaources"
+list matching its "resources" directory's contents
+while the Bad's do not match.
+
+=end comment
+
+my $mod1 = 'Good';
+my $mod2 = 'Bad';
+
+my $provides   = "Good stuff";
+my $parent-dir = "$*CWD/xt/data";
+my $pdir2 = "$*CWD/xt/data";
+
+my ($good, $bad, $module-dir, $module-name);
+
+$good = Mi6::Helper.new: :module-dir($mod1), :module-name($mod1), :$provides,
+                         :$parent-dir; 
+$bad  = Mi6::Helper.new: :module-dir($mod2), :module-name($mod2), :$provides,
+                         :$parent-dir; 
+
+isa-ok $good, Mi6::Helper;
+isa-ok $bad, Mi6::Helper;
+
+lives-ok {
+    # check Good
+    $module-dir  = $good.module-dir;
+    $module-name = $good.module-name;
+    $good.mi6-lint-cmd: :$module-dir, :$module-name, :$parent-dir;
+}, "runs lint on Good okay";
+
+lives-ok {
+    # check Bad
+    $module-dir  = $bad.module-dir;
+    $module-name = $bad.module-name;
+    $bad.mi6-lint-cmd: :$module-dir, :$module-name, :$parent-dir;
+}, "runs lint on Bad okay";
+
+
+done-testing;

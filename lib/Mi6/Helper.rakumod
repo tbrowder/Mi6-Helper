@@ -5,7 +5,7 @@ use JSON::Fast;
 use Proc::Easier;
 use File::Find;
 
-has $.parent-dir = '.';
+has $.parent-dir = $*CWD;
 has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar-Baz'
 # top-level directory
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
@@ -29,6 +29,52 @@ submethod TWEAK {
     my @dir-parts = $!module-name.split('::');
     $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;
     @!libdirs = @dir-parts;
+}
+
+sub lint(
+    IO::Path:D $path, #= to repo dir
+    :$debug,
+    :$debug2,
+    ) {
+    # create an old object
+    # sub mi6-helper-old(
+    #  :$parent-dir!, :$module-dir!, :$module-name!, :$provides,
+    #  :$debug, :$debug2
+    my $module-dir  = $path;
+    my $parent-dir  = $path.IO.parent;
+    my $module-name = $path.IO.basename;
+
+    my $o = Mi6::Helper.new: :$module-name;
+    $o.mi6-lint-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
+}
+
+sub mi6-helper-old(
+    :$parent-dir!, :$module-dir!, :$module-name!, :$provides,
+    :$debug, :$debug2
+    ) is export {
+
+    my $o = Mi6::Helper.new: :$module-name;
+    $o.mi6-old-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
+}
+
+sub get-file-content($fnam --> Str) is export {
+    %?RESOURCES{$fnam}.slurp;
+}
+
+method mi6-lint-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
+    chdir $parent-dir;
+    #cmd "mi6 new --zef $module-name";
+    self.libdirs = :dir($module-dir), :type<dir>;
+    my $dir = "$module-dir/lib";
+    self.libfile = find :$dir, :type<file>;
+}
+
+method mi6-old-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
+    chdir $parent-dir;
+    #cmd "mi6 new --zef $module-name";
+    self.libdirs = :dir($module-dir), :type<dir>;
+    my $dir = "$module-dir/lib";
+    self.libfile = find :$dir, :type<file>;
 }
 
 method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
@@ -79,15 +125,10 @@ sub get-hidden-name(:$module-name) is export {
     $s ~ '.' ~ $s;
 }
 
-sub mi6-helper-old(:$parent-dir!, :$module-dir!, :$module-name!, :$provides, :$debug, :$debug2) is export {
-}
-
-sub get-file-content($fnam --> Str) is export {
-    %?RESOURCES{$fnam}.slurp;
-}
-
-sub mi6-helper-new(:$parent-dir!, :$module-dir, :$module-name!, :$provides,
-                   :$debug, :$debug2) is export {
+sub mi6-helper-new(
+    :$parent-dir!, :$module-dir, :$module-name!, :$provides,
+    :$debug, :$debug2
+    ) is export {
 
     # test module is "Foo::Bar-Baz"
     # method mi6-cmd(:$parent-dir, :$module-name) {

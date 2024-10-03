@@ -7,7 +7,7 @@
   ],
   "depends": [
     "JSON::Fast",
-    "App::Mi6:ver<3.0.5+>",
+    "App::Mi6:ver<3.0.6+>",
     "Text::Utils",
     "File::Find",
     "Proc::Easier"

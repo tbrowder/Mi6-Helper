@@ -1,8 +1,7 @@
+unit module Mi6::Helper::Utils;
+
 use Mi6::Helper;
-
-unit module Mi6::Utils;
-
-use RakupodObject;
+use Pod::Load;
 use App::Mi6;
 use Text::Utils :normalize-string, :strip-comment;
 use File::Find;

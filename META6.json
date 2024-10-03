@@ -20,7 +20,7 @@
   "perl": "6.d",
   "provides": {
     "Mi6::Helper": "lib/Mi6/Helper.rakumod",
-    "Mi6::Utils": "lib/Mi6/Utils.rakumod"
+    "Mi6::Helper::Utils": "lib/Mi6/Helper/Utils.rakumod"
   },
   "resources": [
     "linux.yml",

@@ -1,0 +1,12 @@
+use Test;
+
+my @modules = <
+    Mi6::Helper
+    Mi6::Helper::Utils
+>;
+
+plan @modules.elems;
+
+for @modules {
+    use-ok "$_", "Module $_ can be used";
+}

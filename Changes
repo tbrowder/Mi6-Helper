@@ -3,9 +3,13 @@ Revision history for Mi6-Helper
 {{$NEXT}}
     - IMPORTANT: The next version will remove all 'provides' options 
                  other than the hidden file
+    - Improved t/load test (thanks @finanalyst)
+    - Replaced module 'RakupodObject' with 'Pod::Load'
     - Add new 'lint' option.
-    - Move most executable code from /bin/mi6-helper to new Mi6/Utils.rakumod
-        for more pre-compiled code
+    - Changed test suffixes to '.rakutest'
+    - Updated App::Mi6 version requirement to v3.0.6
+    - Move most executable code from /bin/mi6-helper to new 
+        Mi6/Helper/Utils.rakumod for more pre-compiled code
 
 0.11.5  2024-05-08T12:54:09-05:00
     - Correct error in dist.ini: .yml extension was missing

@@ -1,5 +1,6 @@
 use Test;
 use Mi6::Helper;
+
 use App::Mi6;
 use Temp::Path;
 use Proc::Easier;
@@ -46,7 +47,6 @@ sub create-repos($tdir) {
         shell "chdir $tdir; mi6 new $zef $nam";
     }
 }
-
 
 done-testing;
 

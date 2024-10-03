@@ -13,7 +13,7 @@ NOTE: The next version will remove all 'provides' methods except
 =begin code
 use Mi6::Helper
 $ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file 
-                           # '.Foo-Bar' (recommended method)
+                           # '.Foo-Bar'
     or
 
 $ mi6-helper lint <dir>    # Checks a module directory for errors
