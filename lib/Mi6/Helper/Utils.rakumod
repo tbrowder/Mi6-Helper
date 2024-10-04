@@ -22,6 +22,7 @@ multi sub action() is export {
       lint  - Checks for match of entries in the 'resources' directory of the
               current directory (default '.') and the 'resources' entries in 
               the 'META6.json' file. Also looks for other issues.
+              WARNING: The '.precomp' subdirectories are deleted for testing.
 
     Options:
       dir=X - Selects directory 'X' for the operations, default is '.'
@@ -173,6 +174,7 @@ multi sub action(@args) is export {
     }
 
     if $lint {
+        %*ENV<RAKUDO_NO_PRECOMPILATION>=1;
         my $lint-results = lint $parent-dir, :$debug;
         my $ofil = "lint-results.txt";
         spurt $ofil, $lint-results;
@@ -190,10 +192,40 @@ multi sub action(@args) is export {
 } # sub action(@args)
 
 sub lint($dir, :$debug, --> Str) is export {
+
     # must be a dir
     die "FATAL: Path '$dir' is not a directory."
         unless $dir.IO.d;
 
+    # need .precomp subdirs removed
+
+    # need to set env var RAKUDO_NO_PRECOMPILATION
+    %*ENV<RAKUDO_NO_PRECONPILATION> = 1;
+
+    # but maybe not!!
+    my @pdirs = find :$dir, :type<dir>, :name<.precomp>, :exclude<.git>;
+    if 1 {
+        say "debug precomp dir '$_'" for @pdirs;
+        # say "debug exit";
+        #    exit;
+    }
+    for @pdirs {
+        my @f = find :dir($_), :type<file>;
+        if 1 {
+            for @f {
+                say "debug precomp file '$_'";
+                # get perms
+
+                #say "debug exit";
+                #exit;
+            }
+        }
+        else {
+            .unlink for @f;
+        }
+    }
+    .rmdir for @pdirs;
+    
     # must have a 'resources' dir and a 'META6.json' file in the parent dir
 
     my $issues; # to be spurted into a text file whose path name is returned
@@ -309,6 +341,7 @@ sub lint($dir, :$debug, --> Str) is export {
     # combine the two strings and return them
     $report = $issues ~ $recs;
 
+    $report;
 } # sub lint($dir, :$debug, --> Str) is export {
 
 sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {

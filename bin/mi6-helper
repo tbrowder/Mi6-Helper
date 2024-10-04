@@ -5,6 +5,12 @@ use Mi6::Helper::Utils;
 
 if @*ARGS {
     # do the work
+    for @*ARGS {
+        when /^ :i L/ {
+            %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
+        }
+    
+    }
     action @*ARGS
 }
 else {
