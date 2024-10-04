@@ -18,6 +18,7 @@ $ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file
 
 $ mi6-helper lint <dir>    # Checks a module directory for errors
                            # and best practice recommendations
+
 =end code
 
 B<Easily> create the template for a new Raku module repository for
