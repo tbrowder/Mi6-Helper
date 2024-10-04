@@ -1,6 +1,9 @@
 Desired capabilities
 ====================
 
+Use straight lint sub with no .precomp to check META6.json
+  files.
+
 Implement old= mode
   + use a config file
     My-Module.yml
