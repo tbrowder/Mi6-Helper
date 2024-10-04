@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+RAKUDO_NO_PRECOMPILATION=1
+
+export $RAKUDO_NO_PRECOMPILATION
+
+/usr/bin/raku -I. xt/4*t
+
+
