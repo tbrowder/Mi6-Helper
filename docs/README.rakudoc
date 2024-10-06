@@ -18,7 +18,6 @@ $ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file
 
 $ mi6-helper lint <dir>    # Checks a module directory for errors
                            # and best practice recommendations
-
 =end code
 
 B<Easily> create the template for a new Raku module repository for
@@ -28,7 +27,13 @@ management by C<App::Mi6> with modifications including:
 =item User choice of the 'provides' text
 =item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
 =item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
+=item A special /sbin/update-meta script to be used by mi6 as a run-before-build
+process to ensure the META6.json's 'resources' list matches the files in the
+/resources directory
+=item Routines to enable showing and downloading files in the /resources
+directory
 
+See published module Foo::Bar for an example of a module created by mi6-helper.
 =head2 Special installation requirements
 
 The user must install and have an account with C<fez> to use this module to 

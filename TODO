@@ -3,6 +3,10 @@ Desired capabilities
 
 Use straight lint sub with no .precomp to check META6.json
   files.
+New creations should have a RunBeforeBuild script
+  to ensure /resources and META6.json match
+  + and appropriate subs to show and download /resources
+    payloads. See Foo::Bar for an example.
 
 Implement old= mode
   + use a config file
