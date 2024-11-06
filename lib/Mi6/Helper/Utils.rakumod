@@ -197,8 +197,9 @@ sub lint($dir, :$debug, --> Str) is export {
     die "FATAL: Path '$dir' is not a directory."
         unless $dir.IO.d;
 
+    =begin comment
     # need .precomp subdirs removed
-
+    #
     # need to set env var RAKUDO_NO_PRECOMPILATION
     %*ENV<RAKUDO_NO_PRECONPILATION> = 1;
 
@@ -225,8 +226,11 @@ sub lint($dir, :$debug, --> Str) is export {
         }
     }
     .rmdir for @pdirs;
+    =end comment
     
-    # must have a 'resources' dir and a 'META6.json' file in the parent dir
+    # If either a 'resources' dir exists with one or more files
+    # as contents or the 'META6.json' file has one or more
+    # paths listed, then report and offer fixes.
 
     my $issues; # to be spurted into a text file whose path name is returned
                 # to the user
