@@ -28,6 +28,14 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
 
   * Using three separate OS tests in `.github/workflows` and shows results of each in the `README.md` file
 
+  * A special /sbin/update-meta script to be used by `mi6` as a run-before-build process to ensure the META6.json's 'resources' list matches the files in the </resources> directory
+
+  * Routines to enable showing and downloading files in the /resources directory
+
+  * A new `lint` mode to check existing module repos for possible issues including ensuring the META6.json file reflects the file names in the /resources directory
+
+See published module `Foo::Bar` for an example of a module created by `mi6-helper`.
+
 Special installation requirements
 ---------------------------------
 
@@ -177,6 +185,8 @@ The very useful Raku modules used herein:
   * `Proc::Easier` by **zef:sdondley**
 
   * `File::Find` by **zef:raku-community-modules**
+
+  * `MacOS::NativeLib` by **zef:lizmat**
 
 COPYRIGHT AND LICENSE
 =====================

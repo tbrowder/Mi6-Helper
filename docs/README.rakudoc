@@ -27,6 +27,17 @@ management by C<App::Mi6> with modifications including:
 =item User choice of the 'provides' text
 =item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
 =item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
+=item A special /sbin/update-meta script to be used by C<mi6> as a run-before-build
+process to ensure the META6.json's 'resources' list matches the files in the
+</resources> directory
+=item Routines to enable showing and downloading files in the /resources
+directory
+=item A new C<lint> mode to check existing module repos for possible issues
+including ensuring the META6.json file reflects the file names in the 
+/resources directory
+
+See published module C<Foo::Bar> for an example of a module created by 
+C<mi6-helper>.
 
 =head2 Special installation requirements
 
@@ -198,6 +209,7 @@ The very useful Raku modules used herein:
 =item C<File::Temp>            by B<zef:rbt>
 =item C<Proc::Easier>          by B<zef:sdondley>
 =item C<File::Find>            by B<zef:raku-community-modules>
+=item C<MacOS::NativeLib>      by B<zef:lizmat>
 
 =head1 COPYRIGHT AND LICENSE
 

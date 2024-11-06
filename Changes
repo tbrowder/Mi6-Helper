@@ -10,6 +10,10 @@ Revision history for Mi6-Helper
     - Updated App::Mi6 version requirement to v3.0.6
     - Move most executable code from /bin/mi6-helper to new 
         Mi6/Helper/Utils.rakumod for more pre-compiled code
+    - Add to all new modules methods and routines for querying or
+        downloading payload files in its /resources directory.
+    - Add use of the published 'Foo::Bar' module to test modules
+      in their cloned repos as well as their installed instances.
 
 0.11.5  2024-05-08T12:54:09-05:00
     - Correct error in dist.ini: .yml extension was missing

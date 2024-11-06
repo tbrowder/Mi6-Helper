@@ -20,14 +20,18 @@ multi sub action() is export {
               See details in the README.
 
       lint  - Checks for match of entries in the 'resources' directory of the
-              current directory (default '.') and the 'resources' entries in 
-              the 'META6.json' file. Also looks for other issues.
-              WARNING: The '.precomp' subdirectories are deleted for testing.
+              current directory (default '.', but see NOTE below)) and the 
+              'resources' entries in the 'META6.json' file. Also looks for 
+              other issues.  WARNING: The '.precomp' subdirectories are deleted 
+              for the anaysis.
 
     Options:
       dir=X - Selects directory 'X' for the operations, default is '.'
 
       ver   - Shows the version of 'mi6-helper'
+
+    NOTE    - The default directory will cause an abort if the repo home of this
+              module is selected.
     HERE
 } # sub action()
 
@@ -191,11 +195,25 @@ multi sub action(@args) is export {
     }
 } # sub action(@args)
 
-sub lint($dir, :$debug, --> Str) is export {
+sub get-zef-info($module-name, :$debug) is export {
+    # Use "run" and "zef locate 'module' and 'zef list --intalled'
+    # to (1) install and (2) clone the module for testing if need
+    # be.
+}
 
-    # must be a dir
+sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
+
+    # must be a dir, but NOT the repo home of Mi6::Helper
+    my $xdir = "Mi6-Helper";
+
+    # if it's a published module, install it
+
     die "FATAL: Path '$dir' is not a directory."
         unless $dir.IO.d;
+    if $dir.contains($xdir) {
+        die "FATAL: Path '$dir' is the repo dir for $xdir and not yet completely
+            handled"
+    }
 
     =begin comment
     # need .precomp subdirs removed
@@ -234,7 +252,7 @@ sub lint($dir, :$debug, --> Str) is export {
 
     my $issues; # to be spurted into a text file whose path name is returned
                 # to the user
-    my $res;    # used to collect results from subs for the report
+    my $res;    # used to collect results from subs for the report 
     my $recs;   # list of recommendation for 'best practices'
     my $report; # concatenation of $issues and $recs
 
@@ -253,7 +271,6 @@ sub lint($dir, :$debug, --> Str) is export {
     ===============================
     Other observations:
     HERE
-
 
     # get contents of the resources file
     my @r = find :dir("$dir/resources"); # TODO type file

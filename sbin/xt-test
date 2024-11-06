@@ -1,9 +1,9 @@
 #!/usr/bin/bash
 
-RAKUDO_NO_PRECOMPILATION=1
+export RAKUDO_NO_PRECOMPILATION=1
 
-export $RAKUDO_NO_PRECOMPILATION
+find xxt -type d -name '.precomp' -exec rm -r {} \; -print
 
-/usr/bin/raku -I. xt/4*t
+/usr/bin/raku -I. xxt/4*t
 
 
