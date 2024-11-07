@@ -45,7 +45,8 @@ multi sub action(@args) is export {
     # options
     my $force  = 0;
     my $debug  = 0;
-    my $debug2 = 0;
+    my $d2     = 0; # debug2
+    my $d3     = 0; # debug3
     my $docs   = 0;
     my $provides;
     my $provides-hidden = 1;
@@ -82,11 +83,14 @@ multi sub action(@args) is export {
             $parent-dir = ~$0;
         }
         when / ^do  / { ++$docs  }
-        when / ^de2 / {
-            ++$debug2;
-        }
         when / ^de / {
             ++$debug;
+        }
+        when / ^d2 / {
+            ++$d2;
+        }
+        when / ^d3 / {
+            ++$d3;
             # check for this module's workflows file(s'
             say "DEBUG checking for expected workflow(s):";
             for "linux", "macos", "windows" -> $OS {
@@ -169,7 +173,7 @@ multi sub action(@args) is export {
         $module-dir ~~ s:g/'::'/-/;
 
         mi6-helper-new :$parent-dir, :$module-dir, :$module-name, :$provides,
-        :$debug, :$debug2;
+        :$debug, :$d2;
         say qq:to/HERE/;
         Exit after 'new' mode run. See new module repo '$module-dir'
         in parent dir '$parent-dir'.
@@ -222,26 +226,50 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     my %meta = from-json("META6.json".IO.slurp);
     # build-depends, depends, test-depends, resources,  
     my (%bmods, %dmods, %tmods, %rfils);
-    # %meta<build-depends> = [];
+    # %meta< TYPE? depends> = [];
     my @bmods = @(%meta<build-depends>);
     my @tmods = @(%meta<test-depends>);
     my @dmods = @(%meta<depends>);
     my @rfils = @(%meta<resources>);
+    for @bmods.kv -> $k, $mod {
+        if %bmods{$mod}:exists { %bmods{$mod} += 1; }
+        else                   { %bmods{$mod}  = 1; }
+    }
+    for @tmods.kv -> $k, $mod {
+        if %tmods{$mod}:exists { %tmods{$mod} += 1; }
+        else                   { %tmods{$mod}  = 1; }
+    }
+    for @dmods.kv -> $k, $mod {
+        if %dmods{$mod}:exists { %dmods{$mod} += 1; }
+        else                   { %dmods{$mod}  = 1; }
+    }
 
     my %umods;
 
     # check 'use' in all files execpt those in .precomp dirs
     my @ufils = find :dir('.'), :type<file>, 
                                 :exclude( any(/'.precomp'/, /'.git'/) );
-    if 0 or $debug {
+    if 0 and $debug {
         say "DEBUG Files found:";
         say "  $_" for @ufils;
         exit;
     }
 
+    my $issues = ""; # a Str whose contents will be spurted into a text 
+                     # file whose path name is returned to the user
+
+    $issues ~= qq:to/HERE/;
+    \# Checking all 'use' modules are listed in the 'META6.json' file.
+    \# Note it is recommended to put ALL such files in the meta file's
+    \# 'depends' section instead of segregating them by 'build' and 'test'
+    \# types.
+    \# 
+    \# Modules being used:
+    HERE
+
     for @ufils -> $ufil {
         say "DEBUG: analyzing file: '$ufil'" if $debug;
-        for $ufil.IO.lines -> $line {
+        for $ufil.IO.lines.kv -> $line-num, $line {
             # ignore some line
             next if $line ~~ /' lib'/;
 
@@ -254,19 +282,37 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
                 $mod ~~ s:g/\s//;
                 next unless $mod ~~ /S+/;
 
-                say "  DEBUG analyze 'use' line: '$line'" if $debug;
-                say "        results:      line: '$mod'" if $debug;
-                %umods{$mod} = 1;
+                # a valid path
+                my $path = $ufil;
+
+                say "  DEBUG analyze 'use' line: '$line'"     if $debug;
+                say "        results:       mod: '$mod'"      if $debug;
+                say "                      path: '$path'"     if $debug;
+                say "                  line-num: '$line-num'" if $debug;
+                # results hash: key: module name
+                #                    <path>{$path} = [ line-numbers...]
+                if %umods{$mod}:exists { 
+                    if %umods{$mod}<path>{$path}:exists { 
+                        ; # TODO fix this
+                    }
+                    else {
+                        ; # TODO fix this
+                    }
+                }
+                else {
+                        ; # TODO fix this
+                }
             }
         }    
     }
 
+    # done with 'use $module' analysis
+
     # If either a 'resources' dir exists with one or more files
     # as contents or the 'META6.json' file has one or more
     # paths listed, then report and offer fixes.
+    
 
-    my $issues; # to be spurted into a text file whose path name is returned
-                # to the user
     my $res;    # used to collect results from subs for the report 
     my $recs;   # list of recommendation for 'best practices'
     my $report; # concatenation of $issues and $recs
@@ -382,7 +428,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
     $report = "delayed";
     $report;
-} # sub lint($dir, :$debug, --> Str) is export {
+} # sub lint($dir, :$debug, --> Str) 
 
 sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
     # TODO then add the valid names back in for more checks
