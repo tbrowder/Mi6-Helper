@@ -2,7 +2,13 @@ Desired capabilities
 ====================
 
 Use straight lint sub with no .precomp to check META6.json
-  files.
+  files versus /resources to ensure they're in sync
+
+First priority is to check synch between actual 'use'd modules
+and and those in the META6.json file.
+  + remove or add to the META6.json file as required
+  + first save the META6.json file before any changes
+
 New creations should have a RunBeforeBuild script
   to ensure /resources and META6.json match
   + and appropriate subs to show and download /resources

@@ -7,6 +7,7 @@
   "build-depends": [
   ],
   "depends": [
+    "Bin::Utils",
     "MacOS::NativeLib",
     "Foo::Bar",
     "Pod::Load",

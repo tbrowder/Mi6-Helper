@@ -210,42 +210,57 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
     die "FATAL: Path '$dir' is not a directory."
         unless $dir.IO.d;
+
+    =begin comment
     if $dir.contains($xdir) {
         die "FATAL: Path '$dir' is the repo dir for $xdir and not yet completely
             handled"
     }
-
-    =begin comment
-    # need .precomp subdirs removed
-    #
-    # need to set env var RAKUDO_NO_PRECOMPILATION
-    %*ENV<RAKUDO_NO_PRECONPILATION> = 1;
-
-    # but maybe not!!
-    my @pdirs = find :$dir, :type<dir>, :name<.precomp>, :exclude<.git>;
-    if 1 {
-        say "debug precomp dir '$_'" for @pdirs;
-        # say "debug exit";
-        #    exit;
-    }
-    for @pdirs {
-        my @f = find :dir($_), :type<file>;
-        if 1 {
-            for @f {
-                say "debug precomp file '$_'";
-                # get perms
-
-                #say "debug exit";
-                #exit;
-            }
-        }
-        else {
-            .unlink for @f;
-        }
-    }
-    .rmdir for @pdirs;
     =end comment
-    
+
+    # handle the used files...
+    my %meta = from-json("META6.json".IO.slurp);
+    # build-depends, depends, test-depends, resources,  
+    my (%bmods, %dmods, %tmods, %rfils);
+    # %meta<build-depends> = [];
+    my @bmods = @(%meta<build-depends>);
+    my @tmods = @(%meta<test-depends>);
+    my @dmods = @(%meta<depends>);
+    my @rfils = @(%meta<resources>);
+
+    my %umods;
+
+    # check 'use' in all files execpt those in .precomp dirs
+    my @ufils = find :dir('.'), :type<file>, 
+                                :exclude( any(/'.precomp'/, /'.git'/) );
+    if 0 or $debug {
+        say "DEBUG Files found:";
+        say "  $_" for @ufils;
+        exit;
+    }
+
+    for @ufils -> $ufil {
+        say "DEBUG: analyzing file: '$ufil'" if $debug;
+        for $ufil.IO.lines -> $line {
+            # ignore some line
+            next if $line ~~ /' lib'/;
+
+            if $line ~~ /^ \h* use \h* (\S+) / {
+                my $mod = ~$0;
+                # trim trailing ' ' or ';'
+                $mod ~~ s/\,//;
+                $mod ~~ s/\;//;
+                $mod ~~ s/\;//;
+                $mod ~~ s:g/\s//;
+                next unless $mod ~~ /S+/;
+
+                say "  DEBUG analyze 'use' line: '$line'" if $debug;
+                say "        results:      line: '$mod'" if $debug;
+                %umods{$mod} = 1;
+            }
+        }    
+    }
+
     # If either a 'resources' dir exists with one or more files
     # as contents or the 'META6.json' file has one or more
     # paths listed, then report and offer fixes.
@@ -256,6 +271,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     my $recs;   # list of recommendation for 'best practices'
     my $report; # concatenation of $issues and $recs
 
+    =begin comment
     $issues = qq:to/HERE/;
     Mi6:Helper Report ({DateTime.now})
 
@@ -362,6 +378,9 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     # combine the two strings and return them
     $report = $issues ~ $recs;
 
+    =end comment
+
+    $report = "delayed";
     $report;
 } # sub lint($dir, :$debug, --> Str) is export {
 
@@ -442,7 +461,7 @@ sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
     say "Tom, fix this";
 } # sub check-ci-tests(IO::Path $dir, :$debug --> Str) {
 
-sub check-changes(IO::Path $dit, :$debug --> Str) {
+sub check-changes(IO::Path $dir, :$debug --> Str) {
     say "Tom, fix this";
 }
 
