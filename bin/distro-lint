@@ -1,0 +1,111 @@
+#!/usr/bin/env raku
+
+use Mi6::Helper;
+use Mi6::Helper::Utils;
+
+my $dir = $*CWD;
+
+my @args = @*ARGS;
+for @args -> $arg {
+    
+}
+
+if @*ARGS {
+    # do the work
+    for @*ARGS {
+        when /^ :i L/ {
+            %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
+        }
+    
+    }
+    action @*ARGS
+}
+else {
+    # usage
+    lint-usage
+}
+
+=finish
+
+# safety checks
+my $dist-ini = 'dist.ini';
+if $dist-ini.IO.f {
+    say "Danger, file '$dist-ini' exists.";
+    say "Checking for the 'force' option...";
+    if $force {
+        my $ans = prompt "Are you sure you want to continue (y/N): ";
+        if $ans ~~ /:i ^y/ {
+            say "Continuing with mods...":
+        }
+        else {
+            say "Continuing safely without the 'force' option...";
+            $force = 0;
+        }
+    }
+    else {
+        say "Continuing safely without the 'force' option...";
+    }
+}
+
+say "User is '$*USER'" if $debug;
+if "$*USER" eq 'tbrowde' {
+    say "User is 'tbrowde', using 'docs' option..." if $debug;
+    ++$docs;
+}
+
+unless ".git".IO.d {
+    say qq:to/HERE/;
+    WARNING: Directory '$dir' is not a Git repository.
+             No '.git' subdirectory found.
+    HERE
+}
+
+say "Checking for a fez account...";;
+my $fezfil = "%*ENV<HOME>/.fez-config.json";
+my $feznam;
+if $fezfil.IO.r {
+    $feznam = %(App::Mi6::JSON.decode(slurp $fezfil))<un>;
+    say "Found fez user name '$feznam'";
+    # check for an installed fez
+    my $module = 'Fez::CLI';
+    try require ::($module);
+    if ::($module) ~~ Failure {
+        say 'You must install fez: "$ zef install fez"';
+    }
+}
+else {
+    ++$err;
+    say q:to/HERE/
+    No fez config file found. This program assumes
+      the user has a fez account and will be publishing
+      this module to the zef archives.
+      You must install fez first. Then execute
+      '$ fez register' and follow the instructions.
+    HERE
+}
+
+#sub get-version {
+
+# check for META6.json and critical data
+my $metafil = "$dir/META6.json";
+my %meta;
+if $metafil.IO.r {
+    #%meta = from-json $metafil.IO.slurp;
+    %meta = App::Mi6::JSON::decode(slurp $metafil);
+    say "META6.json' file found and read.";
+}
+else {
+    ++$err;
+    say "No 'META6.json' file found.";
+}
+
+# check for module name
+my $modnam = %meta<name>:exists ?? %meta<name> !! '';
+# check for this version
+my $ver = %meta<version>:exists ?? %meta<version> !! '';
+if not $modnam {
+    # Can we use an App::Mi6 instance?
+    # Not easily.
+    ++$err;
+    say "No module 'name' found in the 'META6.json' file..";
+}

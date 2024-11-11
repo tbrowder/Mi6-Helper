@@ -7,6 +7,33 @@ use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
 
+sub lint-usage() is export {
+    # usage
+    print qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} <dir with .git subdir> [options...]
+
+    Checks for issues in the user's selected <dir> which is expected
+    to be a 'git' repository for one of the user's Raku distributions
+    (commonly known as 'modules') intended for public (or local) 
+    distribution.
+
+    Uses the current working directory if it has a .git subdirectory, 
+    otherwise you must select such a directory to continue.
+
+    Currently checks for:
+        + match of entries in the 'resources' directory of the current directory 
+          and the 'resources' entries in the 'META6.json' file
+        + match of entries of modules listed in the 'META6.json' file and those
+          'use'd in the source code
+        + old Perl 6 file name suffixes: 
+            .t             --> .rakutest
+            .pl, .p6, .pl6 --> .raku
+            .pm, .pm6      --> .rakumod
+            .pod           --> .rakudoc
+    HERE
+    exit;
+}
+
 multi sub action() is export {
     # usage
     say qq:to/HERE/;
@@ -165,7 +192,7 @@ multi sub action(@args) is export {
         die "FATAL: Path '$parent-dir' is not a directory."
         unless $parent-dir.IO.d;
     }
-    say "Using directory '$parent-dir' as the working directory.";
+    say "Using directory '$parent-dir'\n  as the working directory.";
 
     if $new {
         # take care of the module directory: replace '::' with '-'
@@ -207,6 +234,8 @@ sub get-zef-info($module-name, :$debug) is export {
 
 sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
+    my $results = 0; # assumes NO errors;
+
     # must be a dir, but NOT the repo home of Mi6::Helper
     my $xdir = "Mi6-Helper";
 
@@ -222,10 +251,23 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     }
     =end comment
 
+    my $issues = ""; # a Str whose contents will be spurted into a text 
+                     # file whose path name is returned to the user
+
+    $issues ~= qq:to/HERE/;
+    # Checking all 'use'd modules are listed in the 'META6.json' file
+    #   and vice versa.
+    # types.
+    # 
+    # Modules being used:
+    HERE
+
     # handle the used files...
     my %meta = from-json("META6.json".IO.slurp);
     # build-depends, depends, test-depends, resources,  
     my (%bmods, %dmods, %tmods, %rfils);
+    my %mmods;
+
     # %meta< TYPE? depends> = [];
     my @bmods = @(%meta<build-depends>);
     my @tmods = @(%meta<test-depends>);
@@ -234,14 +276,38 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     for @bmods.kv -> $k, $mod {
         if %bmods{$mod}:exists { %bmods{$mod} += 1; }
         else                   { %bmods{$mod}  = 1; }
+        # check for dups...
+        if %mmods{$mod}:exists { %mmods{$mod} += 1; }
+        else                   { %mmods{$mod}  = 1; }
     }
     for @tmods.kv -> $k, $mod {
         if %tmods{$mod}:exists { %tmods{$mod} += 1; }
         else                   { %tmods{$mod}  = 1; }
+        # check for dups...
+        if %mmods{$mod}:exists { %mmods{$mod} += 1; }
+        else                   { %mmods{$mod}  = 1; }
     }
     for @dmods.kv -> $k, $mod {
         if %dmods{$mod}:exists { %dmods{$mod} += 1; }
         else                   { %dmods{$mod}  = 1; }
+        # check for dups...
+        if %mmods{$mod}:exists { %mmods{$mod} += 1; }
+        else                   { %mmods{$mod}  = 1; }
+    }
+
+    for %mmods.kv -> $k, $v {
+        if $v > 1 {
+            $issues ~= "  Module $v is entered $v times in the META6.json file\n";
+        }
+        ++$results;
+    }
+    if %tmods.elems {
+        $issues ~= "  Consider moving 'test-depends' modules to 'depends'\n";
+        ++$results;
+    }
+    if %bmods.elems {
+        $issues ~= "  Consider moving 'buils-depends' modules to 'depends'\n";
+        ++$results;
     }
 
     my %umods;
@@ -254,18 +320,6 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         say "  $_" for @ufils;
         exit;
     }
-
-    my $issues = ""; # a Str whose contents will be spurted into a text 
-                     # file whose path name is returned to the user
-
-    $issues ~= qq:to/HERE/;
-    \# Checking all 'use' modules are listed in the 'META6.json' file.
-    \# Note it is recommended to put ALL such files in the meta file's
-    \# 'depends' section instead of segregating them by 'build' and 'test'
-    \# types.
-    \# 
-    \# Modules being used:
-    HERE
 
     for @ufils -> $ufil {
         say "DEBUG: analyzing file: '$ufil'" if $debug;
@@ -291,29 +345,76 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
                 say "                  line-num: '$line-num'" if $debug;
                 # results hash: key: module name
                 #                    <path>{$path} = [ line-numbers...]
-                if %umods{$mod}:exists { 
-                    if %umods{$mod}<path>{$path}:exists { 
-                        ; # TODO fix this
-                    }
-                    else {
-                        ; # TODO fix this
-                    }
+                if %umods{$mod}<path>{$path}:exists { 
+                    #@(%umods{$mod}<path>{$path}).push: $line-num;
+                    %umods{$mod}<path>{$path}.push: $line-num;
                 }
                 else {
-                        ; # TODO fix this
+                    %umods{$mod}<path>{$path} = [];
+                    #@(%umods{$mod}<path>{$path}).push: $line-num;
+                    %umods{$mod}<path>{$path}.push: $line-num;
                 }
             }
         }    
     }
 
+    for %umods.keys.sort -> $mod {
+        $issues ~= "  $mod\n" if $debug;
+        my @paths = %umods{$mod}<path>.keys.sort;
+        for @paths -> $path {
+            if not $path.IO.r {
+                say "WARNING: Invalid path '$path'";
+                next;
+            }
+            $issues ~= "    $path\n" if $debug;
+            my @line-nums = @(%umods{$mod}<path>{$path});
+            say "DEBUG: num mod line numbers = {@line-nums.elems}" if $debug;
+            my $nstr = @line-nums.join(', ') if $debug;
+            $issues ~= "      at lines: $nstr\n" if $debug;
+        }
+    }
+
+    # are we missing anything 
+    my $mmod-absent = 0;
+    for %umods.keys.sort {
+        next if %mmods{$_}:exists;
+        if $mmod-absent == 0 {
+            $issues ~= "  Modules in source code but not in the META6.json file\n";
+            ++$mmod-absent;
+        }
+        $issues ~= "    '$_'\n";
+        ++$results;
+    }
+
+    my $umod-absent = 0;
+    for %mmods.keys.sort {
+        next if %umods{$_}:exists;
+        if $umod-absent == 0 {
+            $issues ~= "  Modules in the META6.json file but not in source code\n";
+            ++$umod-absent;
+        }
+        $issues ~= "    '$_'\n";
+        ++$results;
+    }
+
     # done with 'use $module' analysis
 
+    #==========================================================
     # If either a 'resources' dir exists with one or more files
     # as contents or the 'META6.json' file has one or more
     # paths listed, then report and offer fixes.
     
+    $issues ~= qq:to/HERE/;
+    # Checking mismatch between any files listed in the module's
+    #   /resources directory and those in the 'META6.json' file.
+    # 
+    # Resources mismatch:
+    HERE
 
-    my $res;    # used to collect results from subs for the report 
+    my $res = ""; # used to collect results from subs for the report 
+    
+
+
     my $recs;   # list of recommendation for 'best practices'
     my $report; # concatenation of $issues and $recs
 
@@ -426,8 +527,10 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
     =end comment
 
-    $report = "delayed";
-    $report;
+    #$report = "delayed";
+    #$report;
+    $issues
+
 } # sub lint($dir, :$debug, --> Str) 
 
 sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
