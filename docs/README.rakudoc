@@ -20,6 +20,14 @@ $ mi6-helper lint <dir>    # Checks a module directory for errors
                            # and best practice recommendations
 =end code
 
+Alternatively, one can use either of two programs as short names for
+the lint mode:
+
+=begin code
+$ distro-lint <dir>
+$ dlint <dir>
+=end code
+
 B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
 
@@ -69,7 +77,7 @@ designed for the following modes of operation:
 =begin item
 lint \<path\>
 
-Checks the module repo in directory \<path\> that
+Checks the module repository in directory \<path\> that
 the contents of the "resources" list in the 'META6.json' file
 and the distibution's './resources' directory agree. Modifies them as 
 necessary, displays the proposed changes, and prompts the user for 

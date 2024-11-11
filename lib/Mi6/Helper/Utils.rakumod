@@ -29,7 +29,7 @@ sub lint-usage() is export {
             .t             --> .rakutest
             .pl, .p6, .pl6 --> .raku
             .pm, .pm6      --> .rakumod
-            .pod           --> .rakudoc
+            .pod, .pod6    --> .rakudoc
     HERE
     exit;
 }
@@ -49,16 +49,15 @@ multi sub action() is export {
       lint  - Checks for match of entries in the 'resources' directory of the
               current directory (default '.', but see NOTE below)) and the 
               'resources' entries in the 'META6.json' file. Also looks for 
-              other issues.  WARNING: The '.precomp' subdirectories are deleted 
-              for the anaysis.
+              other issues. 
 
     Options:
       dir=X - Selects directory 'X' for the operations, default is '.'
 
       ver   - Shows the version of 'mi6-helper'
 
-    NOTE    - The default directory will cause an abort if the repo home of this
-              module is selected.
+    NOTE    - The default directory will cause an abort if the repository home 
+              of this module is selected.
     HERE
 } # sub action()
 
@@ -306,13 +305,14 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         ++$results;
     }
     if %bmods.elems {
-        $issues ~= "  Consider moving 'buils-depends' modules to 'depends'\n";
+        $issues ~= "  Consider moving 'build-depends' modules to 'depends'\n";
         ++$results;
     }
 
     my %umods;
 
-    # check 'use' in all files execpt those in .precomp dirs
+    # check 'use' in all files execpt those in .git or .precomp dirs
+    # (includes all types of user's files)
     my @ufils = find :dir('.'), :type<file>, 
                                 :exclude( any(/'.precomp'/, /'.git'/) );
     if 0 and $debug {
@@ -346,12 +346,10 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
                 # results hash: key: module name
                 #                    <path>{$path} = [ line-numbers...]
                 if %umods{$mod}<path>{$path}:exists { 
-                    #@(%umods{$mod}<path>{$path}).push: $line-num;
                     %umods{$mod}<path>{$path}.push: $line-num;
                 }
                 else {
                     %umods{$mod}<path>{$path} = [];
-                    #@(%umods{$mod}<path>{$path}).push: $line-num;
                     %umods{$mod}<path>{$path}.push: $line-num;
                 }
             }
@@ -411,8 +409,136 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     # Resources mismatch:
     HERE
 
-    my $res = ""; # used to collect results from subs for the report 
+    my (@resfils, @testfils, @progfils, @modfils, @docfils);
+
+    my $rec-name-change = 0;
+    for @ufils -> $fil {
+        if $fil ~~ /^ resources/ {
+            say "DEBUG: checking ufils for /resources in path '$fil'" if 0 or $debug;
+            # the path will look like: 'resources/...' so we remove it for later use
+            my $f = $fil;
+            $f ~~ s/resources '/' //;
+            @resfils.push: $f;
+        }
+        =begin comment
+        + old Perl 6 file name suffixes: 
+            .t             --> .rakutest
+            .pl, .p6, .pl6 --> .raku
+            .pm, .pm6      --> .rakumod
+            .pod, .pod6    --> .rakudoc
+        =end comment
+        when $fil ~~ /:i '.' t $/ {
+            # rakutest
+            @testfils.push: $fil;
+            ++$rec-name-change;
+        }
+        when $fil ~~ /:i '.' p [l|6] $/ {
+            # raku
+            @progfils.push: $fil;
+            ++$rec-name-change;
+        }
+        when $fil ~~ /:i '.' pl6 $/ {
+            # raku
+            @progfils.push: $fil;
+            ++$rec-name-change;
+        }
+        when $fil ~~ /:i '.' pm 6? $/ {
+            # rakumod
+            @modfils.push: $fil;
+            ++$rec-name-change;
+        }
+        when $fil ~~ /:i '.' pod 6? $/ {
+            # rakudoc
+            @docfils.push: $fil;
+            ++$rec-name-change;
+        }
+    }
     
+    my $resfils-issues = ""; # used to collect results from resources check
+    if not (@rfils.elems or @resfils.elems) {
+        say "DEBUG: neither META6 nor /resources list any files";
+        $resfils-issues ~= "  No META6<resources> or /resources files found.\n";
+    }
+    else {
+        if 1 or $debug {
+            say "DEBUG: Either META6 or /resources list files";
+        }
+        # @rfils    - from META6.json
+        # @resfiles - from /resources
+        # hash of basenames and number of entries
+        my %m; # from META6.json
+        my %r; # from /resources
+        for @rfils -> $path {
+            # @rfils    - from META6.json
+            my $bnam = $path.IO.basename;
+            if %m{$bnam}<path>{$path}:exists { 
+                %m{$bnam}<path>{$path} += 1;
+            }
+            else {
+                %m{$bnam}<path>{$path} = 1;
+            }
+        }
+        for @resfils -> $path {
+            # @resfils - from /resources
+            my $bnam = $path.IO.basename;
+            if %r{$bnam}<path>{$path}:exists { 
+                %r{$bnam}<path>{$path} += 1;
+            }
+            else {
+                %r{$bnam}<path>{$path} = 1;
+            }
+        }
+
+
+         my $err = 0;
+         if %m.elems == %r.elems {
+            # keys and values must match
+            for %m.kv -> $k, $v {
+                if %r{$k}:exists {
+                    if %r{$k} == $v {
+                        ; # ok
+                    }
+                    else {
+                        ++$err;
+                    }
+                }
+                else {
+                    ++$err;
+                }
+            }
+        }
+        else {
+            ++$err;
+        }
+
+        if $err {
+            # report the mismatch
+        if 1 or $debug {
+            say "DEBUG: Showing META6 files:";
+            for %m.keys.sort -> $k {
+                my $v = %m{$k};
+                say "  $k => $v";
+            }
+            say "DEBUG: Showing /resources files:";
+            for %r.keys.sort -> $k {
+                my $v = %r{$k};
+                say "  $k => $v";
+            }
+         }
+        }
+
+
+    }
+
+    $issues ~= $resfils-issues;
+
+    # now check recommended file name changes
+    my $filnam-issues = ""; # used to collect results from filename check
+
+    if $rec-name-change {
+        my $n = $rec-name-change;
+    }
+
 
 
     my $recs;   # list of recommendation for 'best practices'
