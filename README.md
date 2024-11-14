@@ -18,6 +18,11 @@ NOTE: The next version will remove all 'provides' methods except the use of the 
     $ mi6-helper lint <dir>    # Checks a module directory for errors
                                # and best practice recommendations
 
+Alternatively, one can use either of two programs as short names for the lint mode:
+
+    $ distro-lint <dir>
+    $ dlint <dir>
+
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
   * Publishing in the **Zef** Raku module ecosystem
@@ -58,7 +63,7 @@ lint
 
   * lint \<path\>
 
-    Checks the module repo in directory \<path\> that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
+    Checks the module repository in directory \<path\> that the contents of the "resources" list in the 'META6.json' file and the distibution's './resources' directory agree. Modifies them as necessary, displays the proposed changes, and prompts the user for permission to make the changes.
 
     Also checks for other configuration improvement possibilities. Note the 'lint' mode will work in repos *not* under App::Mi6 management.
 

@@ -3,11 +3,13 @@
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-my $dir = $*CWD;
+my $parent-dir = $*CWD;
+my $module-name;
+ny $module-dir;
 
 my @args = @*ARGS;
 for @args -> $arg {
-    
+
 }
 
 if @*ARGS {
@@ -16,9 +18,9 @@ if @*ARGS {
         when /^ :i L/ {
             %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
         }
-    
+
     }
-    action @*ARGS
+    run-args @*ARGS
 }
 else {
     # usage

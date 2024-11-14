@@ -1,11 +1,22 @@
 unit module Mi6::Helper::Utils;
 
 use Mi6::Helper;
+use Mi6::Helper::Subs;
+
 use Pod::Load;
 use App::Mi6;
 use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
+
+our $res-info = qq:to/RESINFO/;
+META6.json and /resources
+===========================
+In order to reliably download payloads in the /resources directory, the
+module author needs to provide a list of the files in the module's
+contents.
+
+RESINFO
 
 sub lint-usage() is export {
     # usage
@@ -14,18 +25,18 @@ sub lint-usage() is export {
 
     Checks for issues in the user's selected <dir> which is expected
     to be a 'git' repository for one of the user's Raku distributions
-    (commonly known as 'modules') intended for public (or local) 
+    (commonly known as 'modules') intended for public (or local)
     distribution.
 
-    Uses the current working directory if it has a .git subdirectory, 
+    Uses the current working directory if it has a .git subdirectory,
     otherwise you must select such a directory to continue.
 
     Currently checks for:
-        + match of entries in the 'resources' directory of the current directory 
+        + match of entries in the 'resources' directory of the current directory
           and the 'resources' entries in the 'META6.json' file
         + match of entries of modules listed in the 'META6.json' file and those
           'use'd in the source code
-        + old Perl 6 file name suffixes: 
+        + old Perl 6 file name suffixes:
             .t             --> .rakutest
             .pl, .p6, .pl6 --> .raku
             .pm, .pm6      --> .rakumod
@@ -34,7 +45,7 @@ sub lint-usage() is export {
     exit;
 }
 
-multi sub action() is export {
+sub help() is export {
     # usage
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
@@ -47,21 +58,21 @@ multi sub action() is export {
               See details in the README.
 
       lint  - Checks for match of entries in the 'resources' directory of the
-              current directory (default '.', but see NOTE below)) and the 
-              'resources' entries in the 'META6.json' file. Also looks for 
-              other issues. 
+              current directory (default '.', but see NOTE below)) and the
+              'resources' entries in the 'META6.json' file. Also looks for
+              other issues.
 
     Options:
       dir=X - Selects directory 'X' for the operations, default is '.'
 
       ver   - Shows the version of 'mi6-helper'
 
-    NOTE    - The default directory will cause an abort if the repository home 
+    NOTE    - The default directory will cause an abort if the repository home
               of this module is selected.
     HERE
 } # sub action()
 
-multi sub action(@args) is export {
+sub run-args(@args) is export {
     # do the work
 
     # modes
@@ -250,20 +261,20 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     }
     =end comment
 
-    my $issues = ""; # a Str whose contents will be spurted into a text 
+    my $issues = ""; # a Str whose contents will be spurted into a text
                      # file whose path name is returned to the user
 
     $issues ~= qq:to/HERE/;
     # Checking all 'use'd modules are listed in the 'META6.json' file
     #   and vice versa.
     # types.
-    # 
+    #
     # Modules being used:
     HERE
 
     # handle the used files...
     my %meta = from-json("META6.json".IO.slurp);
-    # build-depends, depends, test-depends, resources,  
+    # build-depends, depends, test-depends, resources,
     my (%bmods, %dmods, %tmods, %rfils);
     my %mmods;
 
@@ -313,7 +324,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
     # check 'use' in all files execpt those in .git or .precomp dirs
     # (includes all types of user's files)
-    my @ufils = find :dir('.'), :type<file>, 
+    my @ufils = find :dir('.'), :type<file>,
                                 :exclude( any(/'.precomp'/, /'.git'/) );
     if 0 and $debug {
         say "DEBUG Files found:";
@@ -345,7 +356,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
                 say "                  line-num: '$line-num'" if $debug;
                 # results hash: key: module name
                 #                    <path>{$path} = [ line-numbers...]
-                if %umods{$mod}<path>{$path}:exists { 
+                if %umods{$mod}<path>{$path}:exists {
                     %umods{$mod}<path>{$path}.push: $line-num;
                 }
                 else {
@@ -353,7 +364,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
                     %umods{$mod}<path>{$path}.push: $line-num;
                 }
             }
-        }    
+        }
     }
 
     for %umods.keys.sort -> $mod {
@@ -372,7 +383,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         }
     }
 
-    # are we missing anything 
+    # are we missing anything
     my $mmod-absent = 0;
     for %umods.keys.sort {
         next if %mmods{$_}:exists;
@@ -401,11 +412,11 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     # If either a 'resources' dir exists with one or more files
     # as contents or the 'META6.json' file has one or more
     # paths listed, then report and offer fixes.
-    
+
     $issues ~= qq:to/HERE/;
     # Checking mismatch between any files listed in the module's
     #   /resources directory and those in the 'META6.json' file.
-    # 
+    #
     # Resources mismatch:
     HERE
 
@@ -421,7 +432,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
             @resfils.push: $f;
         }
         =begin comment
-        + old Perl 6 file name suffixes: 
+        + old Perl 6 file name suffixes:
             .t             --> .rakutest
             .pl, .p6, .pl6 --> .raku
             .pm, .pm6      --> .rakumod
@@ -453,7 +464,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
             ++$rec-name-change;
         }
     }
-    
+
     my $resfils-issues = ""; # used to collect results from resources check
     if not (@rfils.elems or @resfils.elems) {
         say "DEBUG: neither META6 nor /resources list any files";
@@ -471,7 +482,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         for @rfils -> $path {
             # @rfils    - from META6.json
             my $bnam = $path.IO.basename;
-            if %m{$bnam}<path>{$path}:exists { 
+            if %m{$bnam}<path>{$path}:exists {
                 %m{$bnam}<path>{$path} += 1;
             }
             else {
@@ -481,7 +492,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         for @resfils -> $path {
             # @resfils - from /resources
             my $bnam = $path.IO.basename;
-            if %r{$bnam}<path>{$path}:exists { 
+            if %r{$bnam}<path>{$path}:exists {
                 %r{$bnam}<path>{$path} += 1;
             }
             else {
@@ -657,7 +668,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     #$report;
     $issues
 
-} # sub lint($dir, :$debug, --> Str) 
+} # sub lint($dir, :$debug, --> Str)
 
 sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
     # TODO then add the valid names back in for more checks

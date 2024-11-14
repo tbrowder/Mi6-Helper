@@ -1,7 +1,15 @@
 Desired capabilities
 ====================
 
-Use straight lint sub with no .precomp to check META6.json
+Put each action in its own sub whose input includes the collections of
+all the user's files. The output should be a string to be concatenated
+with the results summary report.
+
+Rename the "action" subs to something batter.
+
+Remove the lint mode from the mi6-helper mode?
+
+Use straight lint sub to check META6.json
   files versus /resources to ensure they're in sync
 
 First priority is to check synch between actual 'use'd modules
@@ -20,7 +28,6 @@ Implement old= mode
       # contents?
 
 Implement lint mode
-  + Consider using Shell::Command 
   + ensure there is a load test for
     ALL files in /lib
 
@@ -36,5 +43,3 @@ Add a new= method with a config file
     My-Module.yml
       name: My::Module
       provides: Blah blah
-
-

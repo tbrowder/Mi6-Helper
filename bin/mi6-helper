@@ -9,13 +9,13 @@ if @*ARGS {
         when /^ :i L/ {
             %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
         }
-    
+
     }
-    action @*ARGS
+    run-args @*ARGS
 }
 else {
     # usage
-    action
+    help
 }
 
 =finish
