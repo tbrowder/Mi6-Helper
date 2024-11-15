@@ -6,25 +6,40 @@ use Mi6::Helper::Utils;
 my $parent-dir = $*CWD;
 my $dir;
 my $debug = 0;
-
 if not @*ARGS {
     # usage
-    lint-usage
+    lint-help;
     exit;
 }
 
 my @args;
 for @*ARGS {
+    #say "DEBUG: arg '$_'";
     if $_ eq '.' {
         $dir = $parent-dir;
     }
+    elsif $_ eq '..' {
+        my $path = $parent-dir.IO.absolute;
+        $dir = $path.IO.parent(2).IO;
+    }
     elsif $_.IO.d {
         $dir = $_;
+    }
+    elsif $_.contains("distro") {
+        ; # ignore
+    }
+    elsif $_.contains("dlint") {
+        ; # ignore
+    }
+    elsif $_.contains("mi6-helper") {
+        ; # ignore
     }
     else {
         @args.push: $_;
     }
 }
+
+#say "DEBUG early exit"; exit;
 
 for @args {
     when /^ :i L/ {
@@ -38,7 +53,9 @@ for @args {
     }
 }
 
-lint $dir, :$debug;
+my $s = lint $dir, :$debug;
+say $s;
+
 
 =finish
 

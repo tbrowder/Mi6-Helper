@@ -18,7 +18,7 @@ contents.
 
 RESINFO
 
-sub lint-usage() is export {
+sub lint-help() is export {
     # usage
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <dir with .git subdir> [options...]
@@ -45,7 +45,7 @@ sub lint-usage() is export {
     exit;
 }
 
-sub help() is export {
+sub mi6-help() is export {
     # usage
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
@@ -57,22 +57,22 @@ sub help() is export {
               'provides' option for a short description of its main purpose.
               See details in the README.
 
-      lint  - Checks for match of entries in the 'resources' directory of the
-              current directory (default '.', but see NOTE below)) and the
-              'resources' entries in the 'META6.json' file. Also looks for
-              other issues.
+      lint  - Checks various issues with the contents of the module 
+              repository directory. For easier use, execute one of
+              the installed programs 'dlint' or 'distro-lint'.
 
     Options:
-      dir=X - Selects directory 'X' for the operations, default is '.'
+      <dir> - Selects directory <dir> for the operations, default is '.'
+              (the current directory, i.e., '$*CWD').
 
       ver   - Shows the version of 'mi6-helper'
 
     NOTE    - The default directory will cause an abort if the repository home
               of this module is selected.
     HERE
-} # sub action()
+} # sub mi6-help()
 
-sub run-args(@args) is export {
+sub run-args($dir, @args) is export {
     # do the work
 
     # modes
@@ -91,7 +91,7 @@ sub run-args(@args) is export {
 
     # assume we are in the current
     # working directory
-    my $parent-dir = $*CWD; # default
+    my $parent-dir = $dir; #$*CWD; # default
 
     # other args
     my $err = 0; # track number of possible errors
@@ -467,7 +467,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
     my $resfils-issues = ""; # used to collect results from resources check
     if not (@rfils.elems or @resfils.elems) {
-        say "DEBUG: neither META6 nor /resources list any files";
+        say "DEBUG: neither META6 nor /resources list any files" if $debug;
         $resfils-issues ~= "  No META6<resources> or /resources files found.\n";
     }
     else {

@@ -3,20 +3,48 @@
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-if @*ARGS {
-    # do the work
-    for @*ARGS {
-        when /^ :i L/ {
-            %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
-        }
-
-    }
-    run-args @*ARGS
-}
-else {
+my $parent-dir = $*CWD;
+my $dir;
+my $debug = 0;
+if not @*ARGS {
     # usage
-    help
+    mi6-help;
+    exit;
 }
+
+# do the work
+my @args;
+for @*ARGS {
+    say "DEBUG: arg '$_'" if $debug;
+    if $_ eq '.' {
+        $dir = $parent-dir;
+        say "DEBUG: dir: '$dir'" if $debug;
+    }
+    elsif $_ eq '..' {
+        my $path = $parent-dir.IO.absolute;
+        $dir = $path.IO.parent(2);
+        say "DEBUG: dir: '$dir'" if $debug;
+    }
+    elsif $_.IO.d {
+        $dir = $_;
+    }
+    elsif $_.contains("dlint") {
+        ; # ignore
+    }
+    elsif $_.contains("distro-lint") {
+        ; # ignore
+    }
+    else {
+        @args.push: $_
+    }
+}
+
+if not $dir.defined {
+    $dir = $parent-dir;
+}
+
+#@args.unshift: $dir;
+run-args $dir, @args;
 
 =finish
 
