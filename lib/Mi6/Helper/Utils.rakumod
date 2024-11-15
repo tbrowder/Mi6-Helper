@@ -471,7 +471,7 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
         $resfils-issues ~= "  No META6<resources> or /resources files found.\n";
     }
     else {
-        if 1 or $debug {
+        if 0 or $debug {
             say "DEBUG: Either META6 or /resources list files";
         }
         # @rfils    - from META6.json
@@ -500,7 +500,6 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
             }
         }
 
-
          my $err = 0;
          if %m.elems == %r.elems {
             # keys and values must match
@@ -524,21 +523,19 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
 
         if $err {
             # report the mismatch
-        if 1 or $debug {
-            say "DEBUG: Showing META6 files:";
-            for %m.keys.sort -> $k {
-                my $v = %m{$k};
-                say "  $k => $v";
-            }
-            say "DEBUG: Showing /resources files:";
-            for %r.keys.sort -> $k {
-                my $v = %r{$k};
-                say "  $k => $v";
-            }
-         }
+            if 1 or $debug {
+                say "DEBUG: Showing META6 files:";
+                for %m.keys.sort -> $k {
+                    my $v = %m{$k};
+                    say "  $k => $v";
+                }
+                say "DEBUG: Showing /resources files:";
+                for %r.keys.sort -> $k {
+                    my $v = %r{$k};
+                    say "  $k => $v";
+                }
+             }
         }
-
-
     }
 
     $issues ~= $resfils-issues;
@@ -549,8 +546,6 @@ sub lint(IO::Path:D $dir, :$debug, --> Str) is export {
     if $rec-name-change {
         my $n = $rec-name-change;
     }
-
-
 
     my $recs;   # list of recommendation for 'best practices'
     my $report; # concatenation of $issues and $recs

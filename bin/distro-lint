@@ -4,28 +4,41 @@ use Mi6::Helper;
 use Mi6::Helper::Utils;
 
 my $parent-dir = $*CWD;
-my $module-name;
-ny $module-dir;
+my $dir;
+my $debug = 0;
 
-my @args = @*ARGS;
-for @args -> $arg {
-
-}
-
-if @*ARGS {
-    # do the work
-    for @*ARGS {
-        when /^ :i L/ {
-            %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
-        }
-
-    }
-    run-args @*ARGS
-}
-else {
+if not @*ARGS {
     # usage
     lint-usage
+    exit;
 }
+
+my @args;
+for @*ARGS {
+    if $_ eq '.' {
+        $dir = $parent-dir;
+    }
+    elsif $_.IO.d {
+        $dir = $_;
+    }
+    else {
+        @args.push: $_;
+    }
+}
+
+for @args {
+    when /^ :i L/ {
+        %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
+    }
+    when /^ :i d/ {
+        ++$debug;
+    }
+    default {
+        die "FATAL: Unknown arg '$_'";
+    }
+}
+
+lint $dir, :$debug;
 
 =finish
 
