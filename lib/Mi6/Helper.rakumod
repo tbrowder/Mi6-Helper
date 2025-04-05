@@ -32,6 +32,24 @@ submethod TWEAK {
     my @dir-parts = $!module-name.split('::');
     $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;
     @!libdirs = @dir-parts;
+
+    =begin comment
+    # 17 total lines with the bounding comment lines
+    # move this to the correct location
+    # create the test file for the base module
+    my $fh = open "t/0-load.rakutest", :w;
+    $fh.print: qq:to/HERE/;
+    use Test;
+    my @modules = <
+        $!module-name
+    >;
+    plan \@modules.elems;
+    for \@modules -> \$m {
+        use-ok \$m, "Module '\$m' used okay";
+    }
+    HERE
+    $fh.close;
+    =end comment
 }
 
 sub lint(
@@ -276,11 +294,30 @@ sub mi6-helper-new(
         @odocfil.push: $line;
     }
 
+    # the new test file
+    mkdir "$modpdir/t";
+    # create the test file for the base module
+    my $testfil = "$modpdir/t/0-load-test.rakutest";
+    my $fh = open $testfil, :w;
+    $fh.print: q:to/HERE/;
+    use Test;
+
+    my @modules = <
+        $!module-name
+    >;
+    plan @modules.elems;
+
+    for @modules -> $m {
+        use-ok $m, "Module '$m' used okay";
+    }
+    HERE
+    $fh.close;
+
     # the new 'docs'directory
     mkdir "$modpdir/docs";
     # the new README.rakudoc file:
     my $docfil = "$modpdir/docs/README.rakudoc";
-    my $fh = open $docfil, :w;
+    $fh = open $docfil, :w;
     $fh.say($_) for @odocfil;
     $fh.close;
 
