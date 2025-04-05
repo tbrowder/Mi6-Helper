@@ -1,8 +1,7 @@
 use Test;
 
 my @modules = <
-    Mi6::Helper
-    Mi6::Helper::Utils
+    Foo:;Bar
 >;
 
 plan @modules.elems;
