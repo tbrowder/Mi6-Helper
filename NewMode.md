@@ -110,7 +110,7 @@ Modified files for mode **new**
         # 1. The line that begins:
         Foo::Bar - blah blah blah
         # is changed to either:
-        B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
+        B<Foo::Bar> - [Foo::Bar is bolded, text from the hidden file '.Foo-Bar']
         # or:
         B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
 
@@ -147,10 +147,12 @@ The very useful Raku modules used herein:
 
   * `File::Find` by **zef:raku-community-modules**
 
+  * `MacOS::NativeLib` by **zef:lizmat**
+
 COPYRIGHT AND LICENSE
 =====================
 
-&#x00A9; 2020-2024 Tom Browder
+&#x00A9; 2020-2025 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

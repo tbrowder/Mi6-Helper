@@ -192,7 +192,7 @@ The very useful Raku modules used herein:
 COPYRIGHT AND LICENSE
 =====================
 
-&#x00A9; 2020-2024 Tom Browder
+&#x00A9; 2020-2025 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
