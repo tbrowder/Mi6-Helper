@@ -299,16 +299,16 @@ sub mi6-helper-new(
     # create the test file for the base module
     my $testfil = "$modpdir/t/0-load-test.rakutest";
     my $fh = open $testfil, :w;
-    $fh.print: q:to/HERE/;
+    $fh.print: qq:to/HERE/;
     use Test;
 
     my @modules = <
-        $!module-name
+        $modpdir
     >;
-    plan @modules.elems;
+    plan \@modules.elems;
 
-    for @modules -> $m {
-        use-ok $m, "Module '$m' used okay";
+    for \@modules -> \$m \{
+        use-ok \$m, \"Module '\$m' used okay\";
     }
     HERE
     $fh.close;
