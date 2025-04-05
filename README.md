@@ -8,7 +8,7 @@ NAME
 SYNOPSIS
 ========
 
-NOTE: The next version will remove all 'provides' methods except the use of the hidden file.
+NOTE: This version removes all 'provides' methods except the use of the hidden file.
 
     use Mi6::Helper
     $ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file 
@@ -33,11 +33,7 @@ Alternatively, one can use either of two programs as short names for the lint mo
 
   * Using three separate OS tests in `.github/workflows` and shows results of each in the `README.md` file
 
-  * A special /sbin/update-meta script to be used by `mi6` as a run-before-build process to ensure the META6.json's 'resources' list matches the files in the </resources> directory
-
-  * Routines to enable showing and downloading files in the /resources directory
-
-  * A new `lint` mode to check existing module repos for possible issues including ensuring the META6.json file reflects the file names in the /resources directory
+  * A new `lint` mode to check existing module repos for possible issues including ensuring the META6.json file reflects the file names in the /resources directory and the dependencies match the modules' entries in 'lib' entries.
 
 See published module `Foo::Bar` for an example of a module created by `mi6-helper`.
 

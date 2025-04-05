@@ -7,7 +7,7 @@ B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
 
 =head1 SYNOPSIS
 
-NOTE: The next version will remove all 'provides' methods except
+NOTE: This version removes all 'provides' methods except
       the use of the hidden file.
 
 =begin code
@@ -35,14 +35,10 @@ management by C<App::Mi6> with modifications including:
 =item User choice of the 'provides' text
 =item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
 =item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
-=item A special /sbin/update-meta script to be used by C<mi6> as a run-before-build
-process to ensure the META6.json's 'resources' list matches the files in the
-</resources> directory
-=item Routines to enable showing and downloading files in the /resources
-directory
 =item A new C<lint> mode to check existing module repos for possible issues
 including ensuring the META6.json file reflects the file names in the 
-/resources directory
+/resources directory and the dependencies match the modules' entries
+in 'lib' entries.
 
 See published module C<Foo::Bar> for an example of a module created by 
 C<mi6-helper>.

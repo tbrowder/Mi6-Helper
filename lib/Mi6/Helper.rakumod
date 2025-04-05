@@ -203,7 +203,7 @@ sub get-hidden-name(:$module-name) is export {
 
 sub mi6-helper-new(
     :$parent-dir!, :$module-dir, :$module-name!, :$provides,
-    :$debug, :$debug2
+    :$debug, :$debug2, :$d2, :$d3,
     ) is export {
 
     # test module is "Foo::Bar-Baz"

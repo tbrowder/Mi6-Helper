@@ -17,7 +17,7 @@ my @args;
 for @*ARGS {
     say "DEBUG: arg '$_'" if $debug;
     if $_ eq '.' {
-        $dir = $parent-dir;
+        $dir = $parent-dir.IO.absolute;
         say "DEBUG: dir: '$dir'" if $debug;
     }
     elsif $_ eq '..' {

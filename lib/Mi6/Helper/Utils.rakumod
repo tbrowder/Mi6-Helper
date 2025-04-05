@@ -86,7 +86,6 @@ sub run-args($dir, @args) is export {
     my $d3     = 0; # debug3
     my $docs   = 0;
     my $provides;
-    my $provides-hidden = 1;
     my $resources = 0; # add Resources subs?
 
     # assume we are in the current
@@ -106,7 +105,7 @@ sub run-args($dir, @args) is export {
         }
         when /:i ^'old=' (\S+) / {
             $module-name = ~$0;
-            ++$old
+            ++$old;
         }
         when /:i ^ [l|li|lin|lint] / {
             ++$lint;
@@ -119,11 +118,13 @@ sub run-args($dir, @args) is export {
         when /^'dir=' (\S+)/ {
             $parent-dir = ~$0;
         }
-        when / ^do  / { ++$docs  }
-        when / ^de / {
+        when /^ do  / { 
+            ++$docs;
+        }
+        when /^ de / {
             ++$debug;
         }
-        when / ^d2 / {
+        when /^ d2 / {
             ++$d2;
         }
         when / ^d3 / {
@@ -147,6 +148,7 @@ sub run-args($dir, @args) is export {
             say "version: $ver";
             exit;
         }
+        =begin comment
         when /^'provides=' (\S+)/ {
             $provides = ~$0;
             if $provides.IO.r {
@@ -162,6 +164,7 @@ sub run-args($dir, @args) is export {
                 die "FATAL: Unable to read provides file '$provides'";
             }
         }
+        =end comment
         default {
             die "FATAL: Unknown arg '$_'.";
         }
@@ -199,8 +202,9 @@ sub run-args($dir, @args) is export {
     }
 
     if $parent-dir.defined {
-        die "FATAL: Path '$parent-dir' is not a directory."
-        unless $parent-dir.IO.d;
+        unless $parent-dir.IO.d {
+            die "FATAL: Path '$parent-dir' is not a directory."
+        }
     }
     say "Using directory '$parent-dir'\n  as the working directory.";
 
@@ -209,7 +213,7 @@ sub run-args($dir, @args) is export {
         $module-dir = $module-name;
         $module-dir ~~ s:g/'::'/-/;
 
-        mi6-helper-new :$parent-dir, :$module-dir, :$module-name, :$provides,
+        mi6-helper-new :$parent-dir, :$module-dir, :$module-name,
         :$debug, :$d2;
         say qq:to/HERE/;
         Exit after 'new' mode run. See new module repo '$module-dir'
