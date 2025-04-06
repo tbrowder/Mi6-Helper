@@ -1,0 +1,19 @@
+Getting description text from hidden file '.Foo-Bar'
+[master (root-commit) 30a8b25] 'initial'
+ 12 files changed, 431 insertions(+)
+ create mode 100644 .github/workflows/linux.yml
+ create mode 100644 .github/workflows/macos.yml
+ create mode 100644 .github/workflows/windows.yml
+ create mode 100644 .gitignore
+ create mode 100644 Changes
+ create mode 100644 LICENSE
+ create mode 100644 META6.json
+ create mode 100644 README.md
+ create mode 100644 dist.ini
+ create mode 100644 docs/README.rakudoc
+ create mode 100644 lib/Foo/Bar.rakumod
+ create mode 100644 t/0-load-test.rakutest
+Using directory '/usr/local/git-repos/mi6-helper-tests'
+  as the working directory.
+Exit after 'new' mode run. See new module repo 'Foo-Bar'
+in parent dir '/usr/local/git-repos/mi6-helper-tests'.

@@ -79,8 +79,23 @@ sub mi6-helper-new(
     :$debug, :$debug2, :$d2, :$d3,
     ) is export {
 
-    # test module is "Foo::Bar-Baz"
+    # check that $module-dir is empty, if it exists
+    if $module-dir.IO.d {
+        note "DANGER: module dir exists...checking for existing content";
+        my $s = slurp "$module/*";
+        if $s {
+            note "FATAL: directory '$module-dir' has content...exiting";
+            exit;
+        }
+        else {
+            note "Directory '$module-dir' is empty...continuing";
+        }
+    }
+
+    # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {
+    # we use the output of the resulting files to modify
+    # and use for the revisions
     my $o = Mi6::Helper.new: :$module-name;
     $o.mi6-new-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2,
                    :$descrip);

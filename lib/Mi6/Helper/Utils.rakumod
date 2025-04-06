@@ -35,9 +35,7 @@ sub run-args($dir, @args) is export {
     # do the work
 
     # modes
-    my $old   = 0;
     my $new   = 0;
-    my $lint  = 0;
 
     # options
     my $force  = 0;
@@ -60,18 +58,6 @@ sub run-args($dir, @args) is export {
 
     # @*ARGS
     for @args {
-=begin comment
-        when /:i ^'old=' (\S+) / {
-            $module-name = ~$0;
-            ++$old;
-        }
-        when $lint and $_.IO.d {
-           $parent-dir = $_.IO.d;
-        }
-        when /:i ^ [l|li|lin|lint] / {
-            ++$lint;
-        }
-=end comment
         when /:i ^'new=' (\S+) / {
             $module-name = ~$0;
             ++$new;
@@ -117,11 +103,6 @@ sub run-args($dir, @args) is export {
         }
     }
 
-=begin comment
-    if not ($new or $lint) {
-        die "FATAL: Neither 'new' nor 'lint' is selected.";
-    }
-=end comment
     if not $new {
         die "FATAL: 'new' is not selected.";
     }
@@ -165,8 +146,10 @@ sub run-args($dir, @args) is export {
         $module-dir = $module-name;
         $module-dir ~~ s:g/'::'/-/;
 
+        # fail if the desired dir has ANY content:
         mi6-helper-new :$parent-dir, :$module-dir, :$module-name,
         :$debug, :$d2, :$descrip;
+
         say qq:to/HERE/;
         Exit after 'new' mode run. See new module repo '$module-dir'
         in parent dir '$parent-dir'.

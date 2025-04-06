@@ -11,14 +11,14 @@ SYNOPSIS
 NOTE: This version removes all methods for providing a short description except the use of the hidden file.
 
     use Mi6::Helper
-    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in hidden file 
-                               # '.Foo-Bar'
+    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in hidden file
+                               # '.Foo-Bar' (if any)
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
   * Publishing in the **Zef** Raku module ecosystem
 
-  * User choice of the brief descriptive text
+  * User choice of the brief descriptive text (recommended, but not require)
 
   * `README.md` file source placed in a new `docs/README.rakudoc` file
 
@@ -33,6 +33,48 @@ The user must install and have an account with `fez` to use this module to creat
 
     zef install fez
     fez register
+
+Recommended 'git origin'
+------------------------
+
+The author uses and recommends GitHub for the 'git origin' for your new module's repository.
+
+A short list of steps to define such for our example 'Foo::Bar':
+
+1. Define a new repo on GitHub named 'Foo-Bar' (note no '::' separator) 2. On your computer, use the shell terminal to run these commands (for Linux or MacOS):
+
+    $ cd /path/to/some-parent-dir
+    $ mi6-helper new=Foo::Bar  # <== note the '::' separator, but no quotes
+
+The repo should be created with a branch name per your personal settings for the default branch name (I use 'main' here). This is the output:
+
+    Getting description text from hidden file '.Foo-Bar'
+    [main (root-commit) 30a8b25] 'initial'
+     12 files changed, 431 insertions(+)
+     create mode 100644 .github/workflows/linux.yml
+     create mode 100644 .github/workflows/macos.yml
+     create mode 100644 .github/workflows/windows.yml
+     create mode 100644 .gitignore
+     create mode 100644 Changes
+     create mode 100644 LICENSE
+     create mode 100644 META6.json
+     create mode 100644 README.md
+     create mode 100644 dist.ini
+     create mode 100644 docs/README.rakudoc
+     create mode 100644 lib/Foo/Bar.rakumod
+     create mode 100644 t/0-load-test.rakutest
+    Using directory '/path/to/some-parent-dir'
+      as the working directory.
+    Exit after 'new' mode run. See new module repo 'Foo-Bar'
+    in parent dir '/path/to/some-parent-dir'.
+
+At this point, execute the following commands to define the origin and push the new branch to the repo awaiting it on GitHub:
+
+    # GitHub: ...or push an existing repository from the command line...
+    # following those instructions with our fresh Foo::Bar repo:
+    $ git remote add origin git@github.com:user/Foo-Bar.git
+    $ git branch -M main
+    $ git push -u origin main
 
 DESCRIPTION
 ===========
@@ -68,7 +110,7 @@ In addition to those changes, the README is converted to a Rakudoc file in a new
 See also
 --------
 
-A new, in-work [App::DistroLint](https://github.com/tbrowder/App-DistroLint) by the author. 
+A new, in-work [App::DistroLint](https://github.com/tbrowder/App-DistroLint) by the author.
 
 AUTHOR
 ======

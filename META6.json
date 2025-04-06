@@ -23,12 +23,7 @@
   "perl": "6.d",
   "provides": {
     "Mi6::Helper": "lib/Mi6/Helper.rakumod",
-    "Mi6::Helper::Utils": "lib/Mi6/Helper/Utils.rakumod",
-    "Mi6::Helper::for-lint::Results": "lib/Mi6/Helper/for-lint/Results.rakumod",
-    "Mi6::Helper::for-lint::Subs": "lib/Mi6/Helper/for-lint/Subs.rakumod",
-    "Mi6::Helper::for-lint::Utils": "lib/Mi6/Helper/for-lint/Utils.rakumod",
-    "Mi6::Helper::for-lint::Vars": "lib/Mi6/Helper/for-lint/Vars.rakumod",
-    "Mi6::for-lint::Helper": "lib/Mi6/for-lint/Helper.rakumod"
+    "Mi6::Helper::Utils": "lib/Mi6/Helper/Utils.rakumod"
   },
   "resources": [
     "linux.yml",
