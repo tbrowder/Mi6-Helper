@@ -2,43 +2,26 @@
 
 =head1 NAME
 
-B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
-                 and checking Raku module repos for errors
+B<Mi6::Helper> - Creates a base repository for a new Raku module managed by B<App::Mi6>
 
 =head1 SYNOPSIS
 
-NOTE: This version removes all 'provides' methods except
-      the use of the hidden file.
+NOTE: This version removes all methods for providing a short
+      description except the use of the hidden file.
 
 =begin code
 use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file 
+$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in hidden file 
                            # '.Foo-Bar'
-    or
-
-$ mi6-helper lint <dir>    # Checks a module directory for errors
-                           # and best practice recommendations
-=end code
-
-Alternatively, one can use either of two programs as short names for
-the lint mode:
-
-=begin code
-$ distro-lint <dir>
-$ dlint <dir>
 =end code
 
 B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
 
 =item Publishing in the B<Zef> Raku module ecosystem
-=item User choice of the 'provides' text
-=item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
-=item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
-=item A new C<lint> mode to check existing module repos for possible issues
-including ensuring the META6.json file reflects the file names in the 
-/resources directory and the dependencies match the modules' entries
-in 'lib' entries.
+=item User choice of the brief descriptive text
+=item C<README.md> file source placed in a new C<docs/README.rakudoc> file
+=item Using three separate OS tests in C<.github/workflows>:  shows results of each in the auto-geberated C<README.md> file
 
 See published module C<Foo::Bar> for an example of a module created by 
 C<mi6-helper>.
@@ -61,37 +44,8 @@ example, discovering that accidentally using C<mi6 test> in a non-mi6 module's b
 directory will corrupt an existing README.md file! (See 'App::Mi6'
 issue \#157.)
 
-B<CAUTION>: Before using this tool on a real module repository, the
-user should ensure all contents have been comitted with Git to enable
-recovery from any unwanted changes.
-
 This module installs a Raku executable named C<mi6-helper> which is
-designed for the following modes of operation:
-
-=head2 lint
-
-=begin item
-lint \<path\>
-
-Checks the module repository in directory \<path\> that
-the contents of the "resources" list in the 'META6.json' file
-and the distibution's './resources' directory agree. Modifies them as 
-necessary, displays the proposed changes, and prompts the user for 
-permission to make the changes.
-
-Also checks for other configuration improvement possibilities.
-Note the 'lint' mode will work in repos I<not> under App::Mi6 management.
-
-Leaves a report of actions taken and suggestions for improvement in
-the same directory. The report is named 'mi6-helper-lint.txt'.
-
-The items checked in this version include:
-=item2 Discrepancies in the META6.json file
-=item2 Obsolete file name conventions: .t, .pl, .pm, .p6, .pl6, .pm6, .pod, .pod6
-=item2 Use of 'perl6' instead of 'raku' in script 'shebang' lines 
-=item2 Use of CI testing using 'zef' instead of 'prove6'
-=item2 Use of Github for version archiving
-=end item
+designed for the following mode of operation:
 
 =head2 new
 
@@ -101,7 +55,7 @@ new=X dir=Y
 Creates a new module 'X' in parent directory 'Y' (default '.') using
 B<mi6> and then changes some of the files and directories to satisfy the 'docs'
 option and, optionally, substitute 'blah...' with the user's short
-description (if it is provided).
+description (if it is provided in a hidden file).
 
 Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
 so the new repository is ready to C<git push <remote> <branch>>
@@ -122,83 +76,18 @@ author uses a subdir named C<dev> to hold such things).
 
 =head2 Modified files for mode B<new>
 
-See L<NewMode|NewMode.md> for details of each changed line.
+See L<NewMode|zNewMode.md> for details of each changed line from the original
+created by C<App::Mi6>.
 
-=head3 Files with replaced, modified, or added lines:
+In addition to those changes, the README is converted to a Rakudoc file
+in a new C<./docs/> directory. Then the 'dist.ini' file is modified
+to create the 'README.md' file in the base directory. Both file
+are placed under 'git' control.
 
-=begin code
+=head2 See also
 
-  dist.ini:
-    # The line that reads:
-    filename = lib/Foo/Bar.rakumod
-    # is changed to:
-    filename = docs/README.rakudoc
-    # the following App::Mi6 optional sections are added
-    # if not found:
-    #   PruneFiles
-    #   MetaNoIndex
-    #   AutoScanPackages
-    #   RunBeforeBuild
-    #   RunAfterBuild
-
-
-  META6.json:
-    # The line that begins:
-    "description": "blah blah blah",
-    # is changed to:
-    "description": "[text entered per the 'provides=X' option]
-
-  lib/Foo/Bar.rakumod:
-    # Move all lines following the first non-blank line
-    # thus leaving:
-    unit class Foo::Bar;
-
-  .github/workflows/test.yml:
-    # Create three new files to provide three separate test badges
-    .github/workflows/linux.yml
-    .github/workflows/windows.yml
-    .github/workflows/macos.yml
-    # Remove the original test.yml file
-
-=end code
-
-=head3 New directory and file:
-
-=begin code
-
-  # new directory
-  docs/
-    # new file:
-    README.rakudoc
-    # This new file first gets all the lines removed from
-    # 'lib/Foo/Bar.rakumod' resulting in a complete pod
-    # document:
-    =begin pod
-       ...
-    =end pod
-    # Then, four lines are changed:
-
-    # 1. The line that begins:
-    Foo::Bar - blah blah blah
-    # is changed to either:
-    B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
-    # or:
-    B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
-
-    # 2. The line that begins:
-    Foo::Bar is ...
-    # is changed to:
-    B<Foo::Bar> is ...
-
-    # 3. The line that begins:
-    Copyright {current year} ...
-    # is changed to:
-    <copyright symbol> {current year} ...
-
-    # 4. The line that reads:
-    This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end code
+A new, in-work L<App::DistroLint|https://github.com/tbrowder/App-DistroLint> 
+by the author. 
 
 =head1 AUTHOR
 

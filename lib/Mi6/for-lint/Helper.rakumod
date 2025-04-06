@@ -35,6 +35,127 @@ submethod TWEAK {
     @!libdirs = @dir-parts;
 }
 
+# TODO move this to new module App::DistroLint
+sub lint(
+    IO::Path:D $path, #= to repo dir
+    :$debug,
+    :$debug2,
+    ) {
+    # create an old object
+    # sub mi6-helper-old(
+    #  :$parent-dir!, :$module-dir!, :$module-name!, :$descrip,
+    #  :$debug, :$debug2
+    my $module-dir  = $path;
+    my $parent-dir  = $path.IO.parent;
+    my $module-name = $path.IO.basename;
+
+    my $o = Mi6::Helper.new: :$module-name;
+    $o.mi6-lint-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
+}
+
+# TODO move this to new module App::DistroLint
+sub mi6-helper-old(
+    :$parent-dir!, :$module-dir!, :$module-name!, :$descrip,
+    :$debug, :$debug2
+    ) is export {
+
+    my $o = Mi6::Helper.new: :$module-name;
+    $o.mi6-old-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2);
+}
+
+sub get-file-content($fnam --> Str) is export {
+    %?RESOURCES{$fnam}.slurp;
+}
+
+method mi6-lint-cmd(
+    :$parent-dir!, :$module-dir!, :$module-name!, 
+    :$debug, :$debug2,
+    ) {
+
+    chdir $parent-dir;
+
+    my $rdir  = "$module-dir/resources";
+    my @rfils = find :dir($rdir), :type<file>;
+
+    my $mfil  = "$module-dir/META6.json";
+#say ($mfil.IO.f;).so;
+
+    my $meta := from-json $mfil.IO.slurp;
+
+    my @mfils;
+    if $meta<resources>:exists {
+        my $v = $meta<resources>;
+        @mfils = @($v);
+    }
+#say %meta.raku;
+#say "DEBUG exit;exit;
+
+
+    # need to trim @rfils to remove path/to/resources
+    my @fr;
+    for @rfils {
+        if $_ ~~ / 'resources/' (\S+) $/ {
+            my $f = ~$0;
+            @fr.push: $f;
+        }
+        =begin comment
+        else {
+            note "unexpected file: '$_'";
+        }
+        =end comment
+    }
+
+    # need to trim @f to remove path/to/resources
+    my @fm;
+    for @mfils {
+        if $_ ~~ / 'resources/' (\S+) $/ {
+            my $f = ~$0;
+            @fm.push: $f;
+        }
+        =begin comment
+        else {
+            note "unexpected file: '$_'";
+        }
+        =end comment
+    }
+    
+    # fill these class attrs
+    #   has @.resources-dir-files; 
+    #   has @.meta-resources-files;
+    self.resources-dir-files  = |@fr;
+    self.meta-resources-files = |@fm;
+
+    if 0 and $debug {
+        say "DEBUG in .mi6-lint-cmd";
+        say "  Files in the ./resources dir";
+        say "    '$_'" for @rfils;
+        for $meta.keys -> $k {
+            if $k eq 'resources' {
+                say "  $mfil\'s resources list:";
+                my @f = @($meta{$k});
+                if not @f.elems {
+                    say "    (empty list)";
+                }
+                else {
+                    say "    '$_'" for @f;
+                }
+            }
+        }
+    }
+
+}
+
+method mi6-old-cmd(
+    :$parent-dir!, :$module-dir!, :$module-name!, 
+    :$debug, :$debug2,
+    ) {
+    chdir $parent-dir;
+    #cmd "mi6 new --zef $module-name";
+    self.libdirs = :dir($module-dir), :type<dir>;
+    my $dir = "$module-dir/lib";
+    self.libfile = find :$dir, :type<file>;
+}
+
 method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
@@ -66,6 +187,15 @@ multi method is-git-dir($dir) {
 
 multi method is-mi6-repo($dir) {
     "$dir/dist.ini".IO.f;
+}
+
+method mod-changes() {
+}
+
+method mod-readme() {
+}
+
+method mod-dist-ini() {
 }
 
 sub get-hidden-name(:$module-name) is export {
@@ -149,6 +279,7 @@ sub mi6-helper-new(
         }
         @odocfil.push: $line;
     }
+
 
     # the new test file
     mkdir "$modpdir/t";
@@ -404,10 +535,6 @@ sub get-section($section --> Str) {
     else {
         dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
     }
-}
-
-sub get-file-content($fnam --> Str) is export {
-    %?RESOURCES{$fnam}.slurp;
 }
 
 sub get-version is export {

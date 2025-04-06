@@ -1,0 +1,48 @@
+Desired capabilities
+====================
+
+Put each action in its own sub whose input includes the collections of
+all the user's files. The output should be a string to be concatenated
+with the results summary report.
+
+Rename the "action" subs to something better.
+
+Remove the lint mode from the mi6-helper mode?
+  possible names:
+    App::DistroLint
+    App::Dlint
+
+Use straight lint sub to check META6.json
+  files versus /resources to ensure they're in sync
+
+First priority is to check synch between actual 'use'd modules
+and and those in the META6.json file (AND check verions, if any):
+  + remove or add to the META6.json file as required
+  + first save the META6.json file before any changes
+
+New creations should have a RunBeforeBuild script
+  to ensure /resources and META6.json match
+  + and appropriate subs to show and download /resources
+    payloads. See Foo::Bar for an example.
+
+Implement old= mode
+  + use a config file
+    My-Module.yml
+      # contents?
+
+Implement lint mode
+  + ensure there is a load test for
+    ALL files in /lib
+
+Add option to new= to add a Resources
+  module
+  + user-selected name (below top level)
+
+Add a new= method with a config file
+  instead of the hidden file
+  + deprecate the hidden file method
+  + the config file
+    <name>.yml
+    My-Module.yml
+      name: My::Module
+      provides: Blah blah

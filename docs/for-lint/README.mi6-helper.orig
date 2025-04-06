@@ -3,34 +3,61 @@
 =head1 NAME
 
 B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
+                 and checking Raku module repos for errors
 
 =head1 SYNOPSIS
 
+NOTE: This version removes all 'provides' methods except
+      the use of the hidden file.
+
 =begin code
 use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # uses any brief text in hidden file 
-                           # '.Foo-Bar' as a summary desxription in 
-                           # files META6.json and README.md
+$ mi6-helper new=Foo::Bar  # Uses the 'provides' text in hidden file 
+                           # '.Foo-Bar'
+    or
+
+$ mi6-helper lint <dir>    # Checks a module directory for errors
+                           # and best practice recommendations
+=end code
+
+Alternatively, one can use either of two programs as short names for
+the lint mode:
+
+=begin code
+$ distro-lint <dir>
+$ dlint <dir>
 =end code
 
 B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
 
-=item Published in the B<Zef> Raku module ecosystem
-=item User choice of the brief description
+=item Publishing in the B<Zef> Raku module ecosystem
+=item User choice of the 'provides' text
 =item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
-=item Uses three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
+=item Using three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
+=item A new C<lint> mode to check existing module repos for possible issues
+including ensuring the META6.json file reflects the file names in the 
+/resources directory and the dependencies match the modules' entries
+in 'lib' entries.
+
+See published module C<Foo::Bar> for an example of a module created by 
+C<mi6-helper>.
 
 =head2 Special installation requirements
 
-The user must install to and have an account with C<fez> to use this module
-for new module creation.
+The user must install and have an account with C<fez> to use this module to 
+create a new module repository:
+
+=begin code
+zef install fez
+fez register
+=end code
 
 =head1 DESCRIPTION
 
-Note this is API 2 and its approach has changed significantly since
+Note this module has changed significantly since
 the author has had much more experience using B<App::Mi6>.  For
-example, accidentally using C<mi6 test> in a non-mi6 module's base
+example, discovering that accidentally using C<mi6 test> in a non-mi6 module's base
 directory will corrupt an existing README.md file! (See 'App::Mi6'
 issue \#157.)
 
@@ -39,7 +66,32 @@ user should ensure all contents have been comitted with Git to enable
 recovery from any unwanted changes.
 
 This module installs a Raku executable named C<mi6-helper> which is
-designed for two major modes of operation:
+designed for the following modes of operation:
+
+=head2 lint
+
+=begin item
+lint \<path\>
+
+Checks the module repository in directory \<path\> that
+the contents of the "resources" list in the 'META6.json' file
+and the distibution's './resources' directory agree. Modifies them as 
+necessary, displays the proposed changes, and prompts the user for 
+permission to make the changes.
+
+Also checks for other configuration improvement possibilities.
+Note the 'lint' mode will work in repos I<not> under App::Mi6 management.
+
+Leaves a report of actions taken and suggestions for improvement in
+the same directory. The report is named 'mi6-helper-lint.txt'.
+
+The items checked in this version include:
+=item2 Discrepancies in the META6.json file
+=item2 Obsolete file name conventions: .t, .pl, .pm, .p6, .pl6, .pm6, .pod, .pod6
+=item2 Use of 'perl6' instead of 'raku' in script 'shebang' lines 
+=item2 Use of CI testing using 'zef' instead of 'prove6'
+=item2 Use of Github for version archiving
+=end item
 
 =head2 new
 
@@ -58,16 +110,19 @@ and C<mi6 release>.
 CAUTION: If file C<dist.ini> already exists in the parent directory, the program
 will abort B<unless> the C<force> option is used. Use the C<force> option at your
 own risk!
+
 =end item
 
-B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
-(for example, remove the C<macos> test):
+B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing
+the following two steps (for example, remove the C<macos> test):
 
-=item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the author uses a subdir
-name <dev> to hold such things).
+=item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the 
+author uses a subdir named C<dev> to hold such things).
 =item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
 
 =head2 Modified files for mode B<new>
+
+See L<NewMode|NewMode.md> for details of each changed line.
 
 =head3 Files with replaced, modified, or added lines:
 
@@ -91,7 +146,7 @@ name <dev> to hold such things).
     # The line that begins:
     "description": "blah blah blah",
     # is changed to:
-    "description": "[text entered per the text in the hidden file]
+    "description": "[text entered per the 'provides=X' option]
 
   lib/Foo/Bar.rakumod:
     # Move all lines following the first non-blank line
@@ -126,7 +181,7 @@ name <dev> to hold such things).
     # 1. The line that begins:
     Foo::Bar - blah blah blah
     # is changed to either:
-    B<Foo::Bar> - [Foo::Bar is bolded, text from the hidden file '.Foo-Bar']
+    B<Foo::Bar> - [Foo::Bar is bolded, text entered per the 'provides=X' option]
     # or:
     B<Foo::Bar> - blah blah blah [Foo::Bar is bolded]
 
@@ -142,8 +197,6 @@ name <dev> to hold such things).
 
     # 4. The line that reads:
     This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-    # is changed to:
-    This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
 =end code
 

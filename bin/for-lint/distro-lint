@@ -8,46 +8,54 @@ my $dir;
 my $debug = 0;
 if not @*ARGS {
     # usage
-    mi6-help;
+    lint-help;
     exit;
 }
 
-# do the work
 my @args;
 for @*ARGS {
-    say "DEBUG: arg '$_'" if $debug;
+    #say "DEBUG: arg '$_'";
     if $_ eq '.' {
-        $dir = $parent-dir.IO.absolute;
-        say "DEBUG: dir: '$dir'" if $debug;
+        $dir = $parent-dir;
     }
     elsif $_ eq '..' {
         my $path = $parent-dir.IO.absolute;
-        $dir = $path.IO.parent(2);
-        say "DEBUG: dir: '$dir'" if $debug;
+        $dir = $path.IO.parent(2).IO;
     }
     elsif $_.IO.d {
         $dir = $_;
     }
-    =begin comment
-    # move to App::DistroLint
+    elsif $_.contains("distro") {
+        ; # ignore
+    }
     elsif $_.contains("dlint") {
         ; # ignore
     }
-    elsif $_.contains("distro-lint") {
+    elsif $_.contains("mi6-helper") {
         ; # ignore
     }
-    =end comment
     else {
-        @args.push: $_
+        @args.push: $_;
     }
 }
 
-if not $dir.defined {
-    $dir = $parent-dir;
+#say "DEBUG early exit"; exit;
+
+for @args {
+    when /^ :i L/ {
+        %*ENV<RAKUDO_NO_PRECOMPILATION> = 1;
+    }
+    when /^ :i d/ {
+        ++$debug;
+    }
+    default {
+        die "FATAL: Unknown arg '$_'";
+    }
 }
 
-#@args.unshift: $dir;
-run-args $dir, @args;
+my $s = lint $dir, :$debug;
+say $s;
+
 
 =finish
 

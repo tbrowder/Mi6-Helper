@@ -4,19 +4,19 @@ use File::Temp;
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-my ($Xstr, $Xnam, $tempdir, $o, $provides);
+my ($Xstr, $Xnam, $tempdir, $o, $descrip);
 
 $tempdir = tempdir;
 chdir $tempdir;
 
 my $module-name = 'Foo::Bar-Baz';
 my $module-dir  = 'Foo-Bar-Baz';
-my $provides-hidden = get-hidden-name(:$module-name);
+my $descrip-hidden = get-hidden-name(:$module-name);
 my $parent-dir = '.';
 
-$provides = 'Some text';
-$o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name, :$provides;
+$descrip = 'Some text';
+$o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name, :$descrip;
 isa-ok $o, Mi6::Helper;
-is $o.provides, $provides;
+is $o.descrip, $descrip;
 
 done-testing;

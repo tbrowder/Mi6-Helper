@@ -1,20 +1,24 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
-    - MAJOR CHANGES:
-    - IMPORTANT: This version removes all 'provides' options other 
-        than the brief descriptive text in the hidden file
-    - Removed ALL code for reactions with existing distributions
-        and moved it to upcoming new distribution 'App::DistroLint'
-
+    - IMPORTANT: Removes all 'provides' options other than the hidden file
     - Corrected improper handling of the conflicting 'provides' data 
         between this distro vs META6.json; this supplies the META6.json's
-        'description' key's value as well as in the README.md file
+        'description' key's value
     - Improved t/load test (thanks @finanalyst)
     - Replaced module 'RakupodObject' with 'Pod::Load'
     - Updated App::Mi6 version requirement to v3.0.6
-    - Moved most executable code from /bin/mi6-helper to new 
+    - Move most executable code from /bin/mi6-helper to new 
         Mi6/Helper/Utils.rakumod for more pre-compiled code
+    - Removed ALL code for reactions with existing distributions
+        and move it to upcoming new distribution 'App::DistroLint'
+
+    # move this chunk below to new distro: 'App::DistroLint'
+    - Add new 'lint' option.
+    - Add use of the published 'Foo::Bar' module to test modules
+      in their cloned repos as well as their installed instances.
+    - Add to all new modules methods and routines for querying or
+        downloading payload files in its /resources directory.
 
 0.11.5  2024-05-08T12:54:09-05:00
     - Correct error in dist.ini: .yml extension was missing
