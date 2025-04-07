@@ -39,8 +39,8 @@ method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debu
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
     self.libdirs = :dir($module-dir), :type<dir>;
-    my $dir = "$module-dir/lib";
-    self.libfile = find :$dir, :type<file>;
+    my $libdir = "$module-dir/lib";
+    self.libfile = find :$libdir, :type<file>;
 }
 
 method git-status {
@@ -79,18 +79,24 @@ sub mi6-helper-new(
     :$debug, :$debug2, :$d2, :$d3,
     ) is export {
 
+    =begin comment
+    # TODO have the caller do this check: caller is in Utils...
     # check that $module-dir is empty, if it exists
-    if $module-dir.IO.d {
-        note "DANGER: module dir '$module-dir' exists...checking for existing content";
-        my @s = find :dir($module-dir);
+    my $mdir = $module-dir.IO.absolute;
+    if $mdir.IO.e and $mdir.IO.d {
+        say qq:to/HERE/;
+        DANGER: module dir '$module-dir' exists...checking for existing content
+        HERE
+        my @s = find :dir($mdir), :exclude();
         if @s.elems {
-            note "FATAL: directory '$module-dir' has content...exiting";
+            say "FATAL: directory '$mdir' has content...exiting";
             exit;
         }
         else {
-            note "Directory '$module-dir' is empty...continuing";
+            say "Directory '$mdir' is empty...continuing";
         }
     }
+    =end comment
 
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {

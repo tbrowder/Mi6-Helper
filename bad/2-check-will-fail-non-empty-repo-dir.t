@@ -42,7 +42,7 @@ if $debug {
     my $nf = @f.elems;
     say "DEBUG: early exit after cleaning tdir '$tdir'";
     say "       files remaining (if any): $nf";
-    exit;
+    #exit;
 }
 
 if 0 {

@@ -15,6 +15,7 @@
     "App::Mi6:ver<3.0.6+>",
     "Text::Utils",
     "File::Find",
+    "File::Directory::Tree",
     "Proc::Easier"
   ],
   "description": "An aid for converting Raku modules to use App::Mi6",

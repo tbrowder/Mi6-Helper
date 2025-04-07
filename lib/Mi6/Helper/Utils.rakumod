@@ -2,6 +2,7 @@ unit module Mi6::Helper::Utils;
 
 use Mi6::Helper;
 
+use File::Directory::Tree;
 use Pod::Load;
 use App::Mi6;
 use Text::Utils :normalize-string, :strip-comment;
@@ -90,7 +91,6 @@ sub run-args($dir, @args) is export {
                     say "  did NOT find '$path'";
                 }
             }
-            #exit;
         }
         when /^v / {
             # check for this module's version
@@ -108,8 +108,7 @@ sub run-args($dir, @args) is export {
     }
 
     # Take care of 'descrip'
-    # PRO
-    if $new and not $descrip {
+    unless $descrip {
         $descrip = "";
         # info should be in a hidden file
         my $hidden = ".$module-name";
@@ -147,6 +146,42 @@ sub run-args($dir, @args) is export {
         $module-dir ~~ s:g/'::'/-/;
 
         # fail if the desired dir has ANY content:
+        # TODO IMPORTANT: check for contents here, NOT in
+
+#       =begin comment
+        # TODO check content
+        # check that $module-dir is empty, if it exists
+        my $mdir = $module-dir.IO.absolute;
+        say qq:to/HERE/;
+        DANGER: module dir '$module-dir' exists...checking for existing content
+        HERE
+        my @d = find :dir($mdir), :type<dir>;
+        # TODO try to clean the sub dirs
+        for @d {
+            say "DEBUG: rmdir dir '$_'" if $debug;
+            rmtree $_; #.IO.d; 
+        }
+        # check any files remaing at the top level
+        my @f = find :dir($mdir), :type<file>;
+        for @f { 
+            # is it a hidden file?
+            my $b = $_.basename;
+            if $b ~~ /^ '.' / {
+                say "DEBUG: not touching hidden file '$_'" if $debug;
+                next;
+            }
+            say "DEBUG: unlinking file '$_'" if $debug;
+            unlink $_; #.IO.f; 
+        }
+
+#       =end comment
+
+#       #   sub mi6-helper-new
+#       # check that $module-dir is empty, if it exists
+#       my $mdir = $module-dir.IO.absolute;
+#       my @f = find :dir($mdir), :!recurse, :type<file>;
+#       my @d = find :dir($mdir), :!recurse, :type<dir>;
+
         mi6-helper-new :$parent-dir, :$module-dir, :$module-name,
         :$debug, :$d2, :$descrip;
 
@@ -157,24 +192,6 @@ sub run-args($dir, @args) is export {
         exit;
     }
 
-    =begin commment
-    if $lint {
-        %*ENV<RAKUDO_NO_PRECOMPILATION>=1;
-        my $lint-results = lint $parent-dir, :$debug;
-        my $ofil = "lint-results.txt";
-        spurt $ofil, $lint-results;
-        say qq:to/HERE/;
-        Exit after 'lint' mode run. See results in file '$ofil'
-        in directory '$parent-dir'.
-        HERE
-        exit;
-    }
-
-    if $old {
-        say "NOTE: Mode 'old' is not yet implemented.";
-        exit;
-    }
-    =end commment
 } # sub action(@args)
 
 sub get-zef-info($module-name, :$debug) is export {
@@ -441,7 +458,6 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     }
     else {
         $st ~= "  No issues were found.\n";
-
     }
 
     $st;

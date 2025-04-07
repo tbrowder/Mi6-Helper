@@ -8,11 +8,12 @@ NAME
 SYNOPSIS
 ========
 
-NOTE: This version removes all methods for providing a short description except the use of the hidden file.
-
     use Mi6::Helper
-    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in hidden file
-                               # '.Foo-Bar' (if any)
+    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in 
+                               # hidden file '.Foo-Bar' (if any)
+
+DESCRIPTION
+===========
 
 **Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
 
@@ -34,14 +35,16 @@ The user must install and have an account with `fez` to use this module to creat
     zef install fez
     fez register
 
-Recommended 'git origin'
-------------------------
+Define the branch 'git origin'
+------------------------------
 
 The author uses and recommends GitHub for the 'git origin' for your new module's repository.
 
 A short list of steps to define such for our example 'Foo::Bar':
 
-1. Define a new repo on GitHub named 'Foo-Bar' (note no '::' separator) 2. On your computer, use the shell terminal to run these commands (for Linux or MacOS):
+1. Define a new repo on GitHub named 'Foo-Bar' (note no '::' separator)
+
+2. On your computer, use the shell terminal to run these commands (for Linux or MacOS):
 
     $ cd /path/to/some-parent-dir
     $ mi6-helper new=Foo::Bar  # <== note the '::' separator, but no quotes
@@ -76,9 +79,6 @@ At this point, execute the following commands to define the origin and push the 
     $ git branch -M main
     $ git push -u origin main
 
-DESCRIPTION
-===========
-
 Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, discovering that accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file! (See 'App::Mi6' issue \#157.)
 
 This module installs a Raku executable named `mi6-helper` which is designed for the following mode of operation:
@@ -92,8 +92,6 @@ new
 
     Provides a final `mi6 build` and `git commit -a -m"initial commit"` so the new repository is ready to `git push <remote> <branch>` and `mi6 release`.
 
-    CAUTION: If file `dist.ini` already exists in the parent directory, the program will abort **unless** the `force` option is used. Use the `force` option at your own risk!
-
 **NOTE**: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps (for example, remove the `macos` test):
 
   * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir named `dev` to hold such things).
@@ -105,7 +103,7 @@ Modified files for mode **new**
 
 See [NewMode](zNewMode.md) for details of each changed line from the original created by `App::Mi6`.
 
-In addition to those changes, the README is converted to a Rakudoc file in a new `./docs/` directory. Then the 'dist.ini' file is modified to create the 'README.md' file in the base directory. Both file are placed under 'git' control.
+In addition to those changes, the README is converted to a Rakudoc file in a new `./docs/` directory. Then the 'dist.ini' file is modified to create the 'README.md' file in the base directory. Both files are placed under 'git' control.
 
 See also
 --------

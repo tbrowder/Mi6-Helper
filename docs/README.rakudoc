@@ -6,14 +6,13 @@ B<Mi6::Helper> - Creates a base repository for a new Raku module managed by B<Ap
 
 =head1 SYNOPSIS
 
-NOTE: This version removes all methods for providing a short
-      description except the use of the hidden file.
-
 =begin code
 use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in hidden file
-                           # '.Foo-Bar' (if any)
+$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in 
+                           # hidden file '.Foo-Bar' (if any)
 =end code
+
+=head1 DESCRIPTION
 
 B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
@@ -37,7 +36,7 @@ zef install fez
 fez register
 =end code
 
-=head2 Recommended 'git origin'
+=head2 Define the branch 'git origin'
 
 The author uses and recommends GitHub for the 'git origin' for your
 new module's repository.
@@ -45,6 +44,7 @@ new module's repository.
 A short list of steps to define such for our example 'Foo::Bar':
 
 1. Define a new repo on GitHub named 'Foo-Bar' (note no '::' separator)
+
 2. On your computer, use the shell terminal to run these commands (for Linux
 or MacOS):
 
@@ -89,8 +89,6 @@ $ git branch -M main
 $ git push -u origin main
 =end code
 
-=head1 DESCRIPTION
-
 Note this module has changed significantly since the author has had
 much more experience using B<App::Mi6>.  For example, discovering that
 accidentally using C<mi6 test> in a non-mi6 module's base directory
@@ -113,10 +111,6 @@ Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
 so the new repository is ready to C<git push <remote> <branch>>
 and C<mi6 release>.
 
-CAUTION: If file C<dist.ini> already exists in the parent directory, the program
-will abort B<unless> the C<force> option is used. Use the C<force> option at your
-own risk!
-
 =end item
 
 B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing
@@ -133,7 +127,7 @@ created by C<App::Mi6>.
 
 In addition to those changes, the README is converted to a Rakudoc file
 in a new C<./docs/> directory. Then the 'dist.ini' file is modified
-to create the 'README.md' file in the base directory. Both file
+to create the 'README.md' file in the base directory. Both files
 are placed under 'git' control.
 
 =head2 See also
