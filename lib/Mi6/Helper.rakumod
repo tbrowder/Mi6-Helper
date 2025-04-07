@@ -81,9 +81,9 @@ sub mi6-helper-new(
 
     # check that $module-dir is empty, if it exists
     if $module-dir.IO.d {
-        note "DANGER: module dir exists...checking for existing content";
-        my $s = slurp "$module/*";
-        if $s {
+        note "DANGER: module dir '$module-dir' exists...checking for existing content";
+        my @s = find :dir($module-dir);
+        if @s.elems {
             note "FATAL: directory '$module-dir' has content...exiting";
             exit;
         }
