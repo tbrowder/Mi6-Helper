@@ -7,7 +7,7 @@ use File::Directory::Tree;
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-my $debug = 1;
+my $debug = 0;
 
 my $tdir;
 if $debug {
@@ -18,6 +18,7 @@ else {
     $tdir = tempdir;
 }
 
+if 0 {
 # ensure the tdir is empty
 my @d = find :dir($tdir), :type<dir>;
 for @d { 
@@ -34,6 +35,7 @@ for @f {
     }
     say "DEBUG: unlinking file '$_'" if $debug;
     unlink $_; #.IO.f; 
+}
 }
 
 if 0 and $debug {
@@ -65,7 +67,7 @@ lives-ok {
     say "exitcode: $e";
     say "out: $out";
     say "err: $err";
-}
+}, "gen new mod Foo::Bar in dir '$tdir'";
 
 exit if $debug;
 

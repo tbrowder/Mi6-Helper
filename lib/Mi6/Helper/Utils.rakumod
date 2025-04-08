@@ -63,13 +63,13 @@ sub run-args($dir, @args) is export {
             $module-name = ~$0;
             ++$new;
         }
-        when /:i ^f/ { 
+        when /:i ^f/ {
             ++$force;
         }
         when /^'dir=' (\S+)/ {
             $parent-dir = ~$0;
         }
-        when /^ do  / { 
+        when /^ do  / {
             ++$docs;
         }
         when /^ de / {
@@ -122,13 +122,28 @@ sub run-args($dir, @args) is export {
             say "Getting description text from hidden file '$hidden'";
         }
         else {
-            say "FATAL: Unable to find the hidden file '$hidden'.";
-            my $res = prompt "Do you want to continue without it (y/N): ";
-            if $res ~~ /:i ^ y/ {
-                say "Okay, continuing without a 'descrip' input...";
+            my $timeout = 5;
+            say qq:to/HERE/;
+            WARNING: Unable to find the hidden file '$hidden'.";
+            Do you want to continue without it (y/N)?
+              You have 5 seconds to decide...
+            HERE
+
+            my $in-promise = start {
+                my $input = $*IN.get;
+            }
+            my $out-promise = Promise.in($timeout);
+            my $res = await Promise.anyof($in-promise, $out-promise);
+            if $res === $in-promise {
+                if $res ~~ /:i ^ y/ {
+                    say "Okay, continuing without a 'descrip' input...";
+                }
+                else {
+                    say "Okay, aborting and exiting early.";
+                }
             }
             else {
-                say "Aborting and exiting early.";
+                say "Too late, aborting and exiting early.";
             }
         }
     }
@@ -156,16 +171,16 @@ sub run-args($dir, @args) is export {
             say qq:to/HERE/;
             DANGER: module dir '$module-dir' exists...checking for existing content
             HERE
-        
+
             my @d = find :dir($mdir), :type<dir>;
             # TODO try to clean the sub dirs
             for @d {
                 say "DEBUG: rmdir dir '$_'" if $debug;
-                rmtree $_; #.IO.d; 
+                rmtree $_; #.IO.d;
             }
             # check any files remaining at the top level
             my @f = find :dir($mdir), :type<file>;
-            for @f { 
+            for @f {
                 # is it a hidden file?
                 my $b = $_.basename;
                 if $b ~~ /^ '.' / {
@@ -173,7 +188,7 @@ sub run-args($dir, @args) is export {
                     next;
                 }
                 say "DEBUG: unlinking file '$_'" if $debug;
-                unlink $_; #.IO.f; 
+                unlink $_; #.IO.f;
             }
         }
 #       =end comment
