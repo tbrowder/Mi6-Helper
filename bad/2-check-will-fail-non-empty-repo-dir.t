@@ -2,7 +2,6 @@ use Test;
 
 use File::Temp;
 use File::Find;
-use paths;
 use File::Directory::Tree;
 
 use Mi6::Helper;
@@ -37,7 +36,7 @@ for @f {
     unlink $_; #.IO.f; 
 }
 
-if $debug {
+if 0 and $debug {
     my @f = find :dir($tdir), :type<file>;
     my $nf = @f.elems;
     say "DEBUG: early exit after cleaning tdir '$tdir'";
