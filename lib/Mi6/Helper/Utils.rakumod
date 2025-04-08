@@ -151,29 +151,31 @@ sub run-args($dir, @args) is export {
 #       =begin comment
         # TODO check content
         # check that $module-dir is empty, if it exists
-        my $mdir = $module-dir.IO.absolute;
-        say qq:to/HERE/;
-        DANGER: module dir '$module-dir' exists...checking for existing content
-        HERE
-        my @d = find :dir($mdir), :type<dir>;
-        # TODO try to clean the sub dirs
-        for @d {
-            say "DEBUG: rmdir dir '$_'" if $debug;
-            rmtree $_; #.IO.d; 
-        }
-        # check any files remaing at the top level
-        my @f = find :dir($mdir), :type<file>;
-        for @f { 
-            # is it a hidden file?
-            my $b = $_.basename;
-            if $b ~~ /^ '.' / {
-                say "DEBUG: not touching hidden file '$_'" if $debug;
-                next;
+        my $mdir = $module-dir; #$.IO.absolute;
+        if $mdir.IO.e {
+            say qq:to/HERE/;
+            DANGER: module dir '$module-dir' exists...checking for existing content
+            HERE
+        
+            my @d = find :dir($mdir), :type<dir>;
+            # TODO try to clean the sub dirs
+            for @d {
+                say "DEBUG: rmdir dir '$_'" if $debug;
+                rmtree $_; #.IO.d; 
             }
-            say "DEBUG: unlinking file '$_'" if $debug;
-            unlink $_; #.IO.f; 
+            # check any files remaining at the top level
+            my @f = find :dir($mdir), :type<file>;
+            for @f { 
+                # is it a hidden file?
+                my $b = $_.basename;
+                if $b ~~ /^ '.' / {
+                    say "DEBUG: not touching hidden file '$_'" if $debug;
+                    next;
+                }
+                say "DEBUG: unlinking file '$_'" if $debug;
+                unlink $_; #.IO.f; 
+            }
         }
-
 #       =end comment
 
 #       #   sub mi6-helper-new

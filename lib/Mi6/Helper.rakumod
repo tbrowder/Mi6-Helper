@@ -38,9 +38,9 @@ submethod TWEAK {
 method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
     cmd "mi6 new --zef $module-name";
-    self.libdirs = :dir($module-dir), :type<dir>;
+    self.libdirs = find :dir($module-dir), :type<dir>;
     my $libdir = "$module-dir/lib";
-    self.libfile = find :$libdir, :type<file>;
+    self.libfile = find :dir($libdir), :type<file>;
 }
 
 method git-status {
