@@ -8,7 +8,7 @@ B<Mi6::Helper> - Creates a base repository for a new Raku module managed by B<Ap
 
 =begin code
 use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in 
+$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in
                            # hidden file '.Foo-Bar' (if any)
 =end code
 
@@ -18,7 +18,7 @@ B<Easily> create the template for a new Raku module repository for
 management by C<App::Mi6> with modifications including:
 
 =item Publishing in the B<Zef> Raku module ecosystem
-=item User choice of the brief descriptive text (recommended, but not require)
+=item User choice of the brief descriptive text (recommended, but not required)
 =item C<README.md> file source placed in a new C<docs/README.rakudoc> file
 =item Using three separate OS tests in C<.github/workflows>: shows
 results of each in the auto-geberated C<README.md> file
@@ -28,8 +28,8 @@ C<mi6-helper>.
 
 =head2 Special installation requirements
 
-The user must install and have an account with C<fez> to use this module to
-create a new module repository:
+The user must install and have an account with C<fez> to use this
+module to create a new module repository:
 
 =begin code
 zef install fez
@@ -53,8 +53,9 @@ $ cd /path/to/some-parent-dir
 $ mi6-helper new=Foo::Bar  # <== note the '::' separator, but no quotes
 =end code
 
-The repo should be created with a branch name per your personal settings
-for the default branch name (I use 'main' here). This is the output:
+The repo should be created with a branch name per your personal
+settings for the default branch name (I use 'main' here). This is the
+output:
 
 =begin code
 Getting description text from hidden file '.Foo-Bar'
@@ -78,8 +79,8 @@ Exit after 'new' mode run. See new module repo 'Foo-Bar'
 in parent dir '/path/to/some-parent-dir'.
 =end code
 
-At this point, execute the following commands to define the origin and push
-the new branch to the repo awaiting it on GitHub:
+At this point, execute the following commands to define the origin and
+push the new branch to the repo awaiting it on GitHub:
 
 =begin code
 # GitHub: ...or push an existing repository from the command line...

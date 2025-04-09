@@ -5,10 +5,12 @@ use JSON::Fast;
 use Proc::Easier;
 use File::Find;
 
-has $.parent-dir = $*CWD;
-has $.module-name;             #= as known to Zef, e.g., 'Foo::Bar-Baz'
-# top-level directory
+has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
+
+has $.parent-dir = $*CWD;
+
+# its top-level repo directory
 # libs are determined by the '::' separators in the module name
 has @.libdirs is rw;           #= 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod'
                                #= 'Foo-Bar-Baz/lib
@@ -27,21 +29,39 @@ has @.resources-dir-files;     #=
 has @.meta-resources-files;    #= 
 
 submethod TWEAK {
-    return if not $!module-name.defined;
-
     # determine directory and file names
     my @dir-parts = $!module-name.split('::');
     $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;
     @!libdirs = @dir-parts;
+
+    # use App::Mi6 to create the module to modify
+    chdir $!parent-dir;
+    # Note: 'mi6' will abort if the $module-name or $module-dir
+    #  (as needed) exists. Do NOT check for contents with 
+    #  'mi6-helper'! However, a hidden file is okay (if used).
+
+    cmd "mi6 new --zef $!module-name";
+    # take care of the module directory: replace '::' with '-'
+    $!module-dir = $!module-name;
+    $!module-dir ~~ s:g/'::'/-/;
+    self.libdirs = find :dir($!module-dir), :type<dir>;
+    my $libdir = "$!module-dir/lib";
+    self.libfile = find :dir($libdir), :type<file>;
 }
 
+=begin comment
 method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debug2) {
     chdir $parent-dir;
+    # Note: 'mi6' will abort if the $module-name or $module-dir
+    #  (as needed) exists. Do NOT check for contents with 
+    #  'mi6-helper'! However, a hidden is okay (if used).
+
     cmd "mi6 new --zef $module-name";
     self.libdirs = find :dir($module-dir), :type<dir>;
     my $libdir = "$module-dir/lib";
     self.libfile = find :dir($libdir), :type<file>;
 }
+=end comment
 
 method git-status {
     # branch and working tree status
@@ -76,27 +96,8 @@ sub get-hidden-name(:$module-name) is export {
 
 sub mi6-helper-new(
     :$parent-dir!, :$module-dir, :$module-name!, :$descrip,
-    :$debug, :$debug2, :$d2, :$d3,
+    :$debug, :$debug2, :$d2, :$d3, :$force,
     ) is export {
-
-    =begin comment
-    # TODO have the caller do this check: caller is in Utils...
-    # check that $module-dir is empty, if it exists
-    my $mdir = $module-dir.IO.absolute;
-    if $mdir.IO.e and $mdir.IO.d {
-        say qq:to/HERE/;
-        DANGER: module dir '$module-dir' exists...checking for existing content
-        HERE
-        my @s = find :dir($mdir), :exclude();
-        if @s.elems {
-            say "FATAL: directory '$mdir' has content...exiting";
-            exit;
-        }
-        else {
-            say "Directory '$mdir' is empty...continuing";
-        }
-    }
-    =end comment
 
     # test module is "Foo::Bar"
     # method mi6-cmd(:$parent-dir, :$module-name) {

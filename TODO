@@ -1,6 +1,14 @@
 Before release:
+
+Find where we call mi6: empty dir check MUST be done there!!!
+
 DONE: DO NOT ALLOW EXECUTION FOR AN EXISTING BASE DIRECTORY
       WITH CONTENT
+
+Delay adding a time-delay to yes/no response. Instead,
+add a -force option to do without a hidden file.
+
+See Voodenet's new code, 9 Apr 2025
 
 Desired capabilities
 ====================

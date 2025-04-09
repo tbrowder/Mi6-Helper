@@ -18,6 +18,7 @@ else {
     $tdir = tempdir;
 }
 
+=begin comment
 if 0 {
 # ensure the tdir is empty
 my @d = find :dir($tdir), :type<dir>;
@@ -58,9 +59,11 @@ if 0 {
     say "  $_" for @c;
     #say "DEBUG early exit"; exit;
 }
+=end comment
 
 lives-ok {
-    my $proc = run "mi6-helper", "dir=$tdir", "new=Foo::Bar", :out, :err;
+    say "Running 'mi6-helper'...";
+    my $proc = run "mi6-helper", "force", "dir=$tdir", "new=Foo::Bar", :out, :err;
     my $e = $proc.exitcode;
     my $out = $proc.out.slurp(:close);
     my $err = $proc.err.slurp(:close);
@@ -69,7 +72,7 @@ lives-ok {
     say "err: $err";
 }, "gen new mod Foo::Bar in dir '$tdir'";
 
-exit if $debug;
+exit if 0 or $debug;
 
 dies-ok {
     run "mi6-helper", "new=Foo::Bar";

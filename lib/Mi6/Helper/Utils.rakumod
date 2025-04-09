@@ -9,26 +9,30 @@ use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
 
+    # Note: 'mi6' will abort if the $module-name or $module-dir
+    #  (as needed) exists. Do NOT check for contents with 
+    #  'mi6-helper'! However, a hidden is okay (if used).
+
 sub mi6-help() is export {
     # usage
     say qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
-      new=Y - Creates a new module (named 'Y') in directory 'X' (default '.')
-              by executing 'mi6', then changing certain files in the new
-              repository to conform to the 'docs' option.  It also uses the
-              'descrip' attribute for a short description of its main purpose.
+      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
+              by executing 'mi6', then modifying files and adding new files 
+              in the new repository to add the benefits produced by this module.
+              NOTE: The program will abort if directory 'X' exists and has any 
+              content.
+
+              Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'.
               See details in the README.
 
     Options:
-      <dir> - Selects directory <dir> for the operations, default is '.'
-              (the current directory, i.e., '$*CWD').
+      dir=P   Selects directory 'P' as the parent directory for the operations
+              (default is '.', the current directory, i.e., '\$*CWD').
 
-      ver   - Shows the version of 'mi6-helper'
 
-    NOTE    - The default directory will cause an abort if the repository home
-              of this module is selected.
     HERE
 } # sub mi6-help()
 
@@ -121,29 +125,14 @@ sub run-args($dir, @args) is export {
             $descrip = normalize-string $descrip;
             say "Getting description text from hidden file '$hidden'";
         }
-        else {
-            my $timeout = 5;
-            say qq:to/HERE/;
-            WARNING: Unable to find the hidden file '$hidden'.";
-            Do you want to continue without it (y/N)?
-              You have 5 seconds to decide...
-            HERE
-
-            my $in-promise = start {
-                my $input = $*IN.get;
-            }
-            my $out-promise = Promise.in($timeout);
-            my $res = await Promise.anyof($in-promise, $out-promise);
-            if $res === $in-promise {
-                if $res ~~ /:i ^ y/ {
-                    say "Okay, continuing without a 'descrip' input...";
-                }
-                else {
-                    say "Okay, aborting and exiting early.";
-                }
+        elsif not $force {
+            say "WARNING: Unable to find the hidden file '$hidden'.";
+            my $res = prompt "Do you want to continue without it (y/N)? ";
+            if $res ~~ /:i ^ y/ {
+                say "Okay, continuing without a 'descrip' input...";
             }
             else {
-                say "Too late, aborting and exiting early.";
+                say "Okay, aborting and exiting early.";
             }
         }
     }
@@ -155,44 +144,24 @@ sub run-args($dir, @args) is export {
     }
     say "Using directory '$parent-dir'\n  as the working directory.";
 
-    if $new {
+    # don't need to refer to 'new' again, no block needed for it
+#   if $new {
         # take care of the module directory: replace '::' with '-'
         $module-dir = $module-name;
         $module-dir ~~ s:g/'::'/-/;
 
-        # fail if the desired dir has ANY content:
-        # TODO IMPORTANT: check for contents here, NOT in
+    # Note: 'mi6' will abort if the $module-name or $module-dir
+    #  (as needed) exists. Do NOT check for contents with 
+    #  'mi6-helper'! However, a hidden is okay (if used).
 
-#       =begin comment
-        # TODO check content
-        # check that $module-dir is empty, if it exists
-        my $mdir = $module-dir; #$.IO.absolute;
-        if $mdir.IO.e {
-            say qq:to/HERE/;
-            DANGER: module dir '$module-dir' exists...checking for existing content
+        unless $module-dir.IO.d {
+            die qq:to/HERE/;
+            FATAL: Unexpected, module dir '$module-dir' does NOT exist.
+                'mi6' should have created it. Please file an issue.
             HERE
-
-            my @d = find :dir($mdir), :type<dir>;
-            # TODO try to clean the sub dirs
-            for @d {
-                say "DEBUG: rmdir dir '$_'" if $debug;
-                rmtree $_; #.IO.d;
-            }
-            # check any files remaining at the top level
-            my @f = find :dir($mdir), :type<file>;
-            for @f {
-                # is it a hidden file?
-                my $b = $_.basename;
-                if $b ~~ /^ '.' / {
-                    say "DEBUG: not touching hidden file '$_'" if $debug;
-                    next;
-                }
-                say "DEBUG: unlinking file '$_'" if $debug;
-                unlink $_; #.IO.f;
-            }
         }
-#       =end comment
 
+#       =end comment
 #       #   sub mi6-helper-new
 #       # check that $module-dir is empty, if it exists
 #       my $mdir = $module-dir.IO.absolute;
@@ -200,14 +169,14 @@ sub run-args($dir, @args) is export {
 #       my @d = find :dir($mdir), :!recurse, :type<dir>;
 
         mi6-helper-new :$parent-dir, :$module-dir, :$module-name,
-        :$debug, :$d2, :$descrip;
+        :$debug, :$d2, :$descrip, :$force;
 
         say qq:to/HERE/;
         Exit after 'new' mode run. See new module repo '$module-dir'
         in parent dir '$parent-dir'.
         HERE
-        exit;
-    }
+#       exit;
+#   }
 
 } # sub action(@args)
 

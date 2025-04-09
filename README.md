@@ -9,7 +9,7 @@ SYNOPSIS
 ========
 
     use Mi6::Helper
-    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in 
+    $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in
                                # hidden file '.Foo-Bar' (if any)
 
 DESCRIPTION
@@ -19,7 +19,7 @@ DESCRIPTION
 
   * Publishing in the **Zef** Raku module ecosystem
 
-  * User choice of the brief descriptive text (recommended, but not require)
+  * User choice of the brief descriptive text (recommended, but not required)
 
   * `README.md` file source placed in a new `docs/README.rakudoc` file
 
