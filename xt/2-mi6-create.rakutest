@@ -6,8 +6,13 @@ use App::Mi6;
 use File::Directory::Tree;
 use Proc::Easier;
 
+my $tdir = tempdir;
+my $module-name = "Foo::Baz";
+say "tmpdir: $tdir";
+say "cur dir: {$*CWD}";
+
 # check the system for known values used for fez and mi6
-my $oo          = Mi6::Helper.new;
+my $oo          = Mi6::Helper.new: :$module-name, :parent-dir($tdir);
 my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;

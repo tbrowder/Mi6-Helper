@@ -27,8 +27,7 @@ for @d {
     rmtree $_; #.IO.d; 
 }
 my @f = find :dir($tdir), :type<file>;
-for @f { 
-    # is it a hidden file?
+for @f { # is it a hidden file?
     my $b = $_.basename;
     if $b ~~ /^ '.' / {
         say "DEBUG: not touching hidden file '$_'" if $debug;
@@ -61,21 +60,62 @@ if 0 {
 }
 =end comment
 
+my ($proc);
 lives-ok {
     say "Running 'mi6-helper'...";
-    my $proc = run "mi6-helper", "force", "dir=$tdir", "new=Foo::Bar", :out, :err;
+    $proc = run "mi6-helper", "force", "dir=$tdir", "new=Foo::Bar", :out, :err;
     my $e = $proc.exitcode;
     my $out = $proc.out.slurp(:close);
     my $err = $proc.err.slurp(:close);
-    say "exitcode: $e";
-    say "out: $out";
-    say "err: $err";
+    say "exitcode: $e" if $debug;
+    say "out: $out" if $debug;
+    say "err: $err" if $debug;
 }, "gen new mod Foo::Bar in dir '$tdir'";
 
 exit if 0 or $debug;
 
-dies-ok {
-    run "mi6-helper", "new=Foo::Bar";
-},
+#dies-ok {
+lives-ok {
+    $proc = Proc::Async.new: "mi6-helper", "new=Foo::Bar", "dir=$tdir";
+    react whenever $proc.stdout.lines {
+    }
+    react whenever $proc.stderr.lines {
+    }
+    react whenever $proc.ready {
+    }
+    react whenever $proc.start {
+    }
+}
+
+=finish
+
+#say $proc.raku;
+if $proc.err.open.so {
+    say "err is still open";
+}
+if $proc.out.open {
+    say "out is still open";
+}
+
+say $proc.out.close.so;
+
+    #die "FATAL" unless $proc.defined;
+    #die "FATAL" if $proc.exitcode ~~ /Nil/; #.defined;
+    #die "FATAL" if $proc.exitcode ~~ /Nil/; #.defined;
+    #die "FATAL" if $proc.exitcode != 0; #~~ /Nil/; #.defined;
+#   die "FATAL" if $proc !~~ Proc;
+#   die "FATAL" if $proc.exitcode != 0; #~~ /Nil/; #.defined;
+
+#say $proc.gist;
+
+    =begin comment
+    die "FATAL" unless $e.defined;
+    say "exitcode: $e";
+    my $out = $proc.out.slurp(:close);
+    my $err = $proc.err.slurp(:close);
+    say "out: $out";
+    say "err: $err";
+    =end comment
+#}, "no force used";
 
 #rmdir $tmpdir;

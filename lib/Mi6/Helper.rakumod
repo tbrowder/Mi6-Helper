@@ -8,7 +8,7 @@ use File::Find;
 has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
 
-has $.parent-dir = $*CWD;
+has $.parent-dir; # = $*CWD;
 
 # its top-level repo directory
 # libs are determined by the '::' separators in the module name
@@ -29,6 +29,12 @@ has @.resources-dir-files;     #=
 has @.meta-resources-files;    #= 
 
 submethod TWEAK {
+#    has $.parent-dir; # = $*CWD;
+    # determine parent-dir
+    unless $!parent-dir.defined {
+        $!parent-dir = $*CWD;
+    }
+
     # determine directory and file names
     my @dir-parts = $!module-name.split('::');
     $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;

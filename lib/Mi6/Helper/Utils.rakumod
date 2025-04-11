@@ -10,7 +10,7 @@ use File::Find;
 use JSON::Fast;
 
     # Note: 'mi6' will abort if the $module-name or $module-dir
-    #  (as needed) exists. Do NOT check for contents with 
+    #  (as needed) exists. Do NOT check for contents with
     #  'mi6-helper'! However, a hidden is okay (if used).
 
 sub mi6-help() is export {
@@ -20,9 +20,9 @@ sub mi6-help() is export {
 
     Modes:
       new=X - Creates a new module (named 'X') in directory 'P' (default '.')
-              by executing 'mi6', then modifying files and adding new files 
+              by executing 'mi6', then modifying files and adding new files
               in the new repository to add the benefits produced by this module.
-              NOTE: The program will abort if directory 'X' exists and has any 
+              NOTE: The program will abort if directory 'X' exists and has any
               content.
 
               Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'.
@@ -125,8 +125,29 @@ sub run-args($dir, @args) is export {
             $descrip = normalize-string $descrip;
             say "Getting description text from hidden file '$hidden'";
         }
+
         elsif not $force {
-            say "WARNING: Unable to find the hidden file '$hidden'.";
+            =begin comment
+            # TODO use asynch code here to wait X seconds for a reply
+            #   no response? quit and say so. See "Learning Perl 6"
+            #   by brian d foy. From p. 309:
+# see code in ./spawn...raku for my solution
+            my $delay = 5; # seconds
+            my $tlimit = Promise.in: 5; # seconds
+
+            say qq:to/HERE/;
+            WARNING: Unable to find the hidden file '$hidden'.
+
+            Do you want to continue without it (y/N)?
+            You have $delay seconds to decide...
+            HERE
+
+            loop {
+                sleep 1;
+                my $t = $tlimit.status;
+            }
+
+            =begin comment
             my $res = prompt "Do you want to continue without it (y/N)? ";
             if $res ~~ /:i ^ y/ {
                 say "Okay, continuing without a 'descrip' input...";
@@ -134,6 +155,7 @@ sub run-args($dir, @args) is export {
             else {
                 say "Okay, aborting and exiting early.";
             }
+            =end comment
         }
     }
 
@@ -151,7 +173,7 @@ sub run-args($dir, @args) is export {
         $module-dir ~~ s:g/'::'/-/;
 
     # Note: 'mi6' will abort if the $module-name or $module-dir
-    #  (as needed) exists. Do NOT check for contents with 
+    #  (as needed) exists. Do NOT check for contents with
     #  'mi6-helper'! However, a hidden is okay (if used).
 
         unless $module-dir.IO.d {

@@ -15,15 +15,17 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-**Easily** create the template for a new Raku module repository for management by `App::Mi6` with modifications including:
+**Easily** create the template for a new Raku module repository for management by `App::Mi6`.
 
-  * Publishing in the **Zef** Raku module ecosystem
+This module creates a new repo by running 'mi6' (from module 'App::Mi6'), and then modifies that output by running this module's 'mi6-helper' to get modifications including:
 
   * User choice of the brief descriptive text (recommended, but not required)
 
   * `README.md` file source placed in a new `docs/README.rakudoc` file
 
   * Using three separate OS tests in `.github/workflows`: shows results of each in the auto-geberated `README.md` file
+
+  * Publishing in the **Zef** Raku module ecosystem (now standard with the current 'mi6')
 
 See published module `Foo::Bar` for an example of a module created by `mi6-helper`.
 

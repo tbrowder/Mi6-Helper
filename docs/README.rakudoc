@@ -14,17 +14,17 @@ $ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in
 
 =head1 DESCRIPTION
 
-B<Easily> create the template for a new Raku module repository for
-management by C<App::Mi6> with modifications including:
+B<Easily> create the template for a new Raku module repository for management by C<App::Mi6>.
 
-=item Publishing in the B<Zef> Raku module ecosystem
+This module creates a new repo by running 'mi6' (from module 'App::Mi6'), and then modifies that
+output by running this module's 'mi6-helper' to get modifications including:
+
 =item User choice of the brief descriptive text (recommended, but not required)
 =item C<README.md> file source placed in a new C<docs/README.rakudoc> file
-=item Using three separate OS tests in C<.github/workflows>: shows
-results of each in the auto-geberated C<README.md> file
+=item Using three separate OS tests in C<.github/workflows>: shows results of each in the auto-geberated C<README.md> file
+=item Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
 
-See published module C<Foo::Bar> for an example of a module created by
-C<mi6-helper>.
+See published module C<Foo::Bar> for an example of a module created by C<mi6-helper>.
 
 =head2 Special installation requirements
 
