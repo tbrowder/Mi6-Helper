@@ -1,0 +1,48 @@
+#!/usr/bin/env raku
+
+my $delay = 5;
+if not @*ARGS {
+    print qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} file=F delay=T
+
+    where:
+
+       F - is the expected path to a missing hidden file 
+           with a short description
+
+       T   is the time (in seconds) allowed for a user 
+           response on whether to abort or to continue
+           without it [default: $delay]
+
+    HERE
+    exit;
+}
+
+my $file;
+my $res;
+
+for @*ARGS {
+    when /'file=' (\S+)/ {
+        $file = ~$0;
+    }
+    when /'delay=' (\S+)/ {
+        $delay = ~$0;
+    }
+    default {
+        die "FATAL: Unknown arg '$_'";
+    }
+}
+
+unless $file.defined {
+    die "FATAL: Arg 'file' is not defined";
+}
+
+say qq:to/HERE/;
+WARNING: Unable to find the hidden file: 
+  '$file'
+
+Do you want to continue without it? 
+You have $delay seconds to to answer 'yes' or 'no'.
+HERE
+
+$res = prompt "    (y/N) ==> ";
