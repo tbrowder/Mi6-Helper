@@ -1,7 +1,7 @@
 .precomp/
 /Mi6-Helper-*
 /mi6-helper
-bad/
+null/
 ini-fils/
 dev/Foo-Bar/
 dev/*.json
