@@ -1,8 +1,8 @@
 use Test;
 use Mi6::Helper;
 
+use File::Temp;
 use App::Mi6;
-use Temp::Path;
 use Proc::Easier;
 
 # Create some test repos:
@@ -13,7 +13,7 @@ use Proc::Easier;
 my $debug; # = 0;
 my $tdir;
 if not $debug.defined {
-    $tdir = make-temp-dir;
+    $tdir = tempdir;
 }
 else {
     $tdir = "ini-fils";

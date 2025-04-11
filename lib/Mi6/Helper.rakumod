@@ -4,6 +4,7 @@ use App::Mi6;
 use JSON::Fast;
 use Proc::Easier;
 use File::Find;
+use File::Temp;
 
 has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'

@@ -37,30 +37,33 @@ my $debug-dir  = $debug-base ~ '/' ~ $?FILE.IO.basename;
 $debug-dir ~~ s/'.t'$//;
 rmtree $debug-dir if $debug-dir.IO.d;
 
-my ($tempdir, $res, $gs, $proc);
+my ($res, $gs, $proc);
 
 if not $debug {
     # normal testing
-    $tempdir = tempdir;
+    $tdir = tempdir;
 }
 else {
-    # development testing: preserves the output in dir '$tempdir'
-    $tempdir = mkdir $debug-dir;
+    # development testing: preserves the output in dir '$tdir'
+    #$tempdir = mkdir $debug-dir;
+    mkdir $debug-dir;
+    $tdir = $debug-dir;
 }
 
-ok $tempdir.IO.d, "check tempdir";
+ok $tdir.IO.d, "check tempdir";
 
 {
     # home info for a fez user is in file $HOME/.fez-config.json;
     #   "un" : "SOMEBODY",
     #   "key" : "some-hash-key",
 
-    temp $*CWD = $tempdir.IO;
+    #temp $*CWD = $tempdir.IO;
+    #temp $*CWD = $tdir.IO;
     #temp %*ENV<HOME> = $tempdir;
 
     # DANGER DO NOT MODIFY THE USER'S ENVIRONMENT
 
-    chdir $tempdir;
+    chdir $tdir;
 
     my $module-name = "Foo::Bar";
     my $moddir = $module-name;
