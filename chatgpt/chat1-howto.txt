@@ -1,0 +1,8 @@
+# Make both files executable
+chmod +x supervisor.raku child.raku
+
+# Run with default timeout (5 seconds)
+./supervisor.raku child.raku
+
+# Run with custom timeout
+./supervisor.raku child.raku 12

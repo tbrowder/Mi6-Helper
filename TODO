@@ -1,5 +1,8 @@
 Before release:
 
+GET IT WORKING AGAIN!!!
+  it's not creating the Foo-Bar dir by mi6 in the parent dir
+
 Tidy docs
 
 DONE: Find where we call mi6: empty dir check MUST be done there!!!
