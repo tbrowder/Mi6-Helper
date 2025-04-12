@@ -12,7 +12,6 @@ chdir $tdir;
 my $module-name = 'Foo::Bar-Baz';
 my $module-dir  = 'Foo-Bar-Baz';
 my $descrip-hidden = get-hidden-name(:$module-name);
-#my $parent-dir = '.';
 my $parent-dir = $tdir;
 
 $descrip = 'Some text';
