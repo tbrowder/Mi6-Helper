@@ -72,6 +72,7 @@ lives-ok {
     say "err: $err" if $debug;
 }, "gen new mod Foo::Bar in dir '$tdir'";
 
+=finish
 exit if 0 or $debug;
 
 #dies-ok {

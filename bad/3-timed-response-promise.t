@@ -10,7 +10,6 @@ use Mi6::Helper::Utils;
 # Later, @Voldenet pointed out the current $*IN.get doesn't release.
 # Putting it in another spawned process would allow it to be killed.
 
-
 lives-ok {
     my $hidden = ".Foo-Bar";
     my $timeout = 5;
