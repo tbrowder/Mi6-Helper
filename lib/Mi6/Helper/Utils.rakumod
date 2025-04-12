@@ -174,7 +174,7 @@ sub run-args($dir, @args) is export {
 
     # Note: 'mi6' will abort if the $module-name or $module-dir
     #  (as needed) exists. Do NOT check for contents with
-    #  'mi6-helper'! However, a hidden is okay (if used).
+    #  'mi6-helper'! However, a hidden file is okay (if used).
 
         unless $module-dir.IO.d {
             die qq:to/HERE/;

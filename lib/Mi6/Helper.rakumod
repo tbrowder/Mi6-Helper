@@ -8,7 +8,6 @@ use File::Temp;
 
 has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
-
 has $.parent-dir; # = $*CWD;
 
 # its top-level repo directory
@@ -30,9 +29,8 @@ has @.resources-dir-files;     #=
 has @.meta-resources-files;    #= 
 
 submethod TWEAK {
-#    has $.parent-dir; # = $*CWD;
     # determine parent-dir
-    unless $!parent-dir.defined {
+    unless $!parent-dir.defined and $!parent-dir.IO.e {
         $!parent-dir = $*CWD;
     }
 
@@ -47,7 +45,9 @@ submethod TWEAK {
     #  (as needed) exists. Do NOT check for contents with 
     #  'mi6-helper'! However, a hidden file is okay (if used).
 
-    cmd "mi6 new --zef $!module-name";
+    #cmd "mi6 new --zef $!module-name";
+    my $p = run "mi6", "new", "--zef", $!module-name, :out, :err;
+
     # take care of the module directory: replace '::' with '-'
     $!module-dir = $!module-name;
     $!module-dir ~~ s:g/'::'/-/;

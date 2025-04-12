@@ -18,5 +18,7 @@ $descrip = 'Some text';
 $o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name, :$descrip;
 isa-ok $o, Mi6::Helper;
 is $o.descrip, $descrip;
+is $o.module-name, $module-name;
+is $o.module-dir, $module-dir;
 
 done-testing;
