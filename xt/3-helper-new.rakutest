@@ -27,8 +27,6 @@ my $debug-dir  = $debug-base ~ '/' ~ $?FILE.IO.basename;
 
 # remove the trailing '.t*'
 $debug-dir ~~ s/'.t'$//;
-say "debug-dir: '$debug-dir'";
-#say "DEBUG early exit"; exit;
 
 rmtree $debug-dir if $debug-dir.IO.d;
 
@@ -40,7 +38,6 @@ if not $debug {
 }
 else {
     # development testing: preserves the output in dir '$tdir'
-#   $tempdir = mkdir $debug-dir;
     mkdir $debug-dir;
     $tdir = $debug-dir;
 }
@@ -52,13 +49,6 @@ ok $tdir.IO.d;
     #   "un" : "SOMEBODY",
     #   "key" : "some-hash-key",
 
-    #temp $*CWD = $temppdir.IO;
-    #temp $*CWD = $tdir.IO;
-    #temp %*ENV<HOME> = $tempdir;
-
-    # DANGER DO NOT MODIFY THE USER'S ENVIRONMENT
-
-    #chdir $tempdir;
     chdir $tdir;
 
     #run "touch", '.Foo-Bar';
