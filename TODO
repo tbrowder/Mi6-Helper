@@ -1,7 +1,7 @@
 Before release:
 
-GET IT WORKING AGAIN!!!
-  it's not creating the Foo-Bar dir by mi6 in the parent dir
+GET IT FIXED!!!
+  it's not chdir to parent-dir
 
 Tidy docs
 
