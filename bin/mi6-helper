@@ -13,41 +13,11 @@ if not @*ARGS {
 }
 
 # do the work
-my @args;
-for @*ARGS {
-    say "DEBUG: arg '$_'" if $debug;
-    if $_ eq '.' {
-        $dir = $parent-dir.IO.absolute;
-        say "DEBUG: dir: '$dir'" if $debug;
-    }
-    elsif $_ eq '..' {
-        my $path = $parent-dir.IO.absolute;
-        $dir = $path.IO.parent(2);
-        say "DEBUG: dir: '$dir'" if $debug;
-    }
-    elsif $_.IO.d {
-        $dir = $_;
-    }
-    =begin comment
-    # move to App::DistroLint
-    elsif $_.contains("dlint") {
-        ; # ignore
-    }
-    elsif $_.contains("distro-lint") {
-        ; # ignore
-    }
-    =end comment
-    else {
-        @args.push: $_
-    }
-}
-
-if not $dir.defined {
     $dir = $parent-dir;
 }
 
-#@args.unshift: $dir;
-run-args $dir, @args;
+#run-args $dir, @args;
+run-args @*ARGS;
 
 =finish
 
