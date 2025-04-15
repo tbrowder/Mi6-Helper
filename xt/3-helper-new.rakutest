@@ -1,6 +1,5 @@
 use Test;
 
-use Ask;
 use Mi6::Helper;
 use File::Temp;
 use App::Mi6;
@@ -10,9 +9,8 @@ use Proc::Easier;
 
 # check the system for known values used for fez and mi6
 my $tdir = tempdir;
-chdir $tdir;
 
-my $oo          = Mi6::Helper.new: :module-name("null");
+my $oo          = Mi6::Helper.new: :module-name("null"), :parent-dir($tdir);
 my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;

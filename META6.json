@@ -7,7 +7,6 @@
   "build-depends": [
   ],
   "depends": [
-    "Proc::Async::Timeout",
     "Bin::Utils",
     "MacOS::NativeLib",
     "Foo::Bar",
@@ -16,6 +15,7 @@
     "App::Mi6:ver<3.0.6+>",
     "Text::Utils",
     "File::Find",
+    "File::Temp",
     "File::Directory::Tree",
     "Proc::Easier"
   ],
@@ -37,8 +37,6 @@
     "mi6-helper mi6 fez zef repo"
   ],
   "test-depends": [
-    "File::Directory::Tree",
-    "File::Temp"
   ],
   "version": "0.11.5"
 }

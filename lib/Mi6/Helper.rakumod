@@ -8,7 +8,7 @@ use File::Temp;
 
 has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
 has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
-has $.parent-dir; # = $*CWD;
+has $.parent-dir; 
 
 # its top-level repo directory
 # libs are determined by the '::' separators in the module name
@@ -28,9 +28,18 @@ has $.mode is rw;              #= "old" or "new"
 has @.resources-dir-files;     #= 
 has @.meta-resources-files;    #= 
 
+
+sub cd($dir, :$debug) is export {
+    temp $*CWD;
+    &chdir($dir);
+}
+
 submethod TWEAK {
     # determine parent-dir
-    unless $!parent-dir.defined and $!parent-dir.IO.e {
+    if $!parent-dir.defined {
+        chdir $!parent-dir;
+    }
+    else {
         $!parent-dir = $*CWD;
     }
 
@@ -40,17 +49,30 @@ submethod TWEAK {
     @!libdirs = @dir-parts;
 
     # use App::Mi6 to create the module to modify
-    chdir $!parent-dir;
-    # Note: 'mi6' will abort if the $module-name or $module-dir
-    #  (as needed) exists. Do NOT check for contents with 
-    #  'mi6-helper'! However, a hidden file is okay (if used).
-
-    #cmd "mi6 new --zef $!module-name";
-    my $p = run "mi6", "new", "--zef", $!module-name, :out, :err;
+    #chdir $!parent-dir;
+    cd $!parent-dir;
 
     # take care of the module directory: replace '::' with '-'
     $!module-dir = $!module-name;
     $!module-dir ~~ s:g/'::'/-/;
+
+=begin comment
+#   die "FATAL: Directory '$!module-dir' already exists" if $!module-dir.IO ~~ :d;
+try {
+if $!module-dir.IO ~~ :d {
+    die "FATAL: Directory '$!module-dir' already exists";
+}
+}
+=end comment
+
+
+    # Note: 'mi6' will abort if the $module-name or $module-dir
+    #  (as needed) exists. Do NOT check for contents with 
+    #  'mi6-helper'! However, a hidden file is okay (if used).
+
+    cmd "mi6 new --zef $!module-name";
+    #my $p = run "mi6", "new", "--zef", $!module-name, :out, :err;
+
     self.libdirs = find :dir($!module-dir), :type<dir>;
     my $libdir = "$!module-dir/lib";
     self.libfile = find :dir($libdir), :type<file>;
@@ -111,8 +133,12 @@ sub mi6-helper-new(
     # we use the output of the resulting files to modify
     # and use for the revisions
     my $o = Mi6::Helper.new: :$module-name;
+
+    =begin comment
+    # this is done in TWEAK now
     $o.mi6-new-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2,
                    :$descrip);
+    =end comment
 
     # get the name of the module file to change and move content
     my $modpdir = $module-name;

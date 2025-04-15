@@ -13,7 +13,7 @@ DONE: DO NOT ALLOW EXECUTION FOR AN EXISTING BASE DIRECTORY
 DONE:
   Delay adding a time-delay to yes/no response. Instead,
   add a -force option to do without a hidden file.
-  See Voodenet's new code, 9 Apr 2025
+  See Voldenet's new code, 9 Apr 2025
 
 Formerly desired capabilities
 =============================

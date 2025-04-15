@@ -9,13 +9,13 @@ use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
 
-    # Note: 'mi6' will abort if the $module-name or $module-dir
-    #  (as needed) exists. Do NOT check for contents with
-    #  'mi6-helper'! However, a hidden is okay (if used).
+# Note: 'mi6' will abort if the $module-name or $module-dir
+#  (as needed) exists. Do NOT check for contents with
+#  'mi6-helper'! However, a hidden file is okay (if used).
 
 sub mi6-help() is export {
     # usage
-    say qq:to/HERE/;
+    print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
@@ -32,11 +32,11 @@ sub mi6-help() is export {
       dir=P   Selects directory 'P' as the parent directory for the operations
               (default is '.', the current directory, i.e., '\$*CWD').
 
-
     HERE
+    exit;
 } # sub mi6-help()
 
-sub run-args($dir, @args) is export {
+sub run-args(@args) is export {
     # do the work
 
     # modes
@@ -49,40 +49,36 @@ sub run-args($dir, @args) is export {
     my $d3     = 0; # debug3
     my $docs   = 0;
     my $descrip;
-    my $resources = 0; # add Resources subs?
 
-    # assume we are in the current
-    # working directory
-    my $parent-dir = $dir; #$*CWD; # default
+    # assume we are in the current working directory
+    my $parent-dir = $*CWD; # default
 
-    # other args
-    my $err = 0; # track number of possible errors
+    my $module-name; # Foo::Bar-Baz
+    my $module-dir;  # Foo-Bar-Baz
 
-    my $module-name;
-    my $module-dir;
-
-    # @*ARGS
     for @args {
-        when /:i ^'new=' (\S+) / {
+        when /^ :i 'new=' (\S+) / {
             $module-name = ~$0;
             ++$new;
         }
-        when /:i ^f/ {
+        when /^ :i f / {
             ++$force;
         }
-        when /^'dir=' (\S+)/ {
+        when /^ 'dir=' (\S+) / {
             $parent-dir = ~$0;
         }
-        when /^ do  / {
+        when /^ :i do  / {
             ++$docs;
         }
-        when /^ de / {
+        when /^ :i de / {
             ++$debug;
         }
-        when /^ d2 / {
+        when /^ :i d2 / {
+            # debug 2
             ++$d2;
         }
-        when / ^d3 / {
+        when /^ :i d3 / {
+            # debug 3
             ++$d3;
             # check for this module's workflows file(s'
             say "DEBUG checking for expected workflow(s):";
@@ -96,7 +92,7 @@ sub run-args($dir, @args) is export {
                 }
             }
         }
-        when /^v / {
+        when /^ v / {
             # check for this module's version
             my $ver = get-version;
             say "version: $ver";
@@ -108,11 +104,11 @@ sub run-args($dir, @args) is export {
     }
 
     if not $new {
-        die "FATAL: 'new' is not selected.";
+        die "FATAL: no 'new=X' entered.";
     }
 
     # Take care of 'descrip'
-    unless $descrip {
+    unless $descrip.defined {
         $descrip = "";
         # info should be in a hidden file
         my $hidden = ".$module-name";
@@ -125,37 +121,16 @@ sub run-args($dir, @args) is export {
             $descrip = normalize-string $descrip;
             say "Getting description text from hidden file '$hidden'";
         }
-
         elsif not $force {
-            =begin comment
-            # TODO use asynch code here to wait X seconds for a reply
-            #   no response? quit and say so. See "Learning Perl 6"
-            #   by brian d foy. From p. 309:
-# see code in ./spawn...raku for my solution
-            my $delay = 5; # seconds
-            my $tlimit = Promise.in: 5; # seconds
-
-            say qq:to/HERE/;
+            print qq:to/HERE/;
             WARNING: Unable to find the hidden file '$hidden'.
 
-            Do you want to continue without it (y/N)?
-            You have $delay seconds to decide...
+            If you want to execute this program without it, you must 
+            run it with the 'force' option.
+
+            Exiting early.
             HERE
-
-            loop {
-                sleep 1;
-                my $t = $tlimit.status;
-            }
-
-            =begin comment
-            my $res = prompt "Do you want to continue without it (y/N)? ";
-            if $res ~~ /:i ^ y/ {
-                say "Okay, continuing without a 'descrip' input...";
-            }
-            else {
-                say "Okay, aborting and exiting early.";
-            }
-            =end comment
+            exit;
         }
     }
 
@@ -167,40 +142,20 @@ sub run-args($dir, @args) is export {
     say "Using directory '$parent-dir'\n  as the working directory.";
 
     # don't need to refer to 'new' again, no block needed for it
-#   if $new {
-        # take care of the module directory: replace '::' with '-'
-        $module-dir = $module-name;
-        $module-dir ~~ s:g/'::'/-/;
+    # take care of the module directory: replace '::' with '-'
+    $module-dir = $module-name;
+    $module-dir ~~ s:g/'::'/-/;
 
-    # Note: 'mi6' will abort if the $module-name or $module-dir
-    #  (as needed) exists. Do NOT check for contents with
-    #  'mi6-helper'! However, a hidden file is okay (if used).
+    my $o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name,
+                    :$debug, :$d2, :$descrip, :$force;
 
-        unless $module-dir.IO.d {
-            die qq:to/HERE/;
-            FATAL: Unexpected, module dir '$module-dir' does NOT exist.
-                'mi6' should have created it. Please file an issue.
-            HERE
-        }
+     say qq:to/HERE/;
+     Exit after 'new' mode run. See new module repo '$module-dir'
+     in parent dir '$parent-dir'.
+     HERE
+     exit;
 
-#       =end comment
-#       #   sub mi6-helper-new
-#       # check that $module-dir is empty, if it exists
-#       my $mdir = $module-dir.IO.absolute;
-#       my @f = find :dir($mdir), :!recurse, :type<file>;
-#       my @d = find :dir($mdir), :!recurse, :type<dir>;
-
-        mi6-helper-new :$parent-dir, :$module-dir, :$module-name,
-        :$debug, :$d2, :$descrip, :$force;
-
-        say qq:to/HERE/;
-        Exit after 'new' mode run. See new module repo '$module-dir'
-        in parent dir '$parent-dir'.
-        HERE
-#       exit;
-#   }
-
-} # sub action(@args)
+} # sub run-args
 
 sub get-zef-info($module-name, :$debug) is export {
     # Use "run" and "zef locate 'module' and 'zef list --intalled'
