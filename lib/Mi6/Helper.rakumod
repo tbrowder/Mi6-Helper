@@ -56,22 +56,13 @@ submethod TWEAK {
     $!module-dir = $!module-name;
     $!module-dir ~~ s:g/'::'/-/;
 
-=begin comment
-#   die "FATAL: Directory '$!module-dir' already exists" if $!module-dir.IO ~~ :d;
-try {
-if $!module-dir.IO ~~ :d {
-    die "FATAL: Directory '$!module-dir' already exists";
-}
-}
-=end comment
-
-
     # Note: 'mi6' will abort if the $module-name or $module-dir
     #  (as needed) exists. Do NOT check for contents with 
     #  'mi6-helper'! However, a hidden file is okay (if used).
+    die "FATAL: Directory '$!module-dir' already exists" 
+        if $!module-dir.IO.d;
 
     cmd "mi6 new --zef $!module-name";
-    #my $p = run "mi6", "new", "--zef", $!module-name, :out, :err;
 
     self.libdirs = find :dir($!module-dir), :type<dir>;
     my $libdir = "$!module-dir/lib";
