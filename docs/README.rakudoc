@@ -19,12 +19,16 @@ B<Easily> create the template for a new Raku module repository for management by
 This module creates a new repo by running 'mi6' (from module 'App::Mi6'), and then modifies that
 output by running this module's 'mi6-helper' to get modifications including:
 
-=item User choice of the brief descriptive text (recommended, but not required)
-=item C<README.md> file source placed in a new C<docs/README.rakudoc> file
-=item Using three separate OS tests in C<.github/workflows>: shows results of each in the auto-geberated C<README.md> file
-=item Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
+1. User choice of the brief descriptive text (recommended, but not required)
 
-See published module C<Foo::Bar> for an example of a module created by C<mi6-helper>.
+2. C<README.md> file source placed in a new C<docs/README.rakudoc> file
+
+3. Using three separate OS tests in C<.github/workflows>: shows results of each in the auto-generated C<README.md> file
+
+4. Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
+
+See published module C<Foo::Bar> for an example of a module created 
+by C<mi6-helper>.
 
 =head2 Special installation requirements
 
@@ -89,11 +93,6 @@ $ git remote add origin git@github.com:user/Foo-Bar.git
 $ git branch -M main
 $ git push -u origin main
 =end code
-
-Note this module has changed significantly since the author has had
-much more experience using B<App::Mi6>.  For example, discovering that
-accidentally using C<mi6 test> in a non-mi6 module's base directory
-will corrupt an existing README.md file! (See 'App::Mi6' issue \#157.)
 
 This module installs a Raku executable named C<mi6-helper> which is
 designed for the following mode of operation:

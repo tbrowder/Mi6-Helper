@@ -164,6 +164,7 @@ sub get-zef-info($module-name, :$debug) is export {
 }
 
 sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
+    # should be part of dlint
     # TODO then add the valid names back in for more checks
     # use File::Find
     # segregate into new AND old suffixes corresponding to the four types

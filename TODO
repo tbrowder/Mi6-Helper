@@ -1,8 +1,5 @@
 Before release:
 
-GET IT FIXED!!!
-  it's not chdir to parent-dir
-
 Tidy docs
 
 DONE: Find where we call mi6: empty dir check MUST be done there!!!
@@ -13,35 +10,3 @@ DONE: DO NOT ALLOW EXECUTION FOR AN EXISTING BASE DIRECTORY
 DONE:
   Delay adding a time-delay to yes/no response. Instead,
   add a -force option to do without a hidden file.
-  See Voldenet's new code, 9 Apr 2025
-
-Formerly desired capabilities
-=============================
-
-Add an option 'descrip='blah blah' 
-
-Add a new= method with a config file
-  instead of the hidden file
-  + deprecate the hidden file method
-  + the config file
-    <name>.yml
-    My-Module.yml
-      name: My::Module
-      provides: Blah blah
-
-#==================
- for dlint:
-#==================
-
-Desired capabilities
-====================
-
-New creations should have a RunBeforeBuild script
-  using dlint to ensure /resources and META6.json match
-  + and appropriate subs to show and download /resources
-    payloads. See Foo::Bar for an example.
-
-Add option to new= to add a Resources
-  module
-  + user-selected name (below top level)
-

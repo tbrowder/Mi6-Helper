@@ -19,13 +19,13 @@ DESCRIPTION
 
 This module creates a new repo by running 'mi6' (from module 'App::Mi6'), and then modifies that output by running this module's 'mi6-helper' to get modifications including:
 
-  * User choice of the brief descriptive text (recommended, but not required)
+1. User choice of the brief descriptive text (recommended, but not required)
 
-  * `README.md` file source placed in a new `docs/README.rakudoc` file
+2. `README.md` file source placed in a new `docs/README.rakudoc` file
 
-  * Using three separate OS tests in `.github/workflows`: shows results of each in the auto-geberated `README.md` file
+3. Using three separate OS tests in `.github/workflows`: shows results of each in the auto-generated `README.md` file
 
-  * Publishing in the **Zef** Raku module ecosystem (now standard with the current 'mi6')
+4. Publishing in the **Zef** Raku module ecosystem (now standard with the current 'mi6')
 
 See published module `Foo::Bar` for an example of a module created by `mi6-helper`.
 
@@ -80,8 +80,6 @@ At this point, execute the following commands to define the origin and push the 
     $ git remote add origin git@github.com:user/Foo-Bar.git
     $ git branch -M main
     $ git push -u origin main
-
-Note this module has changed significantly since the author has had much more experience using **App::Mi6**. For example, discovering that accidentally using `mi6 test` in a non-mi6 module's base directory will corrupt an existing README.md file! (See 'App::Mi6' issue \#157.)
 
 This module installs a Raku executable named `mi6-helper` which is designed for the following mode of operation:
 
