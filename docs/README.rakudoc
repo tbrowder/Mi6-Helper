@@ -22,7 +22,7 @@ Run C<mi6-helpe> without arguments to see its help screen showing
 its options:
 
 =begin comment
-    Usage: {$*PROGRAM.basename} <mode> [options...]
+    Usage: mi6-helper <mode> [options...]
 
     Modes:
       new=X - Creates a new module (named 'X') in directory 'P' (default '.')
