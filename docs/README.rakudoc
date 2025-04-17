@@ -6,64 +6,72 @@ B<Mi6::Helper> - Creates a base repository for a new Raku module managed by B<Ap
 
 =head1 SYNOPSIS
 
+This module installs a Raku executable named C<mi6-helper> which is
+designed for the following operation:
+
 =begin code
-use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # Uses the brief descriptive text in
-                           # hidden file '.Foo-Bar' (if any)
+$ mi6-helper new=Foo::Bar
 =end code
 
+That creates a new module named C<Foo::Bar> in the current directory
+(or a specified directory if the option C<dir=/path> is used).  The
+new module is then ready to be enhanced and managed by app C<mi6> to
+easily build build documentation, run tests, and release new versions.
 
-This module installs a Raku executable named C<mi6-helper> which is
-designed for the following mode of operation:
+=head1 DESCRIPTION
 
-=head2 new
+The installed program, C<mi6-helper>, enables easy creation of a
+template for a new Raku module repository for management by
+C<App::Mi6>.  It does that by first executing C<mi6> to create the
+base module and then modifying the result to add new capabilities.
 
-=begin item
-new=X dir=Y
+Note when C<mi6> creates its files, it shows text in the C<README.md>
+file as 'Foo::Bar - blah blah blah'. That can be changed to a brief
+summary statement by creating a hidden file in the parent directory
+with the same name as the new diretory. For example, new module
+C<Foo::Bar> will be created in a new directory C<Foo-Bar>. You can
+create hidden file C<.Foo-Bar> and put any text desired in it. The
+author typically puts in text something like this:
 
-Creates a new module 'X' in parent directory 'Y' (default '.') using
-B<mi6> and then changes some of the files and directories to satisfy the 'docs'
-option and, optionally, substitute 'blah...' with the user's short
-description (if it is provided in a hidden file).
+=begin code
+Provides routines to check existing module base repositories for errors.
+=end code
 
-Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
-so the new repository is ready to C<git push <remote> <branch>>
-and C<mi6 release>.
+If the hidden file does not exist, the user will be asked if he or she
+wishes to continue without it. If the answer is C<yes>, then the
+program will continue and the "blah blah blah" will remain. If the
+answer is C<no>, the program will terminate.  (Note the program will
+wait indefinitely for a response, so you should use option "force" if
+you are testing or otherwise executing the program apart from a
+terminal inteface.)
 
-=end item
+=head2 Post repository creation
 
-B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing
-the following two steps (for example, remove the C<macos> test):
+The changes and additions in yourr new repository include:
+
+1. Modifying the C<dist.ini> file for the enhancements
+2. User choice of the brief descriptive text (recommended, but not required)
+3. C<README.md> file source placed in a new C<docs/README.rakudoc> file
+4. Using three separate OS tests in C<.github/workflows>: shows results of each in the now auto-generated C<README.md> file
+5. Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
+
+B<NOTE>: If one of the non-Linux OS tests fail during remote testing
+on Github, you can eliminate that test by doing the following two
+steps (for example, remove the C<macos> test):
 
 =item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the
 author uses a subdir named C<dev> to hold such things).
-=item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
+=item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file.
 
-=head2 Modified files for mode B<new>
-
-See L<NewMode|zNewMode.md> for details of each changed line from the original
-created by C<App::Mi6>.
+=head2 Modified files for the repository
 
 In addition to those changes, the README is converted to a Rakudoc file
 in a new C<./docs/> directory. Then the 'dist.ini' file is modified
 to create the 'README.md' file in the base directory. Both files
 are placed under 'git' control.
 
-=head1 DESCRIPTION
-
-B<Easily> create the template for a new Raku module repository for
-management by C<App::Mi6>.
-
-This module creates a new repo by running 'mi6' (from module 'App::Mi6'), and then modifies that
-output by running this module's 'mi6-helper' to get modifications including:
-
-1. User choice of the brief descriptive text (recommended, but not required)
-
-2. C<README.md> file source placed in a new C<docs/README.rakudoc> file
-
-3. Using three separate OS tests in C<.github/workflows>: shows results of each in the now auto-generated C<README.md> file
-
-4. Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
+See L<RepoChanges|zNewMode.md> for full details of each changed line
+from the original created by C<App::Mi6>.
 
 See published module C<Foo::Bar> for an example of a module created
 by C<mi6-helper>.
