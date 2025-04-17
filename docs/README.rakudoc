@@ -21,7 +21,7 @@ easily build build documentation, run tests, and release new versions.
 Run C<mi6-helper> without arguments to see its help screen showing
 its options:
 
-=begin quote
+=begin code
     Usage: mi6-helper <mode> [options...]
 
     Modes:
@@ -37,7 +37,7 @@ its options:
 
       force - Allows the program to continue without a hidden file
               and bypass the promp/response dialog.
-=end quote
+=end code
 
 =head1 DESCRIPTION
 
