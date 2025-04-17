@@ -61,7 +61,7 @@ The changes and additions in your new repository include:
 
 B<NOTE>: If one of the non-Linux OS tests fail during remote testing
 on Github, you can eliminate that test by doing the following two
-steps (for example, remove the C<windows> test which is the most likely to fail)):
+steps (for example, remove the C<windows> test which is the most likely to fail):
 
 =item Move the C<windows.yml> file out of the C<.github/workflows/> directory (the
 author uses a subdir named C<dev> to hold such things).

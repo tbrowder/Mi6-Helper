@@ -40,7 +40,7 @@ The changes and additions in your new repository include:
 
 5. Publishing in the **Zef** Raku module ecosystem (now standard with the current `mi6`)
 
-**NOTE**: If one of the non-Linux OS tests fail during remote testing on Github, you can eliminate that test by doing the following two steps (for example, remove the `windows` test which is the most likely to fail)):
+**NOTE**: If one of the non-Linux OS tests fail during remote testing on Github, you can eliminate that test by doing the following two steps (for example, remove the `windows` test which is the most likely to fail):
 
   * Move the `windows.yml` file out of the `.github/workflows/` directory (the author uses a subdir named `dev` to hold such things).
 
