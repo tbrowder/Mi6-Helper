@@ -128,7 +128,7 @@ or MacOS):
 
 =begin code
 $ cd /path/to/some-parent-dir
-$ mi6-helper new=Foo::Bar  # <== note the '::' separator, but no quotes
+$ mi6-helper new=Foo::Bar  
 =end code
 
 The new repository should be created with a branch name per your personal

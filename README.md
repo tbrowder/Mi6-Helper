@@ -92,7 +92,7 @@ A short list of steps to define such for our example 'Foo::Bar':
 2. On your computer, use the shell terminal to run these commands (for Linux or MacOS):
 
     $ cd /path/to/some-parent-dir
-    $ mi6-helper new=Foo::Bar  # <== note the '::' separator, but no quotes
+    $ mi6-helper new=Foo::Bar
 
 The new repository should be created with a branch name per your personal settings for the Git default branch name (I use 'main' here). This is the output:
 
