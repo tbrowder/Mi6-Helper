@@ -14,7 +14,7 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
 That creates a new module named `Foo::Bar` in the current directory (or a specified directory if the option `dir=/path` is used). The new module is then ready to be enhanced and managed by app `mi6` to easily build build documentation, run tests, and release new versions.
 
-Run `mi6-helpe` without arguments to see its help screen showing its options:
+Run `mi6-helper` without arguments to see its help screen showing its options:
 
 DESCRIPTION
 ===========

@@ -18,7 +18,7 @@ That creates a new module named C<Foo::Bar> in the current directory
 new module is then ready to be enhanced and managed by app C<mi6> to
 easily build build documentation, run tests, and release new versions.
 
-Run C<mi6-helpe> without arguments to see its help screen showing
+Run C<mi6-helper> without arguments to see its help screen showing
 its options:
 
 =begin comment
