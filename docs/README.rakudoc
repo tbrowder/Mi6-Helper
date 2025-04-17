@@ -47,28 +47,33 @@ terminal inteface.)
 
 =head2 Post repository creation
 
-The changes and additions in yourr new repository include:
+The changes and additions in your new repository include:
 
 1. Modifying the C<dist.ini> file for the enhancements
+
 2. User choice of the brief descriptive text (recommended, but not required)
+
 3. C<README.md> file source placed in a new C<docs/README.rakudoc> file
+
 4. Using three separate OS tests in C<.github/workflows>: shows results of each in the now auto-generated C<README.md> file
-5. Publishing in the B<Zef> Raku module ecosystem (now standard with the current 'mi6')
+
+5. Publishing in the B<Zef> Raku module ecosystem (now standard with the current C<mi6>)
 
 B<NOTE>: If one of the non-Linux OS tests fail during remote testing
 on Github, you can eliminate that test by doing the following two
-steps (for example, remove the C<macos> test):
+steps (for example, remove the C<windows> test which is the most likely to fail)):
 
-=item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the
+=item Move the C<windows.yml> file out of the C<.github/workflows/> directory (the
 author uses a subdir named C<dev> to hold such things).
-=item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file.
+=item Put a semicolon in the C<dist.ini> file to comment out the line naming the 
+C<windows.yml> file.
 
 =head2 Modified files for the repository
 
 In addition to those changes, the README is converted to a Rakudoc file
-in a new C<./docs/> directory. Then the 'dist.ini' file is modified
-to create the 'README.md' file in the base directory. Both files
-are placed under 'git' control.
+in a new C<./docs/> directory. Then the C<dist.ini> file is modified
+to create the C<README.md> file in the base directory. Both files
+are placed under C<git> control.
 
 See L<RepoChanges|zNewMode.md> for full details of each changed line
 from the original created by C<App::Mi6>.
@@ -86,9 +91,9 @@ zef install fez
 fez register
 =end code
 
-=head2 Define the branch 'git origin'
+=head2 Define the branch C<git origin>
 
-The author uses and recommends GitHub for the 'git origin' for your
+The author uses and recommends B<GitHub> for the C<git origin> for your
 new module's repository.
 
 A short list of steps to define such for our example 'Foo::Bar':

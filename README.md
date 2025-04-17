@@ -28,20 +28,28 @@ If the hidden file does not exist, the user will be asked if he or she wishes to
 Post repository creation
 ------------------------
 
-The changes and additions in yourr new repository include:
+The changes and additions in your new repository include:
 
-1. Modifying the `dist.ini` file for the enhancements 2. User choice of the brief descriptive text (recommended, but not required) 3. `README.md` file source placed in a new `docs/README.rakudoc` file 4. Using three separate OS tests in `.github/workflows`: shows results of each in the now auto-generated `README.md` file 5. Publishing in the **Zef** Raku module ecosystem (now standard with the current 'mi6')
+1. Modifying the `dist.ini` file for the enhancements
 
-**NOTE**: If one of the non-Linux OS tests fail during remote testing on Github, you can eliminate that test by doing the following two steps (for example, remove the `macos` test):
+2. User choice of the brief descriptive text (recommended, but not required)
 
-  * Move the `macos.yml` file out of the `.github/workflows/` directory (the author uses a subdir named `dev` to hold such things).
+3. `README.md` file source placed in a new `docs/README.rakudoc` file
 
-  * Put a semicolon in the `dist.ini` file to comment out the line naming the `macos.yml` file.
+4. Using three separate OS tests in `.github/workflows`: shows results of each in the now auto-generated `README.md` file
+
+5. Publishing in the **Zef** Raku module ecosystem (now standard with the current `mi6`)
+
+**NOTE**: If one of the non-Linux OS tests fail during remote testing on Github, you can eliminate that test by doing the following two steps (for example, remove the `windows` test which is the most likely to fail)):
+
+  * Move the `windows.yml` file out of the `.github/workflows/` directory (the author uses a subdir named `dev` to hold such things).
+
+  * Put a semicolon in the `dist.ini` file to comment out the line naming the `windows.yml` file.
 
 Modified files for the repository
 ---------------------------------
 
-In addition to those changes, the README is converted to a Rakudoc file in a new `./docs/` directory. Then the 'dist.ini' file is modified to create the 'README.md' file in the base directory. Both files are placed under 'git' control.
+In addition to those changes, the README is converted to a Rakudoc file in a new `./docs/` directory. Then the `dist.ini` file is modified to create the `README.md` file in the base directory. Both files are placed under `git` control.
 
 See [RepoChanges](zNewMode.md) for full details of each changed line from the original created by `App::Mi6`.
 
@@ -55,10 +63,10 @@ The user must install and have an account with `fez` to use this module to creat
     zef install fez
     fez register
 
-Define the branch 'git origin'
+Define the branch `git origin`
 ------------------------------
 
-The author uses and recommends GitHub for the 'git origin' for your new module's repository.
+The author uses and recommends **GitHub** for the `git origin` for your new module's repository.
 
 A short list of steps to define such for our example 'Foo::Bar':
 
