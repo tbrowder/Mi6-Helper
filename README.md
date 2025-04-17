@@ -16,21 +16,21 @@ That creates a new module named `Foo::Bar` in the current directory (or a specif
 
 Run `mi6-helper` without arguments to see its help screen showing its options:
 
-        Usage: mi6-helper <mode> [options...]
+    Usage: mi6-helper <mode> [options...]
 
-        Modes:
-          new=X - Creates a new module (named 'X') in directory 'P' (default '.')
-                  by executing 'mi6', then modifying files and adding new files
-                  in the new repository to add the benefits produced by this module.
-                  NOTE: The program will abort if directory 'X' exists and has any
-                  content.
+    Modes:
+      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
+              by executing 'mi6', then modifying files and adding new files
+              in the new repository to add the benefits produced by this module.
+              NOTE: The program will abort if directory 'X' exists and has any
+              content.
 
-        Options:
-          dir=P - Selects directory 'P' as the parent directory for the operations
-                  (default is '.', the current directory, i.e., '\$*CWD').
+    Options:
+      dir=P - Selects directory 'P' as the parent directory for the operations
+              (default is '.', the current directory, i.e., '\$*CWD').
 
-          force - Allows the program to continue without a hidden file
-                  and bypass the promp/response dialog.
+      force - Allows the program to continue without a hidden file
+              and bypass the prompt/response dialog.
 
 DESCRIPTION
 ===========
