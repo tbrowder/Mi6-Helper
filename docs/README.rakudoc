@@ -18,12 +18,35 @@ That creates a new module named C<Foo::Bar> in the current directory
 new module is then ready to be enhanced and managed by app C<mi6> to
 easily build build documentation, run tests, and release new versions.
 
+Run C<mi6-helpe> without arguments to see its help screen showing
+its options:
+
+=begin comment
+    Usage: {$*PROGRAM.basename} <mode> [options...]
+
+    Modes:
+      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
+              by executing 'mi6', then modifying files and adding new files
+              in the new repository to add the benefits produced by this module.
+              NOTE: The program will abort if directory 'X' exists and has any
+              content.
+
+    Options:
+      dir=P - Selects directory 'P' as the parent directory for the operations
+              (default is '.', the current directory, i.e., '\$*CWD').
+
+      force - Allows the program to continue without a hidden file
+              and bypass the promp/response dialog.
+=end comment
+
 =head1 DESCRIPTION
 
 The installed program, C<mi6-helper>, enables easy creation of a
 template for a new Raku module repository for management by
 C<App::Mi6>.  It does that by first executing C<mi6> to create the
 base module and then modifying the result to add new capabilities.
+(Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'.
+See details in the README.)
 
 Note when C<mi6> creates its files, it shows text in the C<README.md>
 file as 'Foo::Bar - blah blah blah'. That can be changed to a brief
@@ -44,6 +67,7 @@ answer is C<no>, the program will terminate.  (Note the program will
 wait indefinitely for a response, so you should use option "force" if
 you are testing or otherwise executing the program apart from a
 terminal inteface.)
+
 
 =head2 Post repository creation
 

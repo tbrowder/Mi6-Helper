@@ -25,13 +25,12 @@ sub mi6-help() is export {
               NOTE: The program will abort if directory 'X' exists and has any
               content.
 
-              Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'.
-              See details in the README.
-
     Options:
-      dir=P   Selects directory 'P' as the parent directory for the operations
+      dir=P - Selects directory 'P' as the parent directory for the operations
               (default is '.', the current directory, i.e., '\$*CWD').
 
+      force - Allows the program to continue without a hidden file
+              and bypass the promp/response dialog.
     HERE
     exit;
 } # sub mi6-help()

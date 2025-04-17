@@ -14,10 +14,12 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
 That creates a new module named `Foo::Bar` in the current directory (or a specified directory if the option `dir=/path` is used). The new module is then ready to be enhanced and managed by app `mi6` to easily build build documentation, run tests, and release new versions.
 
+Run `mi6-helpe` without arguments to see its help screen showing its options:
+
 DESCRIPTION
 ===========
 
-The installed program, `mi6-helper`, enables easy creation of a template for a new Raku module repository for management by `App::Mi6`. It does that by first executing `mi6` to create the base module and then modifying the result to add new capabilities.
+The installed program, `mi6-helper`, enables easy creation of a template for a new Raku module repository for management by `App::Mi6`. It does that by first executing `mi6` to create the base module and then modifying the result to add new capabilities. (Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'. See details in the README.)
 
 Note when `mi6` creates its files, it shows text in the `README.md` file as 'Foo::Bar - blah blah blah'. That can be changed to a brief summary statement by creating a hidden file in the parent directory with the same name as the new diretory. For example, new module `Foo::Bar` will be created in a new directory `Foo-Bar`. You can create hidden file `.Foo-Bar` and put any text desired in it. The author typically puts in text something like this:
 
