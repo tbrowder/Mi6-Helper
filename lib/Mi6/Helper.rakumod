@@ -35,8 +35,7 @@ has $.d3 is rw;
 submethod TWEAK {
     # determine parent-dir
     if $!parent-dir.defined {
-        #chdir $!parent-dir;
-        cd $!parent-dir;
+        chdir $!parent-dir;
     }
     else {
         $!parent-dir = $*CWD;
@@ -48,9 +47,6 @@ submethod TWEAK {
     @!libdirs = @dir-parts;
 
     # use App::Mi6 to create the module to modify
-    #chdir $!parent-dir;
-    #cd $!parent-dir;
-
     # take care of the module directory: replace '::' with '-'
     $!module-dir = $!module-name;
     $!module-dir ~~ s:g/'::'/-/;
@@ -377,9 +373,7 @@ method build-mi6-helper(
         #note "'$d' IS a git repo" if 1; #$debug;
         #temp $*CWD = $modpdir.IO;
         #autodie(:on);
-
-        #chdir $modpdir;
-        cd $modpdir;
+        chdir $modpdir;
 
         cmd("git add .github/workflows/linux.yml");
         cmd("git add .github/workflows/macos.yml");

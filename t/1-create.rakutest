@@ -19,7 +19,7 @@ else {
     $tdir = tempdir;
 }
 
-#chdir $tdir;
+chdir $tdir;
 
 my $module-name = 'Foo::Bar-Baz';
 my $module-dir  = 'Foo-Bar-Baz';
@@ -44,6 +44,7 @@ else {
     $tdir = tempdir;
 }
 $parent-dir = $tdir;
+chdir $tdir;
 
 $descrip = 'blah blah blah'; # default from 'mi6'
 $o = Mi6::Helper.new: :$parent-dir, :$module-name;
