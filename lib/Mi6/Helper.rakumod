@@ -170,9 +170,9 @@ method build-mi6-helper(
                 $line = "B<$!module-name> - $!descrip"
             }
             else {
+                $!descrip = "blah blah blah"; # default from 'mi6'
                 # bold module name only
-                $line = "B<$!module-name> - "
-                #$line ~~ s/\h*$module-name/B<$module-name>/;
+                $line = "B<$!module-name> - blah blah blah"
             }
         }
         elsif $line.contains("$!module-name is") {
