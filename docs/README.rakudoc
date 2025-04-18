@@ -182,7 +182,7 @@ Tom Browder <tbrowder@acm.org>
 The very useful Raku modules used herein:
 
 =item L<C<App::Mi6>|https://github.com/skaji/mi6>              by B<zef:skaji>
-=item L<C<File::Directory::Tree>|https://github.com/stuart-little/raku-file-directory-tree> by B<github:labster>
+=item L<C<File::Directory::Tree>|https://github.com/raku-community-modules/raku-file-directory-tree> by B<github:labster>
 =item L<C<File::Temp>|https://github.com/raku-community-modules/File-Temp>            by B<zef:rbt>
 =item L<C<Proc::Easier>|https://github.com/sdondley/Proc-Easier>          by B<zef:sdondley>
 =item L<C<File::Find>|https://github.com/raku-community-modules/File-Find>            by B<zef:raku-community-modules>
