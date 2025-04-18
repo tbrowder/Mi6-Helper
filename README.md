@@ -26,7 +26,7 @@ Run `mi6-helper` without arguments to see its help screen showing its options:
 
     Options:
       dir=P - Selects directory 'P' as the parent directory for the operations
-              (default is '.', the current directory, i.e., '\$*CWD').
+              (default is '.', the current directory, i.e., '$*CWD').
 
       force - Allows the program to continue without a hidden file
               and bypass the prompt/response dialog.
