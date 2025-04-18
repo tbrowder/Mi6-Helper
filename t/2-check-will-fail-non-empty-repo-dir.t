@@ -7,7 +7,7 @@ use File::Directory::Tree;
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-my $debug = 0;
+my $debug = 1;
 
 my $tdir;
 if $debug {

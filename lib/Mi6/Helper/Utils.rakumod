@@ -1,159 +1,11 @@
 unit module Mi6::Helper::Utils;
 
-use Mi6::Helper;
-
 use File::Directory::Tree;
 use Pod::Load;
 use App::Mi6;
 use Text::Utils :normalize-string, :strip-comment;
 use File::Find;
 use JSON::Fast;
-
-# Note: 'mi6' will abort if the $module-name or $module-dir
-#  (as needed) exists. Do NOT check for contents with
-#  'mi6-helper'! However, a hidden file is okay (if used).
-
-sub mi6-help() is export {
-    # usage
-    print qq:to/HERE/;
-    Usage: {$*PROGRAM.basename} <mode> [options...]
-
-    Modes:
-      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
-              by executing 'mi6', then modifying files and adding new files
-              in the new repository to add the benefits produced by this module.
-              NOTE: The program will abort if directory 'X' exists.
-
-    Options:
-      dir=P - Selects directory 'P' as the parent directory for the operations
-              (default is '.', the current directory, i.e., '\$*CWD').
-
-      force - Allows the program to continue without a hidden file
-              and bypass the promp/response dialog.
-    HERE
-    exit;
-} # sub mi6-help()
-
-sub run-args(@args) is export {
-    # do the work
-
-    # modes
-    my $new   = 0;
-
-    # options
-    my $force  = 0;
-    my $debug  = 0;
-    my $d2     = 0; # debug2
-    my $d3     = 0; # debug3
-    my $docs   = 0;
-    my $descrip;
-
-    # assume we are in the current working directory
-    my $parent-dir = $*CWD; # default
-
-    my $module-name; # Foo::Bar-Baz
-    my $module-dir;  # Foo-Bar-Baz
-
-    for @args {
-        when /^ :i 'new=' (\S+) / {
-            $module-name = ~$0;
-            ++$new;
-        }
-        when /^ :i f / {
-            ++$force;
-        }
-        when /^ 'dir=' (\S+) / {
-            $parent-dir = ~$0;
-        }
-        when /^ :i do  / {
-            ++$docs;
-        }
-        when /^ :i de / {
-            ++$debug;
-        }
-        when /^ :i d2 / {
-            # debug 2
-            ++$d2;
-        }
-        when /^ :i d3 / {
-            # debug 3
-            ++$d3;
-            # check for this module's workflows file(s'
-            say "DEBUG checking for expected workflow(s):";
-            for "linux", "macos", "windows" -> $OS {
-                my $path = ".github/workflows/$OS.yml";
-                if $path {
-                    say "  found path '$path'";
-                }
-                else {
-                    say "  did NOT find '$path'";
-                }
-            }
-        }
-        when /^ v / {
-            # check for this module's version
-            my $ver = get-version;
-            say "version: $ver";
-            exit;
-        }
-        default {
-            die "FATAL: Unknown arg '$_'.";
-        }
-    }
-
-    if not $new {
-        die "FATAL: no 'new=X' entered.";
-    }
-
-    # Take care of 'descrip'
-    unless $descrip.defined {
-        $descrip = "";
-        # info should be in a hidden file
-        my $hidden = ".$module-name";
-        $hidden ~~ s:g/'::'/-/;
-        if $hidden.IO.r {
-            my $s = slurp $hidden.IO;
-            for $s.lines {
-                $descrip ~= " $_";
-            }
-            $descrip = normalize-string $descrip;
-            say "Getting description text from hidden file '$hidden'";
-        }
-        elsif not $force {
-            print qq:to/HERE/;
-            WARNING: Unable to find the hidden file '$hidden'.
-
-            If you want to execute this program without it, you must 
-            run it with the 'force' option.
-
-            Exiting early.
-            HERE
-            exit;
-        }
-    }
-
-    if $parent-dir.defined {
-        unless $parent-dir.IO.d {
-            die "FATAL: Path '$parent-dir' is not a directory."
-        }
-    }
-    say "Using directory '$parent-dir'\n  as the working directory.";
-
-    # don't need to refer to 'new' again, no block needed for it
-    # take care of the module directory: replace '::' with '-'
-    $module-dir = $module-name;
-    $module-dir ~~ s:g/'::'/-/;
-
-    my $o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name,
-                    :$debug, :$d2, :$descrip, :$force;
-
-     say qq:to/HERE/;
-     Exit after 'new' mode run. See new module repo '$module-dir'
-     in parent dir '$parent-dir'.
-     HERE
-     exit;
-
-} # sub run-args
 
 sub get-zef-info($module-name, :$debug) is export {
     # Use "run" and "zef locate 'module' and 'zef list --intalled'
@@ -218,7 +70,11 @@ sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
     %h
 } # sub find-file-suffixes(IO::Path $dir, :$debug --> Hash) is export {
 
-sub get-basename-hash(@arr, :$debug --> Hash) {
+sub get-basename-hash(
+    @arr,
+    :$debug
+      --> Hash
+) is export {
     # @arr is a list of paths; from it, create a hash keyed by basename
     #   with its value an array of paths (usually one)
     my %h;
@@ -235,7 +91,15 @@ sub get-basename-hash(@arr, :$debug --> Hash) {
     %h
 } # sub get-basename-hash(@arr, :$debug --> Hash) {
 
-=finish
+#=finish
+
+sub get-file-content($fnam --> Str) is export {
+    %?RESOURCES{$fnam}.slurp;
+}
+
+sub get-version is export {
+    $?DISTRIBUTION.meta<version>
+}
 
 sub check-changes(IO::Path $dir, :$debug --> Str) {
     say "Tom, fix this";
@@ -425,3 +289,73 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
     $st;
 
 } # sub find-used-files($dir, :$debug --> Hash) {
+
+sub cd($dir, :$debug) is export {
+    temp $*CWD;
+    &chdir($dir);
+}
+
+
+sub get-hidden-name(:$module-name) is export {
+    my $s = $module-name;
+    $s ~~ s:g/'::'/-/;
+    $s ~ '.' ~ $s;
+}
+
+sub is-git-repo(
+    $dir
+    --> Bool
+) is export {
+    "$dir/.git".IO.d;
+}
+
+sub get-section(
+    $section
+    --> Str
+) is export {
+    # returns the default section desired
+    if $section eq 'PruneFiles' {
+        return q:to/HERE/;
+        [PruneFiles]
+        ; if you want to prune files when packaging, then
+        ; filename = utils/tool.pl
+        ;
+        ; you can use Raku regular expressions
+        ; match = ^ 'xt/'
+        HERE
+    }
+    elsif $section eq 'MetaNoIndex' {
+        return q:to/HERE/;
+        [MetaNoIndex]
+        ; if you do not want to list some files in META6.json as "provides", then
+        ; filename = lib/Should/Not/List/Provides.rakumod
+        HERE
+    }
+    elsif $section eq 'AutoScanPackages' {
+        return q:to/HERE/;
+        [AutoScanPackages]
+        ; if you do not want mi6 to scan packages at all,
+        ; but you want to manage "provides" in META6.json by yourself, then:
+        ; enabled = false
+        HERE
+    }
+    elsif $section eq 'RunBeforeBuild' {
+        return q:to/HERE/;
+        ; execute some commands before 'mi6 build'
+        [RunBeforeBuild]
+        ; %x will be replaced by $*EXECUTABLE
+        ; cmd = %x -e 'say "hello"'
+        ; cmd = %x -e 'say "world"'
+        HERE
+    }
+    elsif $section eq 'RunAfterBuild' {
+        return q:to/HERE/;
+        ; execute some commands after `mi6 build`
+        [RunAfterBuild]
+        ; cmd = some shell command here
+        HERE
+    }
+    else {
+        dir "FATAL: Unknown App::Mi6 'dist.ini' section '$section'";
+    }
+}

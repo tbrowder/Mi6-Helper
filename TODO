@@ -1,6 +1,8 @@
 Before release:
 
-Tidy docs
+Fix this mess, it no longer does the new stuff!!
+
+DONE: Tidy docs
   # from wayland76:
   make credits into links
 
