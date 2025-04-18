@@ -66,6 +66,11 @@ submethod TWEAK {
     my $libdir = "$!module-dir/lib";
     self.libfile = find :dir($libdir), :type<file>;
 
+    # where do we look for the hidden file?
+    my $hfil = get-hidden-name :module-name($!module-name);
+    if $hfil.IO.f {
+        self.descrip = slurp $hfil.IO;
+    }
     self.build-mi6-helper;
 }
 
@@ -214,7 +219,7 @@ method build-mi6-helper(
     HERE
     $fh.close;
 
-    # the new 'docs'directory
+    # the new 'docs' directory
     mkdir "$modpdir/docs";
     # the new README.rakudoc file:
     my $docfil = "$modpdir/docs/README.rakudoc";

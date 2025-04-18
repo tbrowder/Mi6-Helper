@@ -1,21 +1,34 @@
 use Test;
 
 use File::Temp;
+use File::Directory::Tree;
+
 use Mi6::Helper;
 use Mi6::Helper::Utils;
 
-my ($Xstr, $Xnam, $tdir, $o, $descrip);
+my $debug = 0;
 
-$tdir = tempdir;
+my ($Xstr, $Xnam, $tdir, $o);
+
+if $debug {
+    $tdir = "/tmp/A";
+    rmtree $tdir if $tdir.IO.d;
+    mkdir $tdir;
+}
+else {
+    $tdir = tempdir;
+}
+
 chdir $tdir;
 
 my $module-name = 'Foo::Bar-Baz';
 my $module-dir  = 'Foo-Bar-Baz';
-my $descrip-hidden = get-hidden-name(:$module-name);
+my $descrip = 'Some text';
 my $parent-dir = $tdir;
 
-$descrip = 'Some text';
-$o = Mi6::Helper.new: :$parent-dir, :$module-dir, :$module-name, :$descrip;
+put-hidden-text($descrip, :$parent-dir, :$module-name);
+
+$o = Mi6::Helper.new: :$parent-dir, :$module-name;
 isa-ok $o, Mi6::Helper;
 is $o.descrip, $descrip;
 is $o.module-name, $module-name;

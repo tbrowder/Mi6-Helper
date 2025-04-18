@@ -296,10 +296,19 @@ sub cd($dir, :$debug) is export {
 }
 
 
-sub get-hidden-name(:$module-name) is export {
+sub put-hidden-text(
+    $descrip, 
+    :$parent-dir!, 
+    :$module-name!
+    ) is export {
+    my $hidden-name = get-hidden-name :$module-name;
+    spurt $hidden-name.IO, $descrip;
+}
+
+sub get-hidden-name(:$module-name!) is export {
     my $s = $module-name;
     $s ~~ s:g/'::'/-/;
-    $s ~ '.' ~ $s;
+    $s = '.' ~ $s;
 }
 
 sub is-git-repo(
