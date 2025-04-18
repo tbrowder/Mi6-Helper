@@ -141,7 +141,7 @@ The very useful Raku modules used herein:
 
   * [`App::Mi6`](https://github.com/skaji/mi6) by **zef:skaji**
 
-  * [`File::Directory::Tree`](https://github.com/raku-community-modules/raku-file-directory-tree) by **github:labster**
+  * [`File::Directory::Tree`](https://github.com/labster/p6-file-directory-tree) by **github:labster**
 
   * [`File::Temp`](https://github.com/raku-community-modules/File-Temp) by **zef:rbt**
 
