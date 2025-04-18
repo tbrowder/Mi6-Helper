@@ -511,7 +511,9 @@ sub run-args(@args) is export {
             $descrip = normalize-string $descrip;
             say "Getting description text from hidden file '$hidden'";
         }
-        elsif not $force {
+        elsif $force {
+            ; # ok
+            =begin comment
             print qq:to/HERE/;
             WARNING: Unable to find the hidden file '$hidden'.
 
@@ -521,6 +523,24 @@ sub run-args(@args) is export {
             Exiting early.
             HERE
             exit;
+            =end comment
+           
+        }
+        else {
+            my $res = prompt qq:to/HERE/;
+            WARNING: Unable to find the hidden file '$hidden'.
+
+            Do you want to continue without it?
+            Please answer 'yes' or 'no'.
+            HERE
+
+            if $res ~~ /^ :i y/ {
+                say "Continuing as requested...";
+            }
+            else {
+                say "Aborting as requested...";
+                exit;
+            }
         }
     }
 
