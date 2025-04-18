@@ -1,6 +1,8 @@
 Before release:
 
 Tidy docs
+  # from wayland76:
+  make credits into links
 
 DONE: Find where we call mi6: empty dir check MUST be done there!!!
 

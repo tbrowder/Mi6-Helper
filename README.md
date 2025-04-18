@@ -139,17 +139,17 @@ CREDITS
 
 The very useful Raku modules used herein:
 
-  * `App::Mi6` by **zef:skaji**
+  * [`App::Mi6`](https://github.com/skaji/mi6) by **zef:skaji**
 
-  * `File::Directory::Tree` by **github:labster**
+  * [`File::Directory::Tree`](https://github.com/stuart-little/raku-file-directory-tree) by **github:labster**
 
-  * `File::Temp` by **zef:rbt**
+  * [`File::Temp`](https://github.com/raku-community-modules/File-Temp) by **zef:rbt**
 
-  * `Proc::Easier` by **zef:sdondley**
+  * [`Proc::Easier`](https://github.com/sdondley/Proc-Easier) by **zef:sdondley**
 
-  * `File::Find` by **zef:raku-community-modules**
+  * [`File::Find`](https://github.com/raku-community-modules/File-Find) by **zef:raku-community-modules**
 
-  * `MacOS::NativeLib` by **zef:lizmat**
+  * [`MacOS::NativeLib`](https://github.com/lizmat/MacOS-NativeLib) by **zef:lizmat**
 
 COPYRIGHT AND LICENSE
 =====================

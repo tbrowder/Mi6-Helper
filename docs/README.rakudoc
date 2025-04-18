@@ -181,12 +181,12 @@ Tom Browder <tbrowder@acm.org>
 
 The very useful Raku modules used herein:
 
-=item C<App::Mi6>              by B<zef:skaji>
-=item C<File::Directory::Tree> by B<github:labster>
-=item C<File::Temp>            by B<zef:rbt>
-=item C<Proc::Easier>          by B<zef:sdondley>
-=item C<File::Find>            by B<zef:raku-community-modules>
-=item C<MacOS::NativeLib>      by B<zef:lizmat>
+=item L<C<App::Mi6>|https://github.com/skaji/mi6>              by B<zef:skaji>
+=item L<C<File::Directory::Tree>|https://github.com/stuart-little/raku-file-directory-tree> by B<github:labster>
+=item L<C<File::Temp>|https://github.com/raku-community-modules/File-Temp>            by B<zef:rbt>
+=item L<C<Proc::Easier>|https://github.com/sdondley/Proc-Easier>          by B<zef:sdondley>
+=item L<C<File::Find>|https://github.com/raku-community-modules/File-Find>            by B<zef:raku-community-modules>
+=item L<C<MacOS::NativeLib>|https://github.com/lizmat/MacOS-NativeLib>      by B<zef:lizmat>
 
 =head1 COPYRIGHT AND LICENSE
 
