@@ -1,6 +1,8 @@
 Before release:
 
-Fix this mess, it no longer does the new stuff!!
+Mostly fixed, but README is not getting descrip
+  in the hidden file .Foo-Bar
+  + make sure a test checks that
 
 DONE: Tidy docs
   # from wayland76:
