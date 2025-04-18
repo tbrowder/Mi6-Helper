@@ -35,7 +35,8 @@ has $.d3 is rw;
 submethod TWEAK {
     # determine parent-dir
     if $!parent-dir.defined {
-        chdir $!parent-dir;
+        #chdir $!parent-dir;
+        cd $!parent-dir;
     }
     else {
         $!parent-dir = $*CWD;
@@ -48,7 +49,7 @@ submethod TWEAK {
 
     # use App::Mi6 to create the module to modify
     #chdir $!parent-dir;
-    cd $!parent-dir;
+    #cd $!parent-dir;
 
     # take care of the module directory: replace '::' with '-'
     $!module-dir = $!module-name;
@@ -376,7 +377,10 @@ method build-mi6-helper(
         #note "'$d' IS a git repo" if 1; #$debug;
         #temp $*CWD = $modpdir.IO;
         #autodie(:on);
-        chdir $modpdir;
+
+        #chdir $modpdir;
+        cd $modpdir;
+
         cmd("git add .github/workflows/linux.yml");
         cmd("git add .github/workflows/macos.yml");
         cmd("git add .github/workflows/windows.yml");
@@ -504,8 +508,9 @@ sub run-args(@args) is export {
         # info should be in a hidden file
         my $hidden = ".$module-name";
         $hidden ~~ s:g/'::'/-/;
-        if $hidden.IO.r {
-            my $s = slurp $hidden.IO;
+        my $hfil = "$parent-dir/$hidden";
+        if $hfil.IO.r {
+            my $s = slurp $hfil.IO;
             for $s.lines {
                 $descrip ~= " $_";
             }

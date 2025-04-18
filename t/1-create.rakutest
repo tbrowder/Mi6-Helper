@@ -19,7 +19,7 @@ else {
     $tdir = tempdir;
 }
 
-chdir $tdir;
+#chdir $tdir;
 
 my $module-name = 'Foo::Bar-Baz';
 my $module-dir  = 'Foo-Bar-Baz';
@@ -34,7 +34,15 @@ is $o.module-name, $module-name;
 is $o.module-dir, $module-dir;
 
 # do it again without hidden text
-rmtree $tdir if $tdir.IO.d; mkdir $tdir;
+
+if $debug {
+    $tdir = "/tmp/A";
+    rmtree $tdir if $tdir.IO.d;
+    mkdir $tdir;
+}
+else {
+    $tdir = tempdir;
+}
 $parent-dir = $tdir;
 
 $descrip = 'blah blah blah'; # default from 'mi6'
