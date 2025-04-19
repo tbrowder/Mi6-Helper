@@ -70,7 +70,7 @@ Modified files for the repository
 
 In addition to those changes, the README is converted to a Rakudoc file in a new `./docs/` directory. Then the `dist.ini` file is modified to create the `README.md` file in the base directory. Both files are placed under `git` control.
 
-See [RepoChanges](docs/zNewMode.md) for full details of each changed line from the original created by `App::Mi6`.
+See [RepoChanges](RepoChanges.md) for full details of each changed line from the original created by `App::Mi6`.
 
 See published module `Foo::Bar` for an example of a module created by `mi6-helper`.
 
