@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.0.1  2025-04-19T06:46:16-05:00
     - Add info on rebuilding repo Markdown docs with 'mi6'
     - Correct the link to the additional help file
     - Tweak docs so the online view of the README looks better
