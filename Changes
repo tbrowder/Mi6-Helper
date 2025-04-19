@@ -1,6 +1,7 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Correct the link to the additional help file
     - Tweak docs so the online view of the README looks better
       and is not scrambled.
 

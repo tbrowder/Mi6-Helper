@@ -100,7 +100,7 @@ in a new C<./docs/> directory. Then the C<dist.ini> file is modified
 to create the C<README.md> file in the base directory. Both files
 are placed under C<git> control.
 
-See L<RepoChanges|zNewMode.md> for full details of each changed line
+See L<RepoChanges|docs/zNewMode.md> for full details of each changed line
 from the original created by C<App::Mi6>.
 
 See published module C<Foo::Bar> for an example of a module created
