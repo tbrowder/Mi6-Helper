@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.0.0  2025-04-18T20:45:15-05:00
     - MAJOR CHANGES:
     - IMPORTANT: This version removes all 'provides' options other
         than the brief descriptive text in the hidden file.
