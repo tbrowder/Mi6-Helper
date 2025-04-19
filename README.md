@@ -19,14 +19,15 @@ Run `mi6-helper` without arguments to see its help screen showing its options:
     Usage: mi6-helper <mode> [options...]
 
     Modes:
-      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
+      new=X - Creates a new module (named 'X') in the current directory
               by executing 'mi6', then modifying files and adding new files
-              in the new repository to add the benefits produced by this module.
-              NOTE: The program will abort if directory 'X' exists.
+              in the new repository to add the benefits produced by this 
+              module. NOTE: The program will abort if directory 'X' exists.
 
     Options:
-      dir=P - Selects directory 'P' as the parent directory for the operations
-              (default is '.', the current directory, i.e., '$*CWD').
+      dir=P - Selects directory 'P' as the parent directory for the 
+              operations (default is '.', the current directory, i.e., 
+              '$*CWD').
 
       force - Allows the program to continue without a hidden file
               and bypass the prompt/response dialog.

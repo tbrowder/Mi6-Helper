@@ -110,8 +110,6 @@ multi method is-mi6-repo($dir) {
     "$dir/dist.ini".IO.f;
 }
 
-# this should be a private method called in TWEAK
-#sub mi6-helper-new(
 method build-mi6-helper(
     #:$parent-dir!, :$module-dir, :$module-name!, :$descrip,
     #:$debug, :$debug2, :$d2, :$d3, :$force,
@@ -121,15 +119,7 @@ method build-mi6-helper(
     # method mi6-cmd(:$parent-dir, :$module-name) {
     # we use the output of the resulting files to modify
     # and use for the revisions
-    #my $o = Mi6::Helper.new: :$module-name;
 
-    =begin comment
-    # this is done in TWEAK now
-    $o.mi6-new-cmd(:$parent-dir, :$module-dir, :$module-name, :$debug, :$debug2,
-                   :$descrip);
-    =end comment
-
-# TODO all below goes in TWEAK!!
     # get the name of the module file to change and move content
     my $modpdir = $!module-name;
     my $modpath = $!module-name;
@@ -410,14 +400,15 @@ sub mi6-help() is export {
     Usage: {$*PROGRAM.basename} <mode> [options...]
 
     Modes:
-      new=X - Creates a new module (named 'X') in directory 'P' (default '.')
+      new=X - Creates a new module (named 'X') in the current directory
               by executing 'mi6', then modifying files and adding new files
-              in the new repository to add the benefits produced by this module.
-              NOTE: The program will abort if directory 'X' exists.
+              in the new repository to add the benefits produced by this 
+              module. NOTE: The program will abort if directory 'X' exists.
 
     Options:
-      dir=P - Selects directory 'P' as the parent directory for the operations
-              (default is '.', the current directory, i.e., '\$*CWD').
+      dir=P - Selects directory 'P' as the parent directory for the 
+              operations (default is '.', the current directory, i.e., 
+              '\$*CWD').
 
       force - Allows the program to continue without a hidden file
               and bypass the promp/response dialog.
