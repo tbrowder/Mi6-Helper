@@ -1,73 +1,8 @@
 =begin pod
 
-=head1 NAME
+=head1 Changes to the C<mi6> repo
 
-B<Mi6::Helper> - An aid for converting Raku modules to use B<App::Mi6>
-
-=head1 SYNOPSIS
-
-=begin code
-use Mi6::Helper
-$ mi6-helper new=Foo::Bar  # uses any brief text in hidden file 
-                           # '.Foo-Bar' as a summary desxription in 
-                           # files META6.json and README.md
-=end code
-
-B<Easily> create the template for a new Raku module repository for
-management by C<App::Mi6> with modifications including:
-
-=item Published in the B<Zef> Raku module ecosystem
-=item User choice of the brief description
-=item C<README.md> file source removed from the base module and placed in a new C<docs/README.rakudoc> file
-=item Uses three separate OS tests in C<.github/workflows> and shows results of each in the C<README.md> file
-
-=head2 Special installation requirements
-
-The user must install to and have an account with C<fez> to use this module
-for new module creation.
-
-=head1 DESCRIPTION
-
-Note this is API 2 and its approach has changed significantly since
-the author has had much more experience using B<App::Mi6>.  For
-example, accidentally using C<mi6 test> in a non-mi6 module's base
-directory will corrupt an existing README.md file! (See 'App::Mi6'
-issue \#157.)
-
-B<CAUTION>: Before using this tool on a real module repository, the
-user should ensure all contents have been comitted with Git to enable
-recovery from any unwanted changes.
-
-This module installs a Raku executable named C<mi6-helper> which is
-designed for two major modes of operation:
-
-=head2 new
-
-=begin item
-new=X dir=Y
-
-Creates a new module 'X' in parent directory 'Y' (default '.') using
-B<mi6> and then changes some of the files and directories to satisfy the 'docs'
-option and, optionally, substitute 'blah...' with the user's short
-description (if it is provided).
-
-Provides a final C<mi6 build> and C<git commit -a -m"initial commit">
-so the new repository is ready to C<git push <remote> <branch>>
-and C<mi6 release>.
-
-CAUTION: If file C<dist.ini> already exists in the parent directory, the program
-will abort B<unless> the C<force> option is used. Use the C<force> option at your
-own risk!
-=end item
-
-B<NOTE>: If one of the non-Linux OS tests fail, you can eliminate that test by doing the following two steps
-(for example, remove the C<macos> test):
-
-=item Move the C<macos.yml> file out of the C<.github/workflows/> directory (the author uses a subdir
-name <dev> to hold such things).
-=item Put a semicolon in the C<dist.ini> file to comment out the line naming the C<macos.yml> file
-
-=head2 Modified files for mode B<new>
+=head2 Modified files
 
 =head3 Files with replaced, modified, or added lines:
 
@@ -146,26 +81,5 @@ name <dev> to hold such things).
     This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
 =end code
-
-=head1 AUTHOR
-
-Tom Browder <tbrowder@acm.org>
-
-=head1 CREDITS
-
-The very useful Raku modules used herein:
-
-=item C<App::Mi6>              by B<zef:skaji>
-=item C<File::Directory::Tree> by B<github:labster>
-=item C<File::Temp>            by B<zef:rbt>
-=item C<Proc::Easier>          by B<zef:sdondley>
-=item C<File::Find>            by B<zef:raku-community-modules>
-=item C<MacOS::NativeLib>      by B<zef:lizmat>
-
-=head1 COPYRIGHT AND LICENSE
-
-&#x00A9; 2020-2025 Tom Browder
-
-This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
 =end pod
