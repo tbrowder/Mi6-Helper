@@ -53,7 +53,7 @@ The changes and additions in your new repository include:
 
 2. User choice of the brief descriptive text (recommended, but not required)
 
-3. `README.md` file source placed in a new `docs/README.rakudoc` file
+3. `README.md` file source placed in a new `docs/README.rakudoc` file so you can update your docs using Rakupod instead of Markdown (convert to updated Markdown by running `mi6 build`).
 
 4. Using three separate OS tests in `.github/workflows`: shows results of each in the now auto-generated `README.md` file
 
