@@ -1,4 +1,4 @@
 use Test;
 dies-ok {
-    run "-I", "./bad-prog.raku";
+    run "./bad-prog.raku";
 }

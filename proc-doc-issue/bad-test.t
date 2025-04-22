@@ -1,4 +1,4 @@
 use Test;
 dies-ok {
-    my $p = run "-I.", "./bad-prog.raku";
+    my $p = run "./bad-prog.raku";
 }
