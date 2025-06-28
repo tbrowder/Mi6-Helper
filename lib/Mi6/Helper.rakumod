@@ -1,5 +1,6 @@
 unit class Mi6::Helper;
 
+use MacOS::NativeLib "*";
 use App::Mi6;
 use JSON::Fast;
 use Proc::Easier;

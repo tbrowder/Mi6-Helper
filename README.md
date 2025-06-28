@@ -14,25 +14,6 @@ This module installs a Raku executable named `mi6-helper` which is designed for 
 
 That creates a new module named `Foo::Bar` in the current directory (or a specified directory if the option `dir=/path` is used). The new module is then ready to be enhanced and managed by app `mi6` to easily build build documentation, run tests, and release new versions.
 
-Run `mi6-helper` without arguments to see its help screen showing its options:
-
-    Usage: mi6-helper <mode> [options...]
-
-    Modes:
-      new=X - Creates a new module (named 'X') in the current directory
-              by executing 'mi6', then modifying files and adding new 
-              files in the new repository to add the benefits produced 
-              by this module. NOTE: The program will abort if directory 
-              'X' exists.
-
-    Options:
-      dir=P - Selects directory 'P' as the parent directory for the 
-              operations (default is '.', the current directory, i.e., 
-              '$*CWD').
-
-      force - Allows the program to continue without a hidden file
-              and bypass the prompt/response dialog.
-
 DESCRIPTION
 ===========
 
@@ -43,6 +24,25 @@ Note when `mi6` creates its files, it shows text in the `README.md` file as 'Foo
     Provides routines to check existing module base repositories for errors.
 
 If the hidden file does not exist, the user will be asked if he or she wishes to continue without it. If the answer is `yes`, then the program will continue and the "blah blah blah" will remain. If the answer is `no`, the program will terminate. (Note the program will wait indefinitely for a response, so you should use option "force" if you are testing or otherwise executing the program apart from a terminal inteface.)
+
+Run `mi6-helper` without arguments to see its help screen showing its options:
+
+    Usage: mi6-helper <mode> [options...]
+
+    Modes:
+      new=X - Creates a new module (named 'X') in the current directory
+              by executing 'mi6', then modifying files and adding new
+              files in the new repository to add the benefits produced
+              by this module. NOTE: The program will abort if directory
+              'X' exists.
+
+    Options:
+      dir=P - Selects directory 'P' as the parent directory for the
+              operations (default is '.', the current directory, i.e.,
+              '$*CWD').
+
+      force - Allows the program to continue without a hidden file
+              and bypass the prompt/response dialog.
 
 Post repository creation
 ------------------------
