@@ -2,7 +2,7 @@ use Test;
 
 use File::Temp;
 use File::Find;
-use File::Directory::Tree;
+use File::Directory::Tree; # rmtree # remove non-empty dirs
 use QueryOS;
 
 my $os = OS.new;

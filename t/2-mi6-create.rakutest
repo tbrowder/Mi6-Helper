@@ -5,6 +5,9 @@ use File::Temp;
 use App::Mi6;
 use File::Directory::Tree;
 use Proc::Easier;
+use QueryOS;
+
+my $os = OS.new;
 
 my $tdir = tempdir;
 my $module-name = "Foo::Baz";
