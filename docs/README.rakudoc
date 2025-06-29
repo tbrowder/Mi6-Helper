@@ -69,7 +69,6 @@ Options:
           and bypass the prompt/response dialog.
 =end code
 
-
 =head2 Post repository creation
 
 The changes and additions in your new repository include:

@@ -1,5 +1,5 @@
 name: Win64
-  
+
 env:
   TEST_JOBS: 1
 
@@ -26,6 +26,9 @@ jobs:
       - name: Install Dependencies
         run: |
             choco install rakudostar
+            choco install wget
+            choco install dejavufonts
+            zef --exclude="z" install --debug --/test --test-depends --deps-only .
             zef install --debug --/test --test-depends --deps-only .
       - name: Run Tests
         run: zef install . --debug
