@@ -3,6 +3,9 @@ use Test;
 use File::Temp;
 use File::Find;
 use File::Directory::Tree;
+use QueryOS;
+
+my $os = OS.new;
 
 use Mi6::Helper;
 use Mi6::Helper::Utils;

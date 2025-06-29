@@ -7,6 +7,7 @@
   "build-depends": [
   ],
   "depends": [
+    "QueryOS",
     "Bin::Utils",
     "MacOS::NativeLib",
     "Foo::Bar",

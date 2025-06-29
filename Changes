@@ -3,6 +3,8 @@ Revision history for Mi6-Helper
 {{$NEXT}}
     - Improve README (thanks to @librasteve)
     - Fixed Windows test on GitHub
+    - use module QueryOS to ignore bad Windows tests 
+      with no known solutions currently
     - Require latest version of Text::Utils
 
 1.0.1  2025-04-19T06:46:16-05:00

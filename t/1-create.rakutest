@@ -1,10 +1,14 @@
 use Test;
 
+use QueryOS;
 use File::Temp;
+
 use File::Directory::Tree;
 
 use Mi6::Helper;
 use Mi6::Helper::Utils;
+
+my $os = OS.new;
 
 my $debug = 0;
 
@@ -44,13 +48,14 @@ else {
     $tdir = tempdir;
 }
 $parent-dir = $tdir;
+
 chdir $tdir;
 
 $descrip = 'blah blah blah'; # default from 'mi6'
 $o = Mi6::Helper.new: :$parent-dir, :$module-name;
-isa-ok $o, Mi6::Helper;
+isa-ok $o, Mi6::Helper, "valid module";
 is $o.descrip, $descrip, "descrip: '$descrip'";
-is $o.module-name, $module-name;
-is $o.module-dir, $module-dir;
+is $o.module-name, $module-name, "module-name: '$module-name'";
+is $o.module-dir, $module-dir, "module-dir: '$module-name'";
 
 done-testing;
