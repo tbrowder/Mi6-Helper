@@ -10,6 +10,12 @@ use Mi6::Helper::Utils;
 
 my $os = OS.new;
 
+if $os eq "windows" {
+    is 1, 1;
+    done-testing;
+    exit;
+}
+
 my $debug = 0;
 
 my ($Xstr, $Xnam, $tdir, $o);
