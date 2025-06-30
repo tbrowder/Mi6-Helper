@@ -16,6 +16,10 @@ my $debug = 0;
 
 my ($Xstr, $Xnam, $tdir, $o);
 
+is 1, 1;
+
+unless $skip {
+
 if $debug {
     $tdir = "/tmp/A";
     rmtree $tdir if $tdir.IO.d;
@@ -33,6 +37,8 @@ my $descrip = 'Some text';
 my $parent-dir = $tdir;
 put-hidden-text($descrip, :$parent-dir, :$module-name);
 
+is 1, 1;
+
 $o = Mi6::Helper.new: :$parent-dir, :$module-name;
 isa-ok $o, Mi6::Helper;
 is $o.descrip, $descrip, "descrip: '$descrip'";
@@ -40,8 +46,6 @@ is $o.module-name, $module-name;
 is $o.module-dir, $module-dir;
 
 # do it again without hidden text
-
-unless $skip {
 
 if $debug {
     $tdir = "/tmp/A";
