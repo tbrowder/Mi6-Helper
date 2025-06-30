@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.0.2  2025-06-30T09:09:24-05:00
     - Improve README (thanks to @librasteve)
     - Fixed Windows test on GitHub
     - use module QueryOS to ignore bad Windows tests 
