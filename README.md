@@ -126,6 +126,11 @@ At this point, execute the following commands to define the origin and push the 
     $ git branch -M main
     $ git push -u origin main
 
+Windows WARNING
+---------------
+
+This package fails the full test suite on GitHub. Consequently, only the minimal load test is acitvated, and it passes. This user does not have a Windows host, so no help can be had from him. Check with the Windows experts on [Chocolatey](https://www.chocolatey.org) for help.
+
 See also
 --------
 

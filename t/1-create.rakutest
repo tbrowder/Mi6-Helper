@@ -18,6 +18,7 @@ my ($Xstr, $Xnam, $tdir, $o);
 
 is 1, 1;
 
+if not $skip {
 
     if $debug {
         $tdir = "/tmp/A";
@@ -44,7 +45,6 @@ is 1, 1;
     is $o.module-name, $module-name;
     is $o.module-dir, $module-dir;
 
-if not $skip {
     # do it again without hidden text
 
     if $debug {

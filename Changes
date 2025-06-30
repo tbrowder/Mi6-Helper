@@ -6,6 +6,7 @@ Revision history for Mi6-Helper
     - use module QueryOS to ignore bad Windows tests 
       with no known solutions currently
     - Require latest version of Text::Utils
+    - Add warning and help suggestion for Windows users
 
 1.0.1  2025-04-19T06:46:16-05:00
     - Add info on rebuilding repo Markdown docs with 'mi6'
