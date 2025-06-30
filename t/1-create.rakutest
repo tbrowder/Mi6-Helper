@@ -9,7 +9,8 @@ use Mi6::Helper;
 use Mi6::Helper::Utils;
 
 my $os = OS.new;
-my $skip = True if $os ~~ /:i win /;
+
+my $skip = True if $os.name ~~ /:i win /;
 
 my $debug = 0;
 
