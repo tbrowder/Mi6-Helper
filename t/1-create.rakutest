@@ -10,11 +10,7 @@ use Mi6::Helper::Utils;
 
 my $os = OS.new;
 
-if $os eq "windows" {
-    is 1, 1;
-    done-testing;
-    exit;
-}
+my $skip = True if $os eq "windows";
 
 my $debug = 0;
 
@@ -45,6 +41,8 @@ is $o.module-dir, $module-dir;
 
 # do it again without hidden text
 
+unless $skip {
+
 if $debug {
     $tdir = "/tmp/A";
     rmtree $tdir if $tdir.IO.d;
@@ -63,5 +61,7 @@ isa-ok $o, Mi6::Helper, "valid module";
 is $o.descrip, $descrip, "descrip: '$descrip'";
 is $o.module-name, $module-name, "module-name: '$module-name'";
 is $o.module-dir, $module-dir, "module-dir: '$module-name'";
+
+} # skip
 
 done-testing;
