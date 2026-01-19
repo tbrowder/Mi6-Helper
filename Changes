@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Make the default workflows tests the same as the 'test.yml'
+      file in App::Mi6 but renamed for three OSs
 
 1.0.2  2025-06-30T09:09:24-05:00
     - Improve README (thanks to @librasteve)

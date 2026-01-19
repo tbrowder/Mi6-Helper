@@ -129,7 +129,7 @@ At this point, execute the following commands to define the origin and push the 
 Windows WARNING
 ---------------
 
-This package fails the full test suite on GitHub. Consequently, only the minimal load test is acitvated, and it passes. This user does not have a Windows host, so no help can be had from him. Check with the Windows experts on [Chocolatey](https://www.chocolatey.org) for help.
+This package fails the full test suite on GitHub. Consequently, only the minimal load test is actitvated, and it passes. This user does not have a Windows host, so no help can be had from him. Check with the Windows experts on [Chocolatey](https://www.chocolatey.org) for help.
 
 See also
 --------
@@ -161,7 +161,7 @@ The very useful Raku modules used herein:
 COPYRIGHT AND LICENSE
 =====================
 
-&#x00A9; 2020-2025 Tom Browder
+&#x00A9; 2020-2026 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

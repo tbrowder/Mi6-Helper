@@ -33,6 +33,7 @@ Modified files
 
       .github/workflows/test.yml:
         # Create three new files to provide three separate test badges
+        # (Note the files are copies of the original 'test.yml' file)
         .github/workflows/linux.yml
         .github/workflows/windows.yml
         .github/workflows/macos.yml

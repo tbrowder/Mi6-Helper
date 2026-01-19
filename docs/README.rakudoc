@@ -175,7 +175,7 @@ $ git push -u origin main
 =head2 Windows WARNING
 
 This package fails the full test suite on GitHub. Consequently,
-only the minimal load test is acitvated, and it passes.
+only the minimal load test is actitvated, and it passes.
 This user does not have a Windows host, so no help can be had from
 him. Check with the Windows experts on L<Chocolatey|https://www.chocolatey.org>
 for help.
@@ -202,7 +202,7 @@ The very useful Raku modules used herein:
 
 =head1 COPYRIGHT AND LICENSE
 
-&#x00A9; 2020-2025 Tom Browder
+&#x00A9; 2020-2026 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
