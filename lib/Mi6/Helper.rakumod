@@ -422,7 +422,7 @@ sub run-args(@args) is export {
     # do the work
 
     # modes
-    my $new   = 0;
+    my $new    = 0;
 
     # options
     my $force  = 0;

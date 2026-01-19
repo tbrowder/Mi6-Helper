@@ -73,7 +73,7 @@ sub find-file-suffixes(IO::Path $dir, :%meta, :$debug --> Hash) is export {
 sub get-basename-hash(
     @arr,
     :$debug
-      --> Hash
+    --> Hash
 ) is export {
     # @arr is a list of paths; from it, create a hash keyed by basename
     #   with its value an array of paths (usually one)
@@ -294,7 +294,6 @@ sub cd($dir, :$debug) is export {
     temp $*CWD;
     &chdir($dir);
 }
-
 
 sub put-hidden-text(
     $descrip, 

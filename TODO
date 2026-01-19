@@ -1,8 +1,10 @@
 Before release:
 
-Incorporate suggestions from @librasteve
+DONE:Incorporate suggestions from @librasteve
 
-Mostly fixed, but README is not getting descrip
+Make default initial branch 'main'
+
+DONE: Mostly fixed, but README is not getting descrip
   in the hidden file .Foo-Bar
   + make sure a test checks that
 
