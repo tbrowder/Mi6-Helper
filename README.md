@@ -17,7 +17,7 @@ That creates a new module named `Foo::Bar` in the current directory (or a specif
 DESCRIPTION
 ===========
 
-The installed program, `mi6-helper`, enables easy creation of a template for a new Raku module repository for management by `App::Mi6`. It does that by first executing `mi6` to create the base module and then modifying the result to add new capabilities. (Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'. See details in the README.)
+The installed program, `mi6-helper`, enables easy creation of a template for a new Raku module repository for management by `App::Mi6`. It does that by first executing `mi6` to create the base module and then modifying the result to add new capabilities. (Note the directory for module 'X::Y-Z' will be 'X-Y-Z'. See details in the below.)
 
 Note when `mi6` creates its files, it shows text in the `README.md` file as 'Foo::Bar - blah blah blah'. That can be changed to a brief summary statement by creating a hidden file in the parent directory with the same name as the new diretory. For example, new module `Foo::Bar` will be created in a new directory `Foo-Bar`. You can create hidden file `.Foo-Bar` and put any text desired in it. The author typically puts in text something like this:
 
@@ -37,9 +37,6 @@ Run `mi6-helper` without arguments to see its help screen showing its options:
               'X' exists.
 
     Options:
-      dir=P - Selects directory 'P' as the parent directory for the
-              operations (default is '.', the current directory, i.e.,
-              '$*CWD').
 
       force - Allows the program to continue without a hidden file
               and bypass the prompt/response dialog.
@@ -129,7 +126,7 @@ At this point, execute the following commands to define the origin and push the 
 Windows WARNING
 ---------------
 
-This package fails the full test suite on GitHub. Consequently, only the minimal load test is actitvated, and it passes. This user does not have a Windows host, so no help can be had from him. Check with the Windows experts on [Chocolatey](https://www.chocolatey.org) for help.
+This package may fail the full test suite on GitHub. This user does not have a Windows host, so no help can be had from him. Check with the Windows experts on [Chocolatey](https://www.chocolatey.org) for help.
 
 See also
 --------

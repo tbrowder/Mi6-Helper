@@ -24,8 +24,8 @@ The installed program, C<mi6-helper>, enables easy creation of a
 template for a new Raku module repository for management by
 C<App::Mi6>.  It does that by first executing C<mi6> to create the
 base module and then modifying the result to add new capabilities.
-(Note the directory for module 'X::Y-Z' will be 'P/X-Y-Z'.  See
-details in the README.)
+(Note the directory for module 'X::Y-Z' will be 'X-Y-Z'.  See
+details in the below.)
 
 Note when C<mi6> creates its files, it shows text in the C<README.md>
 file as 'Foo::Bar - blah blah blah'. That can be changed to a brief
@@ -61,9 +61,6 @@ Modes:
           'X' exists.
 
 Options:
-  dir=P - Selects directory 'P' as the parent directory for the
-          operations (default is '.', the current directory, i.e.,
-          '$*CWD').
 
   force - Allows the program to continue without a hidden file
           and bypass the prompt/response dialog.
@@ -174,8 +171,7 @@ $ git push -u origin main
 
 =head2 Windows WARNING
 
-This package fails the full test suite on GitHub. Consequently,
-only the minimal load test is actitvated, and it passes.
+This package may fail the full test suite on GitHub. 
 This user does not have a Windows host, so no help can be had from
 him. Check with the Windows experts on L<Chocolatey|https://www.chocolatey.org>
 for help.
