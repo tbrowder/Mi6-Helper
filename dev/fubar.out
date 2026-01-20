@@ -1,5 +1,5 @@
 Getting description text from hidden file '.Foo-Bar'
-[master (root-commit) 30a8b25] 'initial'
+[main (root-commit) 30a8b25] 'initial'
  12 files changed, 431 insertions(+)
  create mode 100644 .github/workflows/linux.yml
  create mode 100644 .github/workflows/macos.yml
