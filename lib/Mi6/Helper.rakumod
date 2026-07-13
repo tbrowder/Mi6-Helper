@@ -402,7 +402,7 @@ sub mi6-help() is export {
               by this module. NOTE: The program will abort if directory
               'X' exists.
 
-      ver   - Reports the version number and exits.
+      v[ersion] - Reports the version number and exits.
 
     Options:
       force - Allows the program to continue without a hidden file
@@ -433,7 +433,7 @@ sub run-args(@args) is export {
     my $module-dir;  # Foo-Bar-Baz
 
     for @args {
-        when /^ :i ver $ / {
+        when /^ :i [v|ve|ver|vers|versi|versio|version] $/ {
             $ver = $?DISTRIBUTION.meta<version>;
             say "The current version is $ver";
             exit;
