@@ -60,7 +60,7 @@ Modes:
           by this module. NOTE: The program will abort if directory
           'X' exists.
 
-  ver   - Shows the version number and exits.
+  v[ersion] - Shows the version number and exits.
 
 Options:
 

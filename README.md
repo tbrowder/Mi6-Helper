@@ -36,6 +36,8 @@ Run `mi6-helper` without arguments to see its help screen showing its options:
               by this module. NOTE: The program will abort if directory
               'X' exists.
 
+      v[ersion] - Shows the version number and exits.
+
     Options:
 
       force - Allows the program to continue without a hidden file
