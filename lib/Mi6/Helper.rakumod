@@ -35,12 +35,7 @@ has $.d3 is rw;
 
 submethod TWEAK {
     # determine parent-dir
-    if $!parent-dir.defined {
-        chdir $!parent-dir;
-    }
-    else {
-        $!parent-dir = $*CWD;
-    }
+    $!parent-dir = $*CWD;
 
     # determine directory and file names
     my @dir-parts = $!module-name.split('::');
@@ -407,11 +402,9 @@ sub mi6-help() is export {
               by this module. NOTE: The program will abort if directory
               'X' exists.
 
-    Options:
-      dir=P - Selects directory 'P' as the parent directory for the
-              operations (default is '.', the current directory, i.e.,
-              '\$*CWD').
+      ver   - Reports the version number and exits.
 
+    Options:
       force - Allows the program to continue without a hidden file
               and bypass the promp/response dialog.
     HERE
@@ -423,6 +416,7 @@ sub run-args(@args) is export {
 
     # modes
     my $new    = 0;
+    my $ver    = 0;
 
     # options
     my $force  = 0;
@@ -439,6 +433,11 @@ sub run-args(@args) is export {
     my $module-dir;  # Foo-Bar-Baz
 
     for @args {
+        when /^ :i ver $ / {
+            $ver = $?DISTRIBUTION.meta<version>;
+            say "The current version is $ver";
+            exit;
+        }
         when /^ :i 'new=' (\S+) / {
             $module-name = ~$0;
             ++$new;
