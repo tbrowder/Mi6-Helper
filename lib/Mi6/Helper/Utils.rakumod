@@ -361,6 +361,9 @@ sub get-section(
         ; execute some commands after `mi6 build`
         [RunAfterBuild]
         ; cmd = some shell command here
+        ; the example below converts a rakudoc file in docs/ to its Markdown
+        ;   equivalent and puts it in the module's main directory
+        ; cmd = raku --doc=Markdown docs/SPECS.rakudoc > SPECS.md
         HERE
     }
     else {
