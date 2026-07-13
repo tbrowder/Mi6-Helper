@@ -60,6 +60,8 @@ Modes:
           by this module. NOTE: The program will abort if directory
           'X' exists.
 
+  ver   - Shows the version number and exits.
+
 Options:
 
   force - Allows the program to continue without a hidden file
