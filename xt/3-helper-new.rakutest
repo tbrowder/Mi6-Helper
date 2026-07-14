@@ -10,7 +10,13 @@ use Proc::Easier;
 # check the system for known values used for fez and mi6
 my $tdir = tempdir;
 
-my $oo          = Mi6::Helper.new: :module-name("null"), :parent-dir($tdir);
+my $module-name = "Foo::Baz";
+# if Foo-Baz exists, delete it
+my $mdir = "Foo-Baz";
+if $mdir.IO ~~ :e {
+    rmtree $mdir
+}
+my $oo          = Mi6::Helper.new: :$module-name; #("null");
 my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;

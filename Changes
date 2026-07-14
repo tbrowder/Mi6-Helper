@@ -8,6 +8,9 @@ Revision history for Mi6-Helper
     - Requires JSON::Fast:ver<0.20.1>
     - Requires App::Mi6:ver<3.0.9>
     - Added new mode 'version'
+    - Added new file to .gitignore
+    - Fixed two xt test files
+
 
 1.0.2  2025-06-30T09:09:24-05:00
     - Improve README (thanks to @librasteve)

@@ -23,6 +23,12 @@ else {
 rmtree $tdir if $tdir.IO.d;
 mkdir $tdir;
 
+# if Foo-Bar exists, delete it
+my $mdir = "Foo-Bar";
+if $mdir.IO ~~ :e {
+    rmtree $mdir
+}
+
 my $proc;
 lives-ok {
     say "Running 'mi6-helper'..." if $debug;
@@ -34,6 +40,13 @@ lives-ok {
 # from @ugexe: do NOT use proc here, run only
 # this works:
 #run "raku", "-Ilib", "bin/mi6-helper", "force", "dir=$tdir", "new=Foo::Bar";
+
+# if Foo-Bar exists, delete it
+#$mdir = "Foo-Bar";
+#if $mdir.IO ~~ :e {
+#    rmtree $mdir
+#}
+
 $proc = run "bin/mi6-helper", "force", "dir=$tdir", "new=Foo::Bar";
 my $e = $proc.exitcode;
 is $e, 1, "expected to fail: existing dir for gen new mod Foo::Bar in dir '$tdir'";

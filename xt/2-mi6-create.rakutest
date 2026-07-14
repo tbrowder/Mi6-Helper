@@ -11,11 +11,18 @@ my $os = OS.new;
 
 my $tdir = tempdir;
 my $module-name = "Foo::Baz";
+# if Foo-Baz exists, delete it
+my $mdir = "Foo-Baz";
+if $mdir.IO ~~ :e {
+    rmtree $mdir
+}
+# say "debug early exit"; exit;
+
 say "tmpdir: $tdir";
 say "cur dir: {$*CWD}";
 
 # check the system for known values used for fez and mi6
-my $oo          = Mi6::Helper.new: :$module-name, :parent-dir($tdir);
+my $oo          = Mi6::Helper.new: :$module-name;
 my %fez         = App::Mi6::JSON.decode(slurp "$*HOME/.fez-config.json");
 my $auth        = "zef:{%fez<un>}";
 my $email       = $oo.git-user-email;
