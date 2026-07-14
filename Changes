@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.1.0  2026-07-13T21:19:22-05:00
     - Removed the option to change the parent directory
     - Fixed and updated the README  
     - Added an example use of the 'RunAfterBuild' command
