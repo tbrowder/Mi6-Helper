@@ -72,7 +72,7 @@ method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debu
     chdir $parent-dir;
     # Note: 'mi6' will abort if the $module-name or $module-dir
     #  (as needed) exists. Do NOT check for contents with
-    #  'mi6-helper'! However, a hidden is okay (if used).
+    #  'mi6-helper'! However, a hidden file is okay (if used).
 
     cmd "mi6 new --zef $module-name";
     self.libdirs = find :dir($module-dir), :type<dir>;
@@ -338,6 +338,17 @@ method build-mi6-helper(
         my $desc = %j<description>;
         note "DEBUG description: '$!descrip'" if $!debug;
         %j<description> = $!descrip;
+        my $jstr = App::Mi6::JSON.encode(%j);
+        spurt $jfil, $jstr;
+    }
+
+    # also add missing api
+    {
+        my $jfil = "$modpdir/META6.json";
+        my %j = App::Mi6::JSON.decode(slurp $jfil);
+        my $api = 0; %j<description>;
+        note "DEBUG api: '$api'" if $!debug;
+        %j<api> = $api;
         my $jstr = App::Mi6::JSON.encode(%j);
         spurt $jfil, $jstr;
     }
