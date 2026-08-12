@@ -182,7 +182,6 @@ sub find-used-files($dir, %meta, :$debug --> Hash) {
 
             }
         }
-
     }
 
     # step through the test mods to see if they are used in non-tests

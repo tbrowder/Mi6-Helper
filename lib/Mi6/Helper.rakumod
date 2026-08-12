@@ -81,6 +81,15 @@ method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debu
 }
 =end comment
 
+method !add-initial-api() {
+    my $file = "META6.json".IO;
+    my %meta = App::Mi6::JSON.decode($file.slurp);
+
+    %meta<api> = 0;
+
+    $file.spurt: App::Mi6::JSON.encode(%meta);
+}
+
 method git-status {
     # branch and working tree status
     cmd("git status -b -s").out.chomp
@@ -346,7 +355,7 @@ method build-mi6-helper(
     {
         my $jfil = "$modpdir/META6.json";
         my %j = App::Mi6::JSON.decode(slurp $jfil);
-        my $api = 0; %j<description>;
+        my $api = 0;
         note "DEBUG api: '$api'" if $!debug;
         %j<api> = $api;
         my $jstr = App::Mi6::JSON.encode(%j);
@@ -380,6 +389,9 @@ method build-mi6-helper(
 
         # finish the repo to be ready for pushing
         cmd("mi6 build");
+
+        # Mi6 doesn't supply our initial API value.
+        self!add-initial-api;
 
         cmd("git add META6.json");
         cmd("git add README.md");
