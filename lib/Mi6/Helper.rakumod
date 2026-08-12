@@ -406,7 +406,7 @@ spurt $jfil, $jstr;
 
 say "CWD: $*CWD";
 say "META6 exists: ", "META6.json".IO.f;
-say "API after write: " %j<api>;
+say "API after write: ", %j<api>;
 
 
         cmd("git add README.md");
