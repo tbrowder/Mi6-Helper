@@ -404,10 +404,9 @@ spurt $jfil, $jstr;
 
         cmd("git add META6.json");
 
-say "CWD: $*CWD";
-say "META6 exists: ", "META6.json".IO.f;
-say "API after write: ", %j<api>;
-
+        say "CWD: $*CWD";
+        say "META6 exists: ", "META6.json".IO.f;
+        say "API after write: ", %j<api>;
 
         cmd("git add README.md");
         cmd("git add dist.ini");
