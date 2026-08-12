@@ -396,7 +396,7 @@ my %j = App::Mi6::JSON.decode(slurp $jfil);
 
 %j<api> = 0;
 
-my $jstr = App::Mi6::JSON.encode(%j):
+my $jstr = App::Mi6::JSON.encode(%j);
 spurt $jfil, $jstr;
 
 #       # Mi6 doesn't supply our initial API value.
