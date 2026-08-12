@@ -379,17 +379,8 @@ method build-mi6-helper(
         # finish the repo to be ready for pushing
         cmd("mi6 build");
 
-        # Add the initial API value after Mi6 has rebuilt META6.json
-        my $jfil = "META6.json";
-        my %j = App::Mi6::JSON.decode(slurp $jfil);
-
-        %j<api> = 0;
-
-        my $jstr = App::Mi6::JSON.encode(%j);
-        spurt $jfil, $jstr;
-
-#       # Mi6 doesn't supply our initial API value.
-#       self!add-initial-api;
+        # Add the initial API value after Mi6 has rebuilt META6.json.
+        self!add-initial-api;
 
         cmd("git add META6.json");
 
