@@ -251,21 +251,21 @@ method build-mi6-helper(
     spurt $api-script, q:to/HERE/;
     #!/usr/bin/env raku
 
-    use App::Mi6;
+    use JSON::Fast;
 
     my $file = "META6.json".IO;
 
     die "FATAL: Cannot find '$file'"
         unless $file.f;
 
-    my %meta = App::Mi6::JSON.decode($file.slurp);
+    my %meta = from-json $file.slurp;
 
     exit 0
         if %meta<api>:exists;
 
     %meta<api> = 0;
 
-    $file.spurt: App::Mi6::JSON.encode(%meta);
+    $file.spurt: to-json(%meta, :pretty);
 
     say "Added initial api value 0 to META6.json";
     HERE
