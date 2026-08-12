@@ -359,10 +359,12 @@ sub get-section(
         return q:to/HERE/;
         ; execute some commands after `mi6 build`
         [RunAfterBuild]
-        ; cmd = some shell command here
+        cmd = raku sbin/add-missing-api.raku
+        ; additional commands may be added here
         ; the example below converts a rakudoc file in docs/ to its Markdown
         ;   equivalent and puts it in the module's main directory
         ; cmd = raku --doc=Markdown docs/SPECS.rakudoc > SPECS.md
+        ; Note instead of 'raku' you can use '%x' which represents '$*EXECUTABLE'
         HERE
     }
     else {

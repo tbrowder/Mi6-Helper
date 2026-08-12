@@ -81,15 +81,6 @@ method mi6-new-cmd(:$parent-dir!, :$module-dir!, :$module-name!, :$debug, :$debu
 }
 =end comment
 
-method !add-initial-api() {
-    my $file = "META6.json".IO;
-    my %meta = App::Mi6::JSON.decode($file.slurp);
-
-    %meta<api> = 0;
-
-    $file.spurt: App::Mi6::JSON.encode(%meta);
-}
-
 method git-status {
     # branch and working tree status
     cmd("git status -b -s").out.chomp
@@ -252,11 +243,47 @@ method build-mi6-helper(
     $unwanted = "$modpdir/t/01-basic.rakutest";
     unlink $unwanted if $unwanted.IO.e;
 
+    # Add the script used by RunAfterBuild to supply the initial API value.
+    my $sbindir = "$modpdir/sbin";
+    mkdir $sbindir unless $sbindir.IO.d;
+
+    my $api-script = "$sbindir/add-missing-api.raku";
+    spurt $api-script, q:to/HERE/;
+    #!/usr/bin/env raku
+
+    use App::Mi6;
+
+    my $file = "META6.json".IO;
+
+    die "FATAL: Cannot find '$file'"
+        unless $file.f;
+
+    my %meta = App::Mi6::JSON.decode($file.slurp);
+
+    exit 0
+        if %meta<api>:exists;
+
+    %meta<api> = 0;
+
+    $file.spurt: App::Mi6::JSON.encode(%meta);
+
+    say "Added initial api value 0 to META6.json";
+    HERE
+
     # mod the dist.ini file. add ALL optional sections recognized by App::Mi6
 
     my $distfil  = "$modpdir/dist.ini";
     my @idistfil = $distfil.IO.lines;
     my @odistfil;
+
+    my $api-cmd = "cmd = raku sbin/add-missing-api.raku";
+    my $has-api-cmd = False;
+    for @idistfil -> $line {
+        if $line.trim eq $api-cmd {
+            $has-api-cmd = True;
+            last;
+        }
+    }
     # all 9 known sections
     my %sections = [
         ReadmeFromPod => False, # not normally optional
@@ -295,6 +322,13 @@ method build-mi6-helper(
             else {
                 die "FATAL: Unknown App::Mi6 dist.ini section '$section'";
             }
+
+            @odistfil.push: $line;
+            if $section eq 'RunAfterBuild' and not $has-api-cmd {
+                @odistfil.push: $api-cmd;
+                $has-api-cmd = True;
+            }
+            next;
         }
         # change the README line
         #   filename = lib/Foo/Bar.rakumod
@@ -377,12 +411,11 @@ method build-mi6-helper(
         cmd("git add docs/README.rakudoc");
 
         # finish the repo to be ready for pushing
+        # RunAfterBuild adds api = 0 only if META6.json has no api entry.
         cmd("mi6 build");
 
-        # Add the initial API value after Mi6 has rebuilt META6.json.
-        self!add-initial-api;
-
         cmd("git add META6.json");
+        cmd("git add sbin/add-missing-api.raku");
 
         cmd("git add README.md");
         cmd("git add dist.ini");
