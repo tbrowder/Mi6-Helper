@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.2.0  2026-08-13T08:33:34-05:00
     - Changed to start all new modules at ":api<0>"
         in their META6.json file.
       Existing modules with existing api entries
