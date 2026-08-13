@@ -1,6 +1,8 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+
+1.2.1  2026-08-13T16:08:38-05:00
     - Changed this api back to 2 (which caused a
         regession in precedence for sorting
         which was not intended).
