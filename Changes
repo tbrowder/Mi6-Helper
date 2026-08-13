@@ -2,6 +2,9 @@ Revision history for Mi6-Helper
 
 {{$NEXT}}
     - Changed to start all new modules at ":api<0>"
+        in their META6.json file.
+      Existing modules with existing api entries
+        in their META6.json file will be unchanged.
 
 1.1.0  2026-07-13T21:19:22-05:00
     - Removed the option to change the parent directory
