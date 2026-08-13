@@ -265,7 +265,7 @@ method build-mi6-helper(
 
     %meta<api> = 0;
 
-    $file.spurt: to-json(%meta, :pretty);
+    $file.spurt: to-json(%meta, :pretty, :sorted-keys);
 
     say "Added initial api value 0 to META6.json";
     HERE
@@ -403,6 +403,8 @@ method build-mi6-helper(
         #temp $*CWD = $modpdir.IO;
         #autodie(:on);
         chdir $modpdir;
+
+        #note "DEBUG: next-version API-hook code is running.";
 
         cmd("git add .github/workflows/linux.yml");
         cmd("git add .github/workflows/macos.yml");
