@@ -1,6 +1,9 @@
 Revision history for Mi6-Helper
 
 {{$NEXT}}
+    - Changed this api back to 2 (which caused a
+        regession in precedence for sorting
+        which was not intended).
 
 1.2.0  2026-08-13T08:33:34-05:00
     - Changed to start all new modules at ":api<0>"

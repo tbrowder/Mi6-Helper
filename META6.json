@@ -1,5 +1,5 @@
 {
-  "api": 0,
+  "api": 2,
   "auth": "zef:tbrowder",
   "authors": [
     "Tom Browder <tbrowder@acm.org>"
