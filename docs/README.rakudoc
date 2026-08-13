@@ -80,9 +80,12 @@ The changes and additions in your new repository include:
    so you can update your docs using Rakupod instead of Markdown (convert
    to updated Markdown by running C<mi6 build>).
 
-4. Using three separate OS tests in C<.github/workflows>: shows results of each in the now auto-generated C<README.md> file
+4. Using three separate OS tests in C<.github/workflows>: shows 
+   results of each in the now auto-generated C<README.md> file
 
 5. Publishing in the B<Zef> Raku module ecosystem (now standard with the current C<mi6>)
+
+6. Adding line C<"api": 0,'> to the META6.json file, then sorting the file alphabetically.
 
 B<NOTE>: If one of the non-Linux OS tests fail during remote testing
 on Github, you can eliminate that test by doing the following two
