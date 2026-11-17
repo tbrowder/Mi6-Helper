@@ -91,7 +91,7 @@ sub get-basename-hash(
     %h
 } # sub get-basename-hash(@arr, :$debug --> Hash) {
 
-#=finish
+# finish
 
 sub get-file-content($fnam --> Str) is export {
     %?RESOURCES{$fnam}.slurp;

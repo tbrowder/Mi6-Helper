@@ -9,26 +9,26 @@ use File::Temp;
 use Text::Utils :normalize-string;
 use Mi6::Helper::Utils;
 
-has $.module-name is required; #= as known to Zef, e.g., 'Foo::Bar-Baz'
-has $.module-dir;              #= as known to git, e.g., 'Foo-Bar-Baz'
+has $.module-name is required; # as known to Zef, e.g., 'Foo::Bar-Baz'
+has $.module-dir;              # as known to git, e.g., 'Foo-Bar-Baz'
 has $.parent-dir;
 
 # its top-level repo directory
 # libs are determined by the '::' separators in the module name
-has @.libdirs is rw;           #= 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod'
-                               #= 'Foo-Bar-Baz/lib
-                               #= 'Foo-Bar-Baz/lib/Foo
-has $.libfile is rw;           #= 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod;
+has @.libdirs is rw;           # 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod'
+                               # 'Foo-Bar-Baz/lib
+                               # 'Foo-Bar-Baz/lib/Foo
+has $.libfile is rw;           # 'Foo-Bar-Baz/lib/Foo/Bar-Baz.rakumod;
 
 =begin comment
 e.g., Foo:Bar-Baz
 =end comment
 
-has $.descrip is rw;           #= text to replace 'blah blah blah'
-                               #= NOT to be confused with the META6.json's provides
+has $.descrip is rw;           # text to replace 'blah blah blah'
+                               # NOT to be confused with the META6.json's provides
 
-has @.resources-dir-files;     #=
-has @.meta-resources-files;    #=
+has @.resources-dir-files;     #
+has @.meta-resources-files;    #
 
 has $.debug is rw;
 has $.d3 is rw;
@@ -39,7 +39,7 @@ submethod TWEAK {
 
     # determine directory and file names
     my @dir-parts = $!module-name.split('::');
-    $!libfile = @dir-parts.pop; #= 'lib/Foo/Bar-Baz.rakumod;
+    $!libfile = @dir-parts.pop; # 'lib/Foo/Bar-Baz.rakumod;
     @!libdirs = @dir-parts;
 
     # use App::Mi6 to create the module to modify
